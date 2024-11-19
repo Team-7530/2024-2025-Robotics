@@ -1,14 +1,19 @@
 package frc.robot;
 
 //import static frc.robot.Constants.*;
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.Filesystem;
+// import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.trajectory.Trajectory;
+// import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -17,17 +22,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.DriveTrainConstants;
-// import frc.robot.commands.vision.VisionCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-// import frc.robot.subsystems.vision.VisionSubsystem;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 // import edu.wpi.first.cameraserver.CameraServer;
 // import edu.wpi.first.cscore.UsbCamera;
@@ -39,24 +39,31 @@ import java.util.Map;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private SendableChooser<Command> autoChooser;
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-  /* Operator Interface */
-  public OperatorInterface oi = new OperatorInterface() {};
+    private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  /* Subsystems */
-  public final PowerDistribution power = new PowerDistribution();
-  // public final VisionSubsystem vision = new VisionSubsystem();
+    /* Operator Interface */
+    public OperatorInterface oi = new OperatorInterface() {};
 
-  public final SwerveSubsystem driveTrain =
-      new SwerveSubsystem(
-          new File(Filesystem.getDeployDirectory(), DriveTrainConstants.swerveConfigurationName),
-          DriveTrainConstants.swerveConfig,
-          DriveTrainConstants.maxSpeed);
+    /* Subsystems */
+    public final PowerDistribution power = new PowerDistribution();
+    // public final VisionSubsystem vision = new VisionSubsystem();
 
-  // public final ShooterSubsystem shooter = new ShooterSubsystem();
-  // public final WristSubsystem wrist = new WristSubsystem();
-  // public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+    /* Path follower */
+    private SendableChooser<Command> autoChooser;
 
   /* Test System */
   //  private TestChecklist m_test;
@@ -64,10 +71,10 @@ public class RobotContainer {
   /* Cameras */
   // public UsbCamera cam0;
 
-  public static Map<String, Trajectory> trajectoryList = new HashMap<String, Trajectory>();
-  public static Map<String, List<PathPlannerTrajectory>> pptrajectoryList =
-      new HashMap<String, List<PathPlannerTrajectory>>();
-  public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+  // public static Map<String, Trajectory> trajectoryList = new HashMap<String, Trajectory>();
+  // public static Map<String, List<PathPlannerTrajectory>> pptrajectoryList =
+  //     new HashMap<String, List<PathPlannerTrajectory>>();
+  // public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
 
   private static RobotContainer instance;
 
@@ -111,17 +118,15 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    if (RobotBase.isSimulation()) {
-      driveTrain.setDefaultCommand(
-          driveTrain.simDriveCommand(oi::getTranslateX, oi::getTranslateY, oi::getRotate));
-    } else {
-      driveTrain.setDefaultCommand(
-          driveTrain.driveCommand(
-              oi::getTranslateX, oi::getTranslateY, oi::getRotate, oi::isRobotRelative));
-    }
-    // elevator.setDefaultCommand(new TeleopElevator(elevator, oi::getElevator));
-    // wrist.setDefaultCommand(new TeleopWrist(wrist, oi::getWrist));
-    // vision.setDefaultCommand(new VisionCommand(vision, driveTrain));
+    drivetrain.setDefaultCommand(
+      // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() ->
+          drive.withVelocityX(oi.getTranslateX()) // Drive forward with negative Y (forward)
+              .withVelocityY(oi.getTranslateY()) // Drive left with negative X (left)
+              .withRotationalRate(oi.getRotate()) // Drive counterclockwise with negative X (left)
+          )
+    );
+  // vision.setDefaultCommand(new VisionCommand(vision, driveTrain));
   }
 
   /**
@@ -132,30 +137,29 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // reset gyro to 0 degrees
-    oi.getResetGyroButton().onTrue(Commands.runOnce(driveTrain::zeroGyro));
+    oi.getResetGyroButton().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // x-stance
-    oi.getXStanceButton()
-        .onTrue(Commands.runOnce(driveTrain::enableXstance))
-        .onFalse(Commands.runOnce(driveTrain::disableXstance));
+    oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    // oi.getRunIntake()
-    //     .onTrue(Commands.runOnce(shooter::intake))
-    //     .onFalse(Commands.runOnce(shooter::stop));
-    // oi.getShoot().onTrue(Commands.runOnce(shooter::shoot)).onFalse(Commands.runOnce(shooter::stop));
-    // oi.getYButton()
-    //     .onTrue(Commands.runOnce(shooter::shoot2))
-    //     .onFalse(Commands.runOnce(shooter::stop));
+    oi.getRobotRelative().whileTrue(drivetrain.applyRequest(() -> 
+      point.withModuleDirection(new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
 
-    // oi.getLeftBumper()
-    //     .onTrue(Commands.runOnce(shooter::reverseintake))
-    //     .onFalse(Commands.runOnce(shooter::stop));
+        // joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+        //     forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        // );
+        // joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+        //     forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        // );
 
-    // oi.getElevatorUp().onTrue(Commands.runOnce(elevator::up));
-    // oi.getElevatorDown().onTrue(Commands.runOnce(elevator::down));
+    // // Run SysId routines when holding back/start and X/Y.
+    // // Note that each routine should be run exactly once in a single log.
+    oi.getBackButton().and(oi.getBButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    oi.getBackButton().and(oi.getAButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
 
-    // oi.getWristUp().onTrue(Commands.runOnce(wrist::up));
-    // oi.getWristDown().onTrue(Commands.runOnce(wrist::down));
+    // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
   }
 
   /**

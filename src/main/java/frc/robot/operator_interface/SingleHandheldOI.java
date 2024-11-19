@@ -51,10 +51,10 @@ public class SingleHandheldOI implements OperatorInterface {
             test[testNum] = contrl.getPOV() == 270;
             break;
           case 9:
-            test[testNum] = contrl.getLeftBumper();
+            test[testNum] = contrl.getLeftBumperButton();
             break;
           case 10:
-            test[testNum] = contrl.getRightBumper();
+            test[testNum] = contrl.getRightBumperButton();
             break;
           case 11:
             test[testNum] = contrl.getAButton();
@@ -145,12 +145,12 @@ public class SingleHandheldOI implements OperatorInterface {
 
   @Override
   public boolean isRobotRelative() {
-    return !controller.getLeftBumper();
+    return !controller.getLeftBumperButton();
   }
 
   @Override
   public Trigger getRobotRelative() {
-    return new Trigger(controller::getLeftBumper);
+    return new Trigger(controller::getLeftBumperButton);
   }
 
   @Override
@@ -160,7 +160,7 @@ public class SingleHandheldOI implements OperatorInterface {
 
   @Override
   public Trigger getXStanceButton() {
-    return new Trigger(controller::getRightBumper);
+    return new Trigger(controller::getRightBumperButton);
   }
 
   @Override

@@ -3,7 +3,6 @@ package frc.lib.util;
 import static com.revrobotics.spark.SparkMax.ControlType;
 
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.REVLibError;
 import edu.wpi.first.math.MathUtil;

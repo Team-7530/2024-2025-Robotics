@@ -51,10 +51,10 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
             test[testNum] = contrl.getPOV() == 270;
             break;
           case 9:
-            test[testNum] = contrl.getLeftBumper();
+            test[testNum] = contrl.getLeftBumperButton();
             break;
           case 10:
-            test[testNum] = contrl.getRightBumper();
+            test[testNum] = contrl.getRightBumperButton();
             break;
           case 11:
             test[testNum] = contrl.getAButton();
@@ -94,12 +94,12 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
 
   @Override
   public Trigger getLeftBumper() {
-    return new Trigger(operator::getLeftBumper);
+    return new Trigger(operator::getLeftBumperButton);
   }
 
   @Override
   public Trigger getRightBumper() {
-    return new Trigger(operator::getRightBumper);
+    return new Trigger(operator::getRightBumperButton);
   }
 
   @Override
