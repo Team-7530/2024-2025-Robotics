@@ -92,6 +92,8 @@ public class RobotContainer {
 
     configureAutoPaths();
     configureAutoCommands();
+    drivetrain.registerTelemetry(logger::telemeterize);
+
 
     // cam0 = CameraServer.startAutomaticCapture(0);
     // cam0.setConnectVerbose(0);
