@@ -1,12 +1,5 @@
 {
-  "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.76,
-      "y": 4.13
-    },
-    "rotation": 120.0
-  },
+  "version": "2025.0",
   "command": {
     "type": "sequential",
     "data": {
@@ -14,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Get Away"
+            "pathName": "Backup"
           }
         },
         {
@@ -26,12 +19,6 @@
                 "data": {
                   "waitTime": 1.0
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
               }
             ]
           }
@@ -39,6 +26,7 @@
       ]
     }
   },
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

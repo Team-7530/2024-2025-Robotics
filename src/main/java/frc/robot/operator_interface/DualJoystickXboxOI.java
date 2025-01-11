@@ -5,7 +5,6 @@ import static frc.robot.Constants.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
 
 /** Class for controlling the robot with two Xbox controllers. */
 public class DualJoystickXboxOI extends DualJoysticksOI {
