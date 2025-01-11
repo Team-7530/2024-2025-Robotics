@@ -44,23 +44,15 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getRunIntake() {
-    return new Trigger(() -> false);
-  }
-
-  public default Trigger getShoot() {
-    return new Trigger(() -> false);
-  }
-
-  public default Trigger getBButton() {
-    return new Trigger(() -> false);
-  }
-
   public default Trigger getLeftBumper() {
     return new Trigger(() -> false);
   }
 
   public default Trigger getRightBumper() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getStartButton() {
     return new Trigger(() -> false);
   }
 
@@ -80,28 +72,8 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getElevatorUp() {
+  public default Trigger getBButton() {
     return new Trigger(() -> false);
-  }
-
-  public default Trigger getElevatorDown() {
-    return new Trigger(() -> false);
-  }
-
-  public default double getElevator() {
-    return 0.0;
-  }
-
-  public default Trigger getWristUp() {
-    return new Trigger(() -> false);
-  }
-
-  public default Trigger getWristDown() {
-    return new Trigger(() -> false);
-  }
-
-  public default double getWrist() {
-    return 0.0;
   }
 
   public default void testOI(int mode) {}

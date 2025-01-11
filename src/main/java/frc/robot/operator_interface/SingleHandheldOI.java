@@ -155,7 +155,7 @@ public class SingleHandheldOI implements OperatorInterface {
 
   @Override
   public Trigger getResetGyroButton() {
-    return new Trigger(controller::getStartButton);
+    return new Trigger(controller::getLeftStickButton);
   }
 
   @Override
@@ -164,8 +164,8 @@ public class SingleHandheldOI implements OperatorInterface {
   }
 
   @Override
-  public Trigger getRunIntake() {
-    return new Trigger(controller::getYButton);
+  public Trigger getAButton() {
+    return new Trigger(controller::getAButton);
   }
 
   @Override
@@ -174,8 +174,18 @@ public class SingleHandheldOI implements OperatorInterface {
   }
 
   @Override
-  public Trigger getShoot() {
-    return new Trigger(controller::getAButton);
+  public Trigger getXButton() {
+    return new Trigger(controller::getXButton);
+  }
+
+  @Override
+  public Trigger getYButton() {
+    return new Trigger(controller::getYButton);
+  }
+
+  @Override
+  public Trigger getStartButton() {
+    return new Trigger(controller::getStartButton);
   }
 
   @Override
@@ -183,13 +193,4 @@ public class SingleHandheldOI implements OperatorInterface {
     return new Trigger(controller::getBackButton);
   }
 
-  @Override
-  public double getElevator() {
-    return MathUtil.applyDeadband(controller.getLeftTriggerAxis(), STICK_DEADBAND);
-  }
-
-  @Override
-  public double getWrist() {
-    return MathUtil.applyDeadband(controller.getRightTriggerAxis(), STICK_DEADBAND);
-  }
 }

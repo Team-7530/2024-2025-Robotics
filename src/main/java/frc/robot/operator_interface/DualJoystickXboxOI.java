@@ -83,16 +83,6 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
   }
 
   @Override
-  public Trigger getRunIntake() {
-    return new Trigger(() -> operator.getLeftTriggerAxis() > Constants.TRIGGER_DEADBAND);
-  }
-
-  @Override
-  public Trigger getShoot() {
-    return new Trigger(() -> operator.getRightTriggerAxis() > Constants.TRIGGER_DEADBAND);
-  }
-
-  @Override
   public Trigger getLeftBumper() {
     return new Trigger(operator::getLeftBumperButton);
   }
@@ -123,38 +113,13 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
   }
 
   @Override
+  public Trigger getStartButton() {
+    return new Trigger(operator::getStartButton);
+  }
+
+  @Override
   public Trigger getBackButton() {
     return new Trigger(operator::getBackButton);
-  }
-
-  @Override
-  public Trigger getElevatorUp() {
-    return new Trigger(() -> operator.getPOV() == 0);
-  }
-
-  @Override
-  public Trigger getElevatorDown() {
-    return new Trigger(() -> operator.getPOV() == 180);
-  }
-
-  @Override
-  public double getElevator() {
-    return -MathUtil.applyDeadband(operator.getLeftY(), STICK_DEADBAND);
-  }
-
-  @Override
-  public double getWrist() {
-    return -MathUtil.applyDeadband(operator.getRightY(), STICK_DEADBAND);
-  }
-
-  @Override
-  public Trigger getWristUp() {
-    return new Trigger(() -> operator.getPOV() == 90);
-  }
-
-  @Override
-  public Trigger getWristDown() {
-    return new Trigger(() -> operator.getPOV() == 270);
   }
 
   @Override

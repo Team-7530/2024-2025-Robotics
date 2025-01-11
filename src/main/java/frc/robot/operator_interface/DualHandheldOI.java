@@ -16,26 +16,6 @@ public class DualHandheldOI extends SingleHandheldOI {
   }
 
   @Override
-  public Trigger getRunIntake() {
-    return new Trigger(operator::getYButton);
-  }
-
-  @Override
-  public Trigger getShoot() {
-    return new Trigger(operator::getAButton);
-  }
-
-  @Override
-  public double getElevator() {
-    return -MathUtil.applyDeadband(operator.getLeftY(), STICK_DEADBAND);
-  }
-
-  @Override
-  public double getWrist() {
-    return -MathUtil.applyDeadband(operator.getRightY(), STICK_DEADBAND);
-  }
-
-  @Override
   public boolean testResults(int mode) {
     boolean result = true;
     if (mode == DRIVER) {
