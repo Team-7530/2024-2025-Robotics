@@ -7,18 +7,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Test 2"
           }
         }

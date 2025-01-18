@@ -178,7 +178,7 @@ public class RobotContainer {
   /** Use this method to define your commands for autonomous mode. */
   private void configureAutoCommands() {
     // Add commands to Autonomous Sendable Chooser
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser("Test");
 
     // SmartDashboard Buttons
     SmartDashboard.putData("Auto chooser", autoChooser);

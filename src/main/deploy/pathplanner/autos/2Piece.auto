@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "pathName": "Left3_Reef1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test 2"
+            "pathName": "Reef1_Coral2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral2_Reef4"
           }
         }
       ]
