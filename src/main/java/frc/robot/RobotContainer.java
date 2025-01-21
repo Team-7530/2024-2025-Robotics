@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -100,8 +101,8 @@ public class RobotContainer {
     // cam0 = CameraServer.startAutomaticCapture(0);
     // cam0.setConnectVerbose(0);
 
-    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add(autoChooser).withSize(2, 1);
+//    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+//    tab.add(autoChooser).withSize(2, 1);
     // tab.addNumber("DriveTrain/Drive Scaling", () -> oi.getDriveScaling());
     // tab.addNumber("DriveTrain/Rotate Scaling", () -> oi.getRotateScaling());
 
@@ -182,6 +183,9 @@ public class RobotContainer {
 
     // SmartDashboard Buttons
     SmartDashboard.putData("Auto chooser", autoChooser);
+
+    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
   }
 
   private void configureAutoPaths() {
