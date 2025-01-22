@@ -16,10 +16,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 //import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -101,7 +101,7 @@ public class RobotContainer {
     // cam0.setConnectVerbose(0);
 
     ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add(autoChooser).withSize(2, 1);
+    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     // tab.addNumber("DriveTrain/Drive Scaling", () -> oi.getDriveScaling());
     // tab.addNumber("DriveTrain/Rotate Scaling", () -> oi.getRotateScaling());
 
@@ -162,8 +162,6 @@ public class RobotContainer {
     oi.getStartButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-
-
   }
 
   /**
@@ -181,7 +179,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Test");
 
     // SmartDashboard Buttons
-    SmartDashboard.putData("Auto chooser", autoChooser);
+    // SmartDashboard.putData("Auto chooser", autoChooser);
   }
 
   private void configureAutoPaths() {
