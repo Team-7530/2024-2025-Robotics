@@ -5,12 +5,19 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.io.File;
 import java.nio.file.Path;
+
+import javax.swing.plaf.nimbus.State;
+
+import com.revrobotics.ColorSensorV3;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,6 +29,9 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
 
   /**
    * The absolute filepath to the resources folder containing the config files when the robot is
@@ -48,6 +58,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    // m_colorSensor.configureProximitySensor()
   }
 
   /**
@@ -64,6 +76,16 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    int prox = m_colorSensor.getProximity();
+     SmartDashboard.putNumber("Proximity", prox);
+
+    boolean proxThreshold = false;
+    if (prox >= 350) {
+      proxThreshold = true;
+    }
+    SmartDashboard.putBoolean("Proximity Threshold", proxThreshold);
+     
 
     // if (RobotBase.isSimulation()) {
     //   PhysicsSim.getInstance().run();

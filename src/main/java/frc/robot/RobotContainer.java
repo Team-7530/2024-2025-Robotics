@@ -8,11 +8,14 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 // import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.trajectory.Trajectory;
 // import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -67,6 +70,17 @@ public class RobotContainer {
 
     /* Path follower */
     private SendableChooser<Command> autoChooser;
+
+    // private final I2C.Port i2cPort = I2C.Port.kOnboard;
+
+    /**
+     * A Rev Color Sensor V3 object is constructed with an I2C port as a 
+     * parameter. The device will be automatically initialized with default 
+     * parameters.
+     */
+   // private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
+
+   
 
   /* Test System */
   //  private TestChecklist m_test;
