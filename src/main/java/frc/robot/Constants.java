@@ -27,7 +27,7 @@ public final class Constants {
   public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
   public static final double TURN_CONSTANT = 0.75;
 
-  public static final class VisionConstants {
+  public static final class Vision {
 
     public static final String LIMELIGHTNAME = "limelight";
     public static final String LIMELIGHTURL = "limelight.local";

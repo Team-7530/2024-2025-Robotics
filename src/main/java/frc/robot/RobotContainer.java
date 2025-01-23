@@ -1,8 +1,8 @@
 package frc.robot;
 
-//import static frc.robot.Constants.*;
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -12,8 +12,6 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.trajectory.Trajectory;
-// import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -23,17 +21,16 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-//import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
-
+import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.VisionSubsystem;
 
 // import edu.wpi.first.cameraserver.CameraServer;
 // import edu.wpi.first.cscore.UsbCamera;
@@ -64,9 +61,8 @@ public class RobotContainer {
 
     /* Subsystems */
     public final PowerDistribution power = new PowerDistribution();
-    // public final VisionSubsystem vision = new VisionSubsystem();
-
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final VisionSubsystem vision = new VisionSubsystem();
 
     /* Path follower */
     private SendableChooser<Command> autoChooser;
@@ -111,16 +107,12 @@ public class RobotContainer {
     configureAutoCommands();
     drivetrain.registerTelemetry(logger::telemeterize);
 
-
     // cam0 = CameraServer.startAutomaticCapture(0);
     // cam0.setConnectVerbose(0);
 
-//    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-//    tab.add(autoChooser).withSize(2, 1);
-    // tab.addNumber("DriveTrain/Drive Scaling", () -> oi.getDriveScaling());
-    // tab.addNumber("DriveTrain/Rotate Scaling", () -> oi.getRotateScaling());
-
-    // m_test = new TestChecklist(driveTrain, arm);
+    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+    tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
   }
 
   /**
@@ -145,7 +137,7 @@ public class RobotContainer {
               .withRotationalRate(oi.getRotate()) // Drive counterclockwise with negative X (left)
           )
     );
-  // vision.setDefaultCommand(new VisionCommand(vision, driveTrain));
+    vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
   /**
@@ -164,13 +156,6 @@ public class RobotContainer {
     oi.getRobotRelative().whileTrue(drivetrain.applyRequest(() -> 
       point.withModuleDirection(new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
 
-        // joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
-        //     forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        // );
-        // joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
-        //     forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        // );
-
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
     oi.getStartButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
@@ -178,7 +163,10 @@ public class RobotContainer {
     oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
 
-
+    oi.getStartButton().and(oi.getAButton()).whileTrue(drivetrain.applyRequest(() ->
+        forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+    oi.getStartButton().and(oi.getBButton()).whileTrue(drivetrain.applyRequest(() ->
+        forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
   }
 
   /**
@@ -194,12 +182,6 @@ public class RobotContainer {
   private void configureAutoCommands() {
     // Add commands to Autonomous Sendable Chooser
     autoChooser = AutoBuilder.buildAutoChooser("Test");
-
-    // SmartDashboard Buttons
-    SmartDashboard.putData("Auto chooser", autoChooser);
-
-    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
   }
 
   private void configureAutoPaths() {
@@ -218,17 +200,28 @@ public class RobotContainer {
 
   public void simulationInit() {}
 
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    // vision.simulationPeriodic(drivetrain.samplePoseAt(Utils.getCurrentTimeSeconds()));
+
+    // var debugField = vision.getSimDebugField();
+    // debugField.getObject("EstimatedRobot").setPose(drivetrain.getPose());
+    // debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
+
+    // // Calculate battery voltage sag due to current draw
+    // var batteryVoltage =
+    //         BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrain.getCurrentDraw());
+
+    // // Using max(0.1, voltage) here isn't a *physically correct* solution,
+    // // but it avoids problems with battery voltage measuring 0.
+    // RoboRioSim.setVInVoltage(Math.max(0.1, batteryVoltage));
+  }
 
   public void testInit() {
-    // m_test.initialize();
   }
 
   public void testPeriodic() {
-    // m_test.periodic();
   }
 
   public void testExit() {
-    // m_test.exit();
   }
 }
