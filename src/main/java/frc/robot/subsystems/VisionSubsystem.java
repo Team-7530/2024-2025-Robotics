@@ -32,7 +32,11 @@
  import edu.wpi.first.math.geometry.Rotation2d;
  import edu.wpi.first.math.numbers.N1;
  import edu.wpi.first.math.numbers.N3;
- import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Robot;
 
@@ -55,6 +59,8 @@ import java.util.List;
      // Simulation
      private PhotonCameraSim cameraSim;
      private VisionSystemSim visionSim;
+
+     private Field2d field2d = new Field2d();
  
      public VisionSubsystem() {
          camera = new PhotonCamera(kCameraName1);
@@ -65,6 +71,7 @@ import java.util.List;
  
          // ----- Simulation
          if (Robot.isSimulation()) {
+            
              // Create the vision system simulation which handles cameras and targets on the field.
              visionSim = new VisionSystemSim("main");
              // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
@@ -84,6 +91,8 @@ import java.util.List;
  
              cameraSim.enableDrawWireframe(true);
          }
+        ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+        tab.add(field2d).withSize(6, 4).withWidget(BuiltInWidgets.kField);
      }
  
      /**
@@ -112,6 +121,8 @@ import java.util.List;
                              getSimDebugField().getObject("VisionEstimation").setPoses();
                          });
              }
+             visionEst.ifPresent(est -> field2d.setRobotPose(est.estimatedPose.toPose2d()));
+
          }
          return visionEst;
      }
@@ -177,7 +188,10 @@ import java.util.List;
  
      // ----- Simulation
      public void simulationPeriodic(Pose2d robotSimPose) {
-         visionSim.update(robotSimPose);
+         
+        visionSim.update(robotSimPose);
+
+         System.out.println("simulating position");
      }
  
      /** Reset pose history of the robot in the vision system simulation. */

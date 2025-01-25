@@ -11,6 +11,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.I2C;
@@ -82,7 +84,7 @@ public class RobotContainer {
   //  private TestChecklist m_test;
 
   /* Cameras */
-  // public UsbCamera cam0;
+ public UsbCamera cam0;
 
   // public static Map<String, Trajectory> trajectoryList = new HashMap<String, Trajectory>();
   // public static Map<String, List<PathPlannerTrajectory>> pptrajectoryList =
@@ -107,8 +109,8 @@ public class RobotContainer {
     configureAutoCommands();
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    // cam0 = CameraServer.startAutomaticCapture(0);
-    // cam0.setConnectVerbose(0);
+    cam0 = CameraServer.startAutomaticCapture(0);
+    cam0.setConnectVerbose(0);
 
     ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
     tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
