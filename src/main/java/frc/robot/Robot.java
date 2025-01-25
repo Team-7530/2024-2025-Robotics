@@ -17,6 +17,7 @@ import java.nio.file.Path;
 
 import javax.swing.plaf.nimbus.State;
 
+import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.revrobotics.ColorSensorV3;
 
@@ -59,7 +60,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    //Pathfinding.setPathfinder(new LocalADStarAK());
+    // Pathfinding.setPathfinder(new LocalADStar());
     // m_colorSensor.configureProximitySensor()
   }
 

@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -153,8 +154,11 @@ public class RobotContainer {
     oi.getStartButton().and(oi.getBButton()).whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-    
-  }
+        oi.getXButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));    
+        oi.getYButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
+        oi.getAButton().whileTrue(getAutonomousCommand());    
+        // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
+          }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -168,7 +172,7 @@ public class RobotContainer {
   /** Use this method to define your commands for autonomous mode. */
   private void configureAutoCommands() {
     // Add commands to Autonomous Sendable Chooser
-    autoChooser = AutoBuilder.buildAutoChooser("Test");
+    autoChooser = AutoBuilder.buildAutoChooser("Forward");
   }
 
   private void configureAutoPaths() {

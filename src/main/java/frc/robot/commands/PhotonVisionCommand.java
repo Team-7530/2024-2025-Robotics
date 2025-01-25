@@ -14,7 +14,7 @@ public class PhotonVisionCommand extends Command {
     this.vision = vision;
     this.drivetrain = drivetrain;
 
-    addRequirements(vision, drivetrain);
+    addRequirements(vision);
   }
 
   @Override
