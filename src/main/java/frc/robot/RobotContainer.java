@@ -6,10 +6,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -32,9 +30,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.VisionSubsystem;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -42,6 +37,8 @@ import edu.wpi.first.cscore.UsbCamera;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    private static RobotContainer instance;
+
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -67,19 +64,9 @@ public class RobotContainer {
     /* Path follower */
     private SendableChooser<Command> autoChooser;
 
-  /* Cameras */
-  public UsbCamera cam0;
-
-  // public static Map<String, Trajectory> trajectoryList = new HashMap<String, Trajectory>();
-  // public static Map<String, List<PathPlannerTrajectory>> pptrajectoryList =
-  //     new HashMap<String, List<PathPlannerTrajectory>>();
-  // public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
-
-  private static RobotContainer instance;
-
-  public static RobotContainer GetInstance() {
-    return instance;
-  }
+    public static RobotContainer GetInstance() {
+      return instance;
+    }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -91,14 +78,7 @@ public class RobotContainer {
 
     configureAutoPaths();
     configureAutoCommands();
-    drivetrain.registerTelemetry(logger::telemeterize);
-
-    cam0 = CameraServer.startAutomaticCapture(0);
-    cam0.setConnectVerbose(0);
-
-    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
-    tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
+    configureTelemetry();    
   }
 
   /**
@@ -114,16 +94,7 @@ public class RobotContainer {
     oi = OISelector.findOperatorInterface();
 
     configureButtonBindings();
-
-    drivetrain.setDefaultCommand(
-      // Drivetrain will execute this command periodically
-      drivetrain.applyRequest(() ->
-          drive.withVelocityX(oi.getTranslateX()) // Drive forward with negative Y (forward)
-              .withVelocityY(oi.getTranslateY()) // Drive left with negative X (left)
-              .withRotationalRate(oi.getRotate()) // Drive counterclockwise with negative X (left)
-          )
-    );
-    vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
+    configureDefaultCommands();
   }
 
   /**
@@ -154,11 +125,11 @@ public class RobotContainer {
     oi.getStartButton().and(oi.getBButton()).whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-        oi.getXButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));    
-        oi.getYButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
-        oi.getAButton().whileTrue(getAutonomousCommand());    
-        // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
-          }
+    oi.getXButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));    
+    oi.getYButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
+    oi.getAButton().whileTrue(getAutonomousCommand());    
+    // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -173,6 +144,20 @@ public class RobotContainer {
   private void configureAutoCommands() {
     // Add commands to Autonomous Sendable Chooser
     autoChooser = AutoBuilder.buildAutoChooser("Forward");
+
+    PathfindingCommand.warmupCommand().schedule();
+  }
+
+  private void configureDefaultCommands() {
+    drivetrain.setDefaultCommand(
+      // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() ->
+          drive.withVelocityX(oi.getTranslateX()) // Drive forward with negative Y (forward)
+              .withVelocityY(oi.getTranslateY()) // Drive left with negative X (left)
+              .withRotationalRate(oi.getRotate()) // Drive counterclockwise with negative X (left)
+          )
+    );
+    vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
   private void configureAutoPaths() {
@@ -188,6 +173,14 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Shoot", new ShootCommand(shooter));
     // NamedCommands.registerCommand("ShootSlow", new ShootSlowCommand(shooter));
   }
+    
+  private void configureTelemetry() {
+    drivetrain.registerTelemetry(logger::telemeterize);
+
+    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+    tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
+}
 
   public void simulationInit() {}
 

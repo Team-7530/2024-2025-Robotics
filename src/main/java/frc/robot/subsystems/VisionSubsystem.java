@@ -25,33 +25,31 @@
  package frc.robot.subsystems;
 
  import static frc.robot.Constants.Vision.*;
- 
- import edu.wpi.first.math.Matrix;
- import edu.wpi.first.math.VecBuilder;
- import edu.wpi.first.math.geometry.Pose2d;
- import edu.wpi.first.math.geometry.Rotation2d;
- import edu.wpi.first.math.numbers.N1;
- import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Robot;
 
 import java.util.List;
- import java.util.Optional;
- import org.photonvision.EstimatedRobotPose;
- import org.photonvision.PhotonCamera;
- import org.photonvision.PhotonPoseEstimator;
- import org.photonvision.PhotonPoseEstimator.PoseStrategy;
- import org.photonvision.simulation.PhotonCameraSim;
- import org.photonvision.simulation.SimCameraProperties;
- import org.photonvision.simulation.VisionSystemSim;
- import org.photonvision.targeting.PhotonTrackedTarget;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonTrackedTarget;
  
- public class VisionSubsystem implements Subsystem {
+public class VisionSubsystem implements Subsystem {
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
@@ -60,8 +58,9 @@ import java.util.List;
      private PhotonCameraSim cameraSim;
      private VisionSystemSim visionSim;
 
-     private Field2d field2d = new Field2d();
- 
+    /* Cameras */
+    public UsbCamera cam0;
+
      public VisionSubsystem() {
          camera = new PhotonCamera(kCameraName1);
  
@@ -91,8 +90,9 @@ import java.util.List;
  
              cameraSim.enableDrawWireframe(true);
          }
-        ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-        tab.add(field2d).withSize(6, 4).withWidget(BuiltInWidgets.kField);
+
+        cam0 = CameraServer.startAutomaticCapture(0);
+        cam0.setConnectVerbose(0);
      }
  
      /**
@@ -121,8 +121,6 @@ import java.util.List;
                              getSimDebugField().getObject("VisionEstimation").setPoses();
                          });
              }
-             visionEst.ifPresent(est -> field2d.setRobotPose(est.estimatedPose.toPose2d()));
-
          }
          return visionEst;
      }
@@ -188,10 +186,7 @@ import java.util.List;
  
      // ----- Simulation
      public void simulationPeriodic(Pose2d robotSimPose) {
-         
         visionSim.update(robotSimPose);
-
-         System.out.println("simulating position");
      }
  
      /** Reset pose history of the robot in the vision system simulation. */
