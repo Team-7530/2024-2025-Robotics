@@ -2,18 +2,14 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 // import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -32,8 +28,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.VisionSubsystem;
 
-// import edu.wpi.first.cameraserver.CameraServer;
-// import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -67,22 +63,8 @@ public class RobotContainer {
     /* Path follower */
     private SendableChooser<Command> autoChooser;
 
-    // private final I2C.Port i2cPort = I2C.Port.kOnboard;
-
-    /**
-     * A Rev Color Sensor V3 object is constructed with an I2C port as a 
-     * parameter. The device will be automatically initialized with default 
-     * parameters.
-     */
-   // private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
-
-   
-
-  /* Test System */
-  //  private TestChecklist m_test;
-
   /* Cameras */
-  // public UsbCamera cam0;
+  public UsbCamera cam0;
 
   // public static Map<String, Trajectory> trajectoryList = new HashMap<String, Trajectory>();
   // public static Map<String, List<PathPlannerTrajectory>> pptrajectoryList =
@@ -107,8 +89,8 @@ public class RobotContainer {
     configureAutoCommands();
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    // cam0 = CameraServer.startAutomaticCapture(0);
-    // cam0.setConnectVerbose(0);
+    cam0 = CameraServer.startAutomaticCapture(0);
+    cam0.setConnectVerbose(0);
 
     ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
     tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
