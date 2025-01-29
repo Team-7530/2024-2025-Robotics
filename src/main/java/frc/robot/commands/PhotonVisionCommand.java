@@ -25,7 +25,7 @@ public class PhotonVisionCommand extends Command {
   @Override
   public void initialize() {
     ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add(field2d).withSize(6, 4).withWidget(BuiltInWidgets.kField);
+    tab.add("PhotonField", field2d).withSize(6, 4).withWidget(BuiltInWidgets.kField);
   }
 
   @Override

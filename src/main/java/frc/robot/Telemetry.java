@@ -27,7 +27,8 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
-        SignalLogger.start();
+        // SignalLogger.start();
+        SignalLogger.stop();
     }
 
     /* What to publish over networktables for telemetry */

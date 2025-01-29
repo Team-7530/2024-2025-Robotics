@@ -75,7 +75,6 @@ public class RobotContainer {
 
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
     LiveWindow.disableAllTelemetry();
-
     configureAutoPaths();
     configureAutoCommands();
     configureTelemetry();    
