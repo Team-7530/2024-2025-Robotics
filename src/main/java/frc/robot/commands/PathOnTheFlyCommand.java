@@ -17,7 +17,7 @@ public class PathOnTheFlyCommand extends Command {
   /** Creates a new driveToPose. */
   public PathOnTheFlyCommand(CommandSwerveDrivetrain drivetrain, Pose2d targetPose) {
     this.drivetrain = drivetrain;
-    this.pathConstraints = new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    this.pathConstraints = new PathConstraints(1.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     this.pathCommand = AutoBuilder.pathfindToPose(targetPose, pathConstraints, 0.0);
 
@@ -27,7 +27,7 @@ public class PathOnTheFlyCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.resetPose(Pose2d.kZero);
+  //  drivetrain.resetPose(Pose2d.kZero);
   }
 
   @Override

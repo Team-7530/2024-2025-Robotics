@@ -36,9 +36,9 @@ public final class Constants {
     public static final String kCameraName1 = "OV9281";
     public static final String kCameraName2 = "camera2";
 
-    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+    // Cam mounted facing forward, half a meter forward of center, 4 inches (.1 meters) up from center.
     public static final Transform3d kRobotToCam1 =
-        new Transform3d(new Translation3d(0.0, -0.33, 0.4), new Rotation3d(0, 0, Math.PI));
+        new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =

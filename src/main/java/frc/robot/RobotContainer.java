@@ -124,8 +124,8 @@ public class RobotContainer {
     oi.getStartButton().and(oi.getBButton()).whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-    oi.getXButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));    
-    oi.getYButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
+    oi.getXButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(16.24, 0.8, Rotation2d.fromDegrees(-60))));    
+    oi.getYButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));    
     oi.getAButton().whileTrue(getAutonomousCommand());    
     // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
   }
@@ -177,7 +177,7 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add(autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+    tab.add("AutoChooser", autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
 }
 
