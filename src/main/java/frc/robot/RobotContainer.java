@@ -1,7 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -22,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+import frc.robot.Constants.*;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.commands.PathOnTheFlyCommand;
@@ -39,19 +38,16 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
     private static RobotContainer instance;
 
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(DriveTrainConstants.maxSpeed * 0.1).withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final Telemetry logger = new Telemetry(DriveTrainConstants.maxSpeed);
 
     /* Operator Interface */
     public OperatorInterface oi = new OperatorInterface() {};
@@ -151,9 +147,9 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
       drivetrain.applyRequest(() ->
-          drive.withVelocityX(oi.getTranslateX()) // Drive forward with negative Y (forward)
-              .withVelocityY(oi.getTranslateY()) // Drive left with negative X (left)
-              .withRotationalRate(oi.getRotate()) // Drive counterclockwise with negative X (left)
+          drive.withVelocityX(oi.getTranslateX() * DriveTrainConstants.maxSpeed) // Drive forward with negative Y (forward)
+              .withVelocityY(oi.getTranslateY() * DriveTrainConstants.maxSpeed) // Drive left with negative X (left)
+              .withRotationalRate(oi.getRotate() * DriveTrainConstants.maxAngularRate) // Drive counterclockwise with negative X (left)
           )
     );
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));

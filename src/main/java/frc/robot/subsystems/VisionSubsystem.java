@@ -24,7 +24,6 @@
 
  package frc.robot.subsystems;
 
- import static frc.robot.Constants.Vision.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -36,7 +35,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Robot;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +47,10 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
  
+import frc.robot.Robot;
+import frc.lib.util.FieldConstants;
+import static frc.robot.Constants.Vision.*;
+
 public class VisionSubsystem implements Subsystem {
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonEstimator;
@@ -65,7 +67,7 @@ public class VisionSubsystem implements Subsystem {
          camera = new PhotonCamera(kCameraName1);
  
          photonEstimator =
-                 new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
+                 new PhotonPoseEstimator(FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
          photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
  
          // ----- Simulation
@@ -74,7 +76,7 @@ public class VisionSubsystem implements Subsystem {
              // Create the vision system simulation which handles cameras and targets on the field.
              visionSim = new VisionSystemSim("main");
              // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-             visionSim.addAprilTags(kTagLayout);
+             visionSim.addAprilTags(FieldConstants.fieldLayout);
              // Create simulated camera properties. These can be set to mimic your actual camera.
              var cameraProp = new SimCameraProperties();
              cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
