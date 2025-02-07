@@ -73,25 +73,34 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-      public static final int motorId = 1;
-      public static final int sensorId = 1;
-      public static final double sensorOffset = 0;
-      public static final double[] armPID = {0, 0, 0}; //TODO
-      public static final double forwardSoftLimit = 0;
-      public static final double reverseSoftLimit = 0;
-      public static final double maxForwardSpeed = 0;
-      public static final double maxReverseSpeed = 0;
-      public static final double tolerance = 1;
+    public static final int ARMMOTOR_ID = 31; // Figure it out
+    public static final int CANCODER_ID = 32;
 
-      public final class algaePositions { //with offset
-          public static final double L2 = 0;
-          public static final double L3 = 0;
-          public static final double fieldAlgae = 0;
-          public static final double processor = 0;
-          public static final double barge = 0;
-          public static final double home = 0;
-          public static final double floor = 0;
-      }
+    public static final double armMotorKS = 0.0;
+    public static final double armMotorKV = 0.0;
+    public static final double armMotorKA = 0.0;
+    public static final double armMotorKP = 4.0;
+    public static final double armMotorKI = 0.0;
+    public static final double armMotorKD = 0.0;
+    public static final double MMagicCruiseVelocity = 40;
+    public static final double MMagicAcceleration = 80;
+    public static final double MMagicJerk = 800;
+
+    public static final double kTargetArmHigh = 25.0;
+    public static final double kTargetArmLow = 0.0;
+    public static final double kArmGearRatio = 64.0; // gear ratio is 64:1
+
+
+
+  public final class algaePositions { //with offset
+      public static final double L2 = 0;
+      public static final double L3 = 0;
+      public static final double fieldAlgae = 0;
+      public static final double processor = 0;
+      public static final double barge = 0;
+      public static final double home = 0;
+      public static final double floor = 0;
+  }
   }
 
   public static final class ElevatorConstants {
