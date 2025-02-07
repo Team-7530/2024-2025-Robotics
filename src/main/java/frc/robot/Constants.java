@@ -103,16 +103,19 @@ public final class Constants {
   }
   }
 
-  public static final class ElevatorConstants {
-      public static final int leftMotorId = 1;
-      public static final int rightMotorId = 2;
-      public static final double[] elevatorPID = {0.05, 0, 0};
-      public static final double softLimit = 24.8;
-      public static final double gravityFeedforward = 0;
-      public static final double maxForwareSpeed = 0.5;
-      public static final double maxReverseSpeed = -0.3;
-      public static final double tolerance = 1;
-      public static final double swerveLimitThreshold = 10;
+  public static final class ClimberConstants {
+      public static final int MotorId = 31;
+      public static final int encoderDI = 0;
+      public static final int kClimberMaxPosition = 1;
+      public static final double kTargetClimberUp = 0.0;
+      public static final double kTargetClimberDown = 0.5;
+      // public static final double[] elevatorPID = {0.05, 0, 0};
+      // public static final double softLimit = 24.8;
+      // public static final double gravityFeedforward = 0;
+      // public static final double maxForwareSpeed = 0.5;
+      // public static final double maxReverseSpeed = -0.3;
+      // public static final double tolerance = 1;
+      // public static final double swerveLimitThreshold = 10;
 
       public final class scoringPositioins {
           //TODO find these
