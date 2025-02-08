@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
 
     // boolean proxThreshold = false;
     // if (prox >= 350) {
-      // proxThreshold = true;
+    // proxThreshold = true;
     // }
     // SmartDashboard.putBoolean("Proximity Threshold", proxThreshold);
   }

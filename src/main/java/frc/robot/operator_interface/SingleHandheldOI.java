@@ -192,5 +192,4 @@ public class SingleHandheldOI implements OperatorInterface {
   public Trigger getBackButton() {
     return new Trigger(controller::getBackButton);
   }
-
 }

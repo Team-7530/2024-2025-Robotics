@@ -2,10 +2,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,13 +17,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
 import frc.robot.Constants.*;
-import frc.robot.operator_interface.OISelector;
-import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.commands.PathOnTheFlyCommand;
 import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.operator_interface.OISelector;
+import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -36,33 +33,36 @@ import frc.robot.subsystems.VisionSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    private static RobotContainer instance;
+  private static RobotContainer instance;
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DriveTrainConstants.maxSpeed * 0.1).withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    
-    private final Telemetry logger = new Telemetry(DriveTrainConstants.maxSpeed);
+  /* Setting up bindings for necessary control of the swerve drive platform */
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(DriveTrainConstants.maxSpeed * 0.1)
+          .withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  private final SwerveRequest.RobotCentric forwardStraight =
+      new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    /* Operator Interface */
-    public OperatorInterface oi = new OperatorInterface() {};
+  private final Telemetry logger = new Telemetry(DriveTrainConstants.maxSpeed);
 
-    /* Subsystems */
-    public final PowerDistribution power = new PowerDistribution();
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final VisionSubsystem vision = new VisionSubsystem();
+  /* Operator Interface */
+  public OperatorInterface oi = new OperatorInterface() {};
 
-    /* Path follower */
-    private SendableChooser<Command> autoChooser;
+  /* Subsystems */
+  public final PowerDistribution power = new PowerDistribution();
+  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  public final VisionSubsystem vision = new VisionSubsystem();
 
-    public static RobotContainer GetInstance() {
-      return instance;
-    }
+  /* Path follower */
+  private SendableChooser<Command> autoChooser;
+
+  public static RobotContainer GetInstance() {
+    return instance;
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -73,7 +73,7 @@ public class RobotContainer {
     LiveWindow.disableAllTelemetry();
     configureAutoPaths();
     configureAutoCommands();
-    configureTelemetry();    
+    configureTelemetry();
   }
 
   /**
@@ -105,25 +105,44 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    oi.getRobotRelative().whileTrue(drivetrain.applyRequest(() -> 
-      point.withModuleDirection(new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
+    oi.getRobotRelative()
+        .whileTrue(
+            drivetrain.applyRequest(
+                () ->
+                    point.withModuleDirection(
+                        new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
 
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
-    oi.getStartButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    oi.getStartButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    oi.getStartButton()
+        .and(oi.getYButton())
+        .whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    oi.getStartButton()
+        .and(oi.getXButton())
+        .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
 
-    oi.getStartButton().and(oi.getAButton()).whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-    oi.getStartButton().and(oi.getBButton()).whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+    oi.getStartButton()
+        .and(oi.getAButton())
+        .whileTrue(
+            drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+    oi.getStartButton()
+        .and(oi.getBButton())
+        .whileTrue(
+            drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-    oi.getXButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(16.24, 0.8, Rotation2d.fromDegrees(-60))));    
-    oi.getYButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));    
-    oi.getAButton().whileTrue(getAutonomousCommand());    
-    // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1, Rotation2d.fromDegrees(180))));    
+    oi.getXButton()
+        .whileTrue(
+            new PathOnTheFlyCommand(
+                drivetrain, new Pose2d(16.24, 0.8, Rotation2d.fromDegrees(-60))));
+    oi.getYButton()
+        .whileTrue(
+            new PathOnTheFlyCommand(
+                drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
+    oi.getAButton().whileTrue(getAutonomousCommand());
+    // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1,
+    // Rotation2d.fromDegrees(180))));
   }
 
   /**
@@ -145,13 +164,22 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
-      // Drivetrain will execute this command periodically
-      drivetrain.applyRequest(() ->
-          drive.withVelocityX(oi.getTranslateX() * DriveTrainConstants.maxSpeed) // Drive forward with negative Y (forward)
-              .withVelocityY(oi.getTranslateY() * DriveTrainConstants.maxSpeed) // Drive left with negative X (left)
-              .withRotationalRate(oi.getRotate() * DriveTrainConstants.maxAngularRate) // Drive counterclockwise with negative X (left)
-          )
-    );
+        // Drivetrain will execute this command periodically
+        drivetrain.applyRequest(
+            () ->
+                drive
+                    .withVelocityX(
+                        oi.getTranslateX()
+                            * DriveTrainConstants
+                                .maxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(
+                        oi.getTranslateY()
+                            * DriveTrainConstants.maxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(
+                        oi.getRotate()
+                            * DriveTrainConstants
+                                .maxAngularRate) // Drive counterclockwise with negative X (left)
+            ));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
@@ -168,14 +196,14 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Shoot", new ShootCommand(shooter));
     // NamedCommands.registerCommand("ShootSlow", new ShootSlowCommand(shooter));
   }
-    
+
   private void configureTelemetry() {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
     tab.add("AutoChooser", autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
-}
+  }
 
   public void simulationInit() {}
 
@@ -195,12 +223,9 @@ public class RobotContainer {
     // RoboRioSim.setVInVoltage(Math.max(0.1, batteryVoltage));
   }
 
-  public void testInit() {
-  }
+  public void testInit() {}
 
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
-  public void testExit() {
-  }
+  public void testExit() {}
 }

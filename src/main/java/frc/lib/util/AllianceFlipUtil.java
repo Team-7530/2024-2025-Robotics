@@ -29,7 +29,6 @@ public class AllianceFlipUtil {
         : pose;
   }
 
-
   public static boolean shouldFlip() {
     return (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Red);

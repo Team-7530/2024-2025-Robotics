@@ -3,8 +3,8 @@ package frc.lib.util;
 import static com.revrobotics.spark.SparkMax.ControlType;
 
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 

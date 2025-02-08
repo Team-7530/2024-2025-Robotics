@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -11,6 +10,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 public final class Constants {
+
+  public static final boolean COMPETITIONBOT = false;
 
   public static final boolean DEBUGGING = true;
   public static final boolean TESTING = false;
@@ -38,8 +39,10 @@ public final class Constants {
     //               y = +left of center, 0 center, -right of center in meters
     //               z = +up from base of robot in meters
     //              roll = rotate around front/rear in radians. PI = upsidedown
-    //              pitch = tilt down/up along left/right axis. PI/4 = tilt down 45 degrees, -PI/4 = tilt up 45
-    //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45 degrees.
+    //              pitch = tilt down/up along left/right axis. PI/4 = tilt down 45 degrees, -PI/4 =
+    // tilt up 45
+    //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
+    // degrees.
     public static final Transform3d kRobotToCam1 =
         new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
 
@@ -51,8 +54,14 @@ public final class Constants {
 
   public static final class DriveTrainConstants {
     /** Maximum Speed - Meters per Second */
-    public static final double maxSpeed = 4.5; //TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    public static final double maxAngularRate = 5.0; //RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static final double maxSpeed =
+        4.5; // TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+
+    // speed
+
+    public static final double maxAngularRate =
+        5.0; // RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+    // max angular velocity
   }
 
   public static final class AutoConstants {
@@ -139,46 +148,45 @@ public final class Constants {
     public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
   }
 
-  
-  public final class algaePositions { //with offset
-      public static final double L2 = 0;
-      public static final double L3 = 0;
-      public static final double fieldAlgae = 0;
-      public static final double processor = 0;
-      public static final double barge = 0;
-      public static final double home = 0;
-      public static final double floor = 0;
+  public final class algaePositions { // with offset
+    public static final double L2 = 0;
+    public static final double L3 = 0;
+    public static final double fieldAlgae = 0;
+    public static final double processor = 0;
+    public static final double barge = 0;
+    public static final double home = 0;
+    public static final double floor = 0;
   }
 
   public static final class ClimberConstants {
-      public static final int MotorId = 31;
-      public static final int encoderDI = 0;
-      public static final double kClimberGearRatio = 1.0;
-      public static final double kClimberMinPosition = 0.0;
-      public static final double kClimberMaxPosition = 1.0;
-      public static final double kTargetClimberUp = 0.0;
-      public static final double kTargetClimberDown = 0.5;
-      // public static final double[] elevatorPID = {0.05, 0, 0};
-      // public static final double softLimit = 24.8;
-      // public static final double gravityFeedforward = 0;
-      // public static final double maxForwareSpeed = 0.5;
-      // public static final double maxReverseSpeed = -0.3;
-      // public static final double tolerance = 1;
-      // public static final double swerveLimitThreshold = 10;
+    public static final int MotorId = 31;
+    public static final int encoderDI = 0;
+    public static final double kClimberGearRatio = 1.0;
+    public static final double kClimberMinPosition = 0.0;
+    public static final double kClimberMaxPosition = 1.0;
+    public static final double kTargetClimberUp = 0.0;
+    public static final double kTargetClimberDown = 0.5;
 
-      public final class scoringPositioins {
-          //TODO find these
-          public static final double L2 = 0;
-          public static final double L3 = 0;
-          public static final double L4 = 0;
-      }
+    // public static final double[] elevatorPID = {0.05, 0, 0};
+    // public static final double softLimit = 24.8;
+    // public static final double gravityFeedforward = 0;
+    // public static final double maxForwareSpeed = 0.5;
+    // public static final double maxReverseSpeed = -0.3;
+    // public static final double tolerance = 1;
+    // public static final double swerveLimitThreshold = 10;
 
+    public final class scoringPositioins {
+      // TODO find these
+      public static final double L2 = 0;
+      public static final double L3 = 0;
+      public static final double L4 = 0;
+    }
   }
 
   public static final class EndeffectorConstants {
-      public static final int motorId = 3;
-      public static final int sensorId = 1;
-      public static final double coralDistanceThreshold = 0.1;
-      public static final double coralLoadTime = 0.5;
+    public static final int motorId = 3;
+    public static final int sensorId = 1;
+    public static final double coralDistanceThreshold = 0.1;
+    public static final double coralLoadTime = 0.5;
   }
 }

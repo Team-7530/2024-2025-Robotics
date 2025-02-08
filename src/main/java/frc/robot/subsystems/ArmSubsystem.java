@@ -1,10 +1,11 @@
 package frc.robot.subsystems;
+
 import static frc.robot.Constants.*;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+// import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -12,7 +13,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -28,13 +28,13 @@ public class ArmSubsystem extends SubsystemBase {
   private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID);
 
   private final PositionDutyCycle m_armrequest = new PositionDutyCycle(0).withSlot(0);
-  private final MotionMagicVoltage m_armrequest_mm = new MotionMagicVoltage(0).withSlot(0);
+  // private final MotionMagicVoltage m_armrequest_mm = new MotionMagicVoltage(0).withSlot(0);
 
   private final TalonFX m_wristMotor = new TalonFX(WristConstants.WRISTMOTOR_ID);
   private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID);
 
   private final PositionDutyCycle m_wristrequest = new PositionDutyCycle(0).withSlot(0);
-  private final MotionMagicVoltage m_wristrequest_mm = new MotionMagicVoltage(0).withSlot(0);
+  // private final MotionMagicVoltage m_wristrequest_mm = new MotionMagicVoltage(0).withSlot(0);
 
   private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID);
   private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID);
@@ -130,6 +130,7 @@ public class ArmSubsystem extends SubsystemBase {
       System.out.println("Could not apply bottom configs, error code: " + status.toString());
     }
   }
+
   @Override
   public void periodic() {
     // Put code here to be run every loop
@@ -191,7 +192,6 @@ public class ArmSubsystem extends SubsystemBase {
     this.setWristSpeed(0.0);
   }
 
-
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
     intakeTargetVelocity = Lvelocity;
 
@@ -200,6 +200,7 @@ public class ArmSubsystem extends SubsystemBase {
     // m_LIntakeMotor.setControl(m_torqueVelocity.withVelocity(Lvelocity).withFeedForward(1.0));
     // m_RIntakeMotor.setControl(m_torqueVelocity.withVelocity(Rvelocity).withFeedForward(1.0));
   }
+
   public void setIntakeSpeed(double speed) {
     intakeTargetVelocity = 0;
 
@@ -213,15 +214,19 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void intakeIn() {
-    this.setIntakeVelocity(IntakeConstants.shooterReverseSpeed, IntakeConstants.shooterReverseSpeed);
-  }
-  public void intakeOut() {
-    this.setIntakeVelocity(-IntakeConstants.shooterReverseSpeed, -IntakeConstants.shooterReverseSpeed);
-  }
-  public void intakeOutSpin() {
-    this.setIntakeVelocity(-IntakeConstants.shooterReverseSpeed, -IntakeConstants.shooterReverseSpeed * 0.5);
+    this.setIntakeVelocity(
+        IntakeConstants.shooterReverseSpeed, IntakeConstants.shooterReverseSpeed);
   }
 
+  public void intakeOut() {
+    this.setIntakeVelocity(
+        -IntakeConstants.shooterReverseSpeed, -IntakeConstants.shooterReverseSpeed);
+  }
+
+  public void intakeOutSpin() {
+    this.setIntakeVelocity(
+        -IntakeConstants.shooterReverseSpeed, -IntakeConstants.shooterReverseSpeed * 0.5);
+  }
 
   public void teleop(double arm, double wrist, double intake) {
     arm = MathUtil.applyDeadband(arm, STICK_DEADBAND) * 0.1;
@@ -238,15 +243,17 @@ public class ArmSubsystem extends SubsystemBase {
   // Update the smart dashboard
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Arm Postion", this.getArmPosition().in(Units.Degrees));
-    SmartDashboard.putNumber("ArmCanCoder Postion", m_armEncoder.getPosition().getValue().in(Units.Degrees));
+    SmartDashboard.putNumber(
+        "ArmCanCoder Postion", m_armEncoder.getPosition().getValue().in(Units.Degrees));
     SmartDashboard.putNumber("Arm TargetPostion", armTargetPosition);
 
     SmartDashboard.putNumber("Wrist Postion", this.getWristPosition().in(Units.Degrees));
-    SmartDashboard.putNumber("WristCanCoder Postion", m_wristEncoder.getPosition().getValue().in(Units.Degrees));
+    SmartDashboard.putNumber(
+        "WristCanCoder Postion", m_wristEncoder.getPosition().getValue().in(Units.Degrees));
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);
 
     SmartDashboard.putNumber("LIntake Speed", m_LIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("RIntake Speed", m_RIntakeMotor.getVelocity().getValueAsDouble());
-
+    SmartDashboard.putNumber("Intake TargetVelocity", intakeTargetVelocity);
   }
 }
