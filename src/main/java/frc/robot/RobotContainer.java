@@ -144,12 +144,12 @@ public class RobotContainer {
         .whileTrue(
             new PathOnTheFlyCommand(
                 drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
-    oi.getAButton().whileTrue(getAutonomousCommand());
+    //oi.getAButton().whileTrue(getAutonomousCommand());
 
 
 
 
-    oi.getLeftBumper().whileTrue(new IntakeCommand(arm));
+    oi.getAButton().whileTrue(new IntakeCommand(arm));
     oi.getRightBumper().whileTrue(new ShootCommand(arm));
 
     // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1,

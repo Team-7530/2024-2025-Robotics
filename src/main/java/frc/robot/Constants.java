@@ -127,13 +127,13 @@ public final class Constants {
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
     public static final double KSConstant = 0.0; // Static feedforward gain
     public static final double proportialPIDConstant =
-        0.2; // An error of 1 rotation per second results in 2V output
+        0.001; // An error of 1 rotation per second results in 2V output
     public static final double integralPIDConstant =
-        0.5; // An error of 1 rotation per second increases output by 0.5V every second
+        0.0001; // An error of 1 rotation per second increases output by 0.5V every second
     public static final double derivativePIDConstant =
         0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
     public static final double feedForwardPIDConstant =
-        0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
+        0.0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
     // Rotation per second
     public static final double peakForwardVoltage = 12.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -12.0; // Peak output of 8 volts

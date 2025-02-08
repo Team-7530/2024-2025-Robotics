@@ -24,8 +24,8 @@ import frc.robot.Constants.WristConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  private final TalonFX m_armMotor = new TalonFX(ArmConstants.ARMMOTOR_ID, "Canivore");
-  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, "Canivore");
+  private final TalonFX m_armMotor = new TalonFX(ArmConstants.ARMMOTOR_ID, "CANFD");
+  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, "CANDFD");
 
   private final PositionDutyCycle m_armrequest = new PositionDutyCycle(0).withSlot(0);
   // private final MotionMagicVoltage m_armrequest_mm = new MotionMagicVoltage(0).withSlot(0);
@@ -36,8 +36,8 @@ public class ArmSubsystem extends SubsystemBase {
   private final PositionDutyCycle m_wristrequest = new PositionDutyCycle(0).withSlot(0);
   // private final MotionMagicVoltage m_wristrequest_mm = new MotionMagicVoltage(0).withSlot(0);
 
-  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID);
-  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID);
+  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, "CANFD");
+  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, "CANFD");
 
   private final VelocityDutyCycle m_intakerequest = new VelocityDutyCycle(0).withSlot(0);
 
