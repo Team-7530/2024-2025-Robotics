@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.*;
 import frc.robot.commands.PathOnTheFlyCommand;
 import frc.robot.commands.PhotonVisionCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
@@ -57,6 +59,7 @@ public class RobotContainer {
   public final PowerDistribution power = new PowerDistribution();
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final VisionSubsystem vision = new VisionSubsystem();
+  public final ArmSubsystem arm = new ArmSubsystem();
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -142,6 +145,13 @@ public class RobotContainer {
             new PathOnTheFlyCommand(
                 drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
     oi.getAButton().whileTrue(getAutonomousCommand());
+
+
+
+
+    oi.getLeftBumper().whileTrue(new IntakeCommand(arm));
+    oi.getRightBumper().whileTrue(new ShootCommand(arm));
+
     // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1,
     // Rotation2d.fromDegrees(180))));
   }
