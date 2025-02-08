@@ -159,8 +159,8 @@ public final class Constants {
   }
 
   public static final class ClimberConstants {
-    public static final int MotorId = 31;
-    public static final int encoderDI = 0;
+    public static final int MotorId = 41;
+    public static final int encoderDI = 42;
     public static final double kClimberGearRatio = 1.0;
     public static final double kClimberMinPosition = 0.0;
     public static final double kClimberMaxPosition = 1.0;
