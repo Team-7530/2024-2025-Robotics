@@ -2,13 +2,16 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 // import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,19 +28,20 @@ import frc.robot.Constants.WristConstants;
 public class ArmSubsystem extends SubsystemBase {
 
   private final TalonFX m_armMotor = new TalonFX(ArmConstants.ARMMOTOR_ID, "CANFD");
-  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, "CANDFD");
+  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, "CANFD");
 
   private final PositionDutyCycle m_armrequest = new PositionDutyCycle(0).withSlot(0);
   // private final MotionMagicVoltage m_armrequest_mm = new MotionMagicVoltage(0).withSlot(0);
 
-  private final TalonFX m_wristMotor = new TalonFX(WristConstants.WRISTMOTOR_ID);
-  private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID);
+  private final TalonFX m_wristMotor = new TalonFX(WristConstants.WRISTMOTOR_ID, "CANFD");
+  private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID, "CANFD");
 
   private final PositionDutyCycle m_wristrequest = new PositionDutyCycle(0).withSlot(0);
   // private final MotionMagicVoltage m_wristrequest_mm = new MotionMagicVoltage(0).withSlot(0);
 
   private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, "CANFD");
   private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, "CANFD");
+  private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, "CANFD");
 
   private final VelocityDutyCycle m_intakerequest = new VelocityDutyCycle(0).withSlot(0);
 
@@ -51,6 +55,7 @@ public class ArmSubsystem extends SubsystemBase {
     initArmConfigs();
     initWristConfigs();
     initIntakeConfigs();
+    initRangeSensor();
   }
 
   private void initArmConfigs() {
@@ -129,6 +134,24 @@ public class ArmSubsystem extends SubsystemBase {
     if (!status.isOK()) {
       System.out.println("Could not apply bottom configs, error code: " + status.toString());
     }
+  }
+
+  private void initRangeSensor() {
+    CANrangeConfiguration config = new CANrangeConfiguration();
+
+    /* User can change the configs if they want, or leave it empty for factory-default */
+    StatusCode status = StatusCode.StatusCodeNotInitialized;
+    status = m_RangeSensor.getConfigurator().apply(config);
+    if (!status.isOK()) {
+      System.out.println("Could not apply top configs, error code: " + status.toString());
+    }
+
+    /* Set the signal update rate */
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50,
+        m_RangeSensor.getDistance(),
+        m_RangeSensor.getSignalStrength(),
+        m_RangeSensor.getIsDetected());
   }
 
   @Override
@@ -214,18 +237,15 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void intakeIn() {
-    this.setIntakeVelocity(
-        IntakeConstants.shooterReverseSpeed, IntakeConstants.shooterReverseSpeed);
+    this.setIntakeVelocity(IntakeConstants.intakeSpeed, IntakeConstants.intakeSpeed);
   }
 
   public void intakeOut() {
-    this.setIntakeVelocity(
-        -IntakeConstants.shooterReverseSpeed, -IntakeConstants.shooterReverseSpeed);
+    this.setIntakeVelocity(IntakeConstants.outtakeSpeedL, IntakeConstants.outtakeSpeedL);
   }
 
   public void intakeOutSpin() {
-    this.setIntakeVelocity(
-        -IntakeConstants.shooterReverseSpeed, -IntakeConstants.shooterReverseSpeed * 0.5);
+    this.setIntakeVelocity(IntakeConstants.outtakeSpeedL, IntakeConstants.outtakeSpeedR);
   }
 
   public void teleop(double arm, double wrist, double intake) {
@@ -255,5 +275,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LIntake Speed", m_LIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("RIntake Speed", m_RIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Intake TargetVelocity", intakeTargetVelocity);
+
+    SmartDashboard.putNumber("Distance", m_RangeSensor.getDistance().getValueAsDouble());
+    SmartDashboard.putNumber("Strength", m_RangeSensor.getSignalStrength().getValueAsDouble());
+    SmartDashboard.putBoolean("Detected", m_RangeSensor.getIsDetected().getValue());
   }
 }

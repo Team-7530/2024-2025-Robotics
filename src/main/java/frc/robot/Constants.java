@@ -74,13 +74,6 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
   }
 
-  public static final class AlgaeGrabberConstants {
-    public static final int motorId = 1;
-
-    public static final double intakeSpeed = 0.15;
-    public static final double outtakeSpeed = -0.25;
-  }
-
   public static final class ArmConstants {
     public static final int ARMMOTOR_ID = 31; // Figure it out
     public static final int ARMENCODER_ID = 32;
@@ -119,10 +112,13 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int LINTAKEMOTOR_ID = 35; // Figure it out
     public static final int RINTAKEMOTOR_ID = 36; // Figure it out
+    public static final int RANGESENSOR_ID = 37;
 
-    public static final double kTargetVelocity = 500.0;
-    public static final double kTargetVelocity2 = 1000.0;
-    public static final double shooterReverseSpeed = -0.1;
+    public static final double kTargetVelocity = 100.0;
+    public static final double kTargetVelocity2 = 200.0;
+    public static final double intakeSpeed = 0.15;
+    public static final double outtakeSpeedL = -0.15;
+    public static final double outtakeSpeedR = -0.30;
 
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
     public static final double KSConstant = 0.0; // Static feedforward gain
@@ -159,8 +155,8 @@ public final class Constants {
   }
 
   public static final class ClimberConstants {
-    public static final int MotorId = 41;
-    public static final int encoderDI = 42;
+    public static final int CLIMBMOTOR_ID = 41;
+    public static final int ENCODER_ID = 42;
     public static final double kClimberGearRatio = 1.0;
     public static final double kClimberMinPosition = 0.0;
     public static final double kClimberMaxPosition = 1.0;
