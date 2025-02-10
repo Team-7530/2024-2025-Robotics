@@ -248,6 +248,11 @@ public class ArmSubsystem extends SubsystemBase {
     this.setIntakeVelocity(IntakeConstants.outtakeSpeedL, IntakeConstants.outtakeSpeedR);
   }
 
+  public boolean hasCoralLoaded() {
+    return m_RangeSensor.getIsDetected().getValue() && 
+        (m_RangeSensor.getDistance().getValue().lte(IntakeConstants.rangeThreshold));
+  }
+
   public void teleop(double arm, double wrist, double intake) {
     arm = MathUtil.applyDeadband(arm, STICK_DEADBAND) * 0.1;
     wrist = MathUtil.applyDeadband(wrist, STICK_DEADBAND) * 0.1;

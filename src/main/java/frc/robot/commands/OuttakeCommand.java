@@ -3,37 +3,37 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ShootCommand extends Command {
-  private final ArmSubsystem m_shooter;
+public class OuttakeCommand extends Command {
+  private final ArmSubsystem armSubsystem;
 
   private boolean m_isFinished = false;
-  private int m_shootCounter = 0;
+  private int m_counter = 0;
 
-  public ShootCommand(ArmSubsystem shooter) {
+  public OuttakeCommand(ArmSubsystem arm) {
 
-    this.m_shooter = shooter;
+    this.armSubsystem = arm;
 
-    addRequirements(shooter);
+    addRequirements(armSubsystem);
   }
 
   @Override
   public void initialize() {
-    m_shootCounter = 25;
+    m_counter = 25;
     m_isFinished = false;
 
-    m_shooter.intakeOut();
-    System.out.println("Shooting");
+    armSubsystem.intakeOut();
+    System.out.println("Intake - Out");
   }
 
   @Override
   public void execute() {
-    m_isFinished = (--m_shootCounter <= 0);
+    m_isFinished = (--m_counter <= 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.intakeStop();
+    armSubsystem.intakeStop();
   }
 
   // Returns true when the command should end.

@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -8,6 +10,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
 
@@ -119,6 +122,9 @@ public final class Constants {
     public static final double intakeSpeed = 0.15;
     public static final double outtakeSpeedL = -0.15;
     public static final double outtakeSpeedR = -0.30;
+
+    public static final Distance rangeThreshold = Inches.of(5.0);
+
 
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
     public static final double KSConstant = 0.0; // Static feedforward gain

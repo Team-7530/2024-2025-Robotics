@@ -21,7 +21,7 @@ import frc.robot.Constants.*;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PathOnTheFlyCommand;
 import frc.robot.commands.PhotonVisionCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
@@ -149,7 +149,7 @@ public class RobotContainer {
     // oi.getAButton().whileTrue(getAutonomousCommand());
 
     oi.getAButton().whileTrue(new IntakeCommand(arm));
-    oi.getRightBumper().whileTrue(new ShootCommand(arm));
+    oi.getRightBumper().whileTrue(new OuttakeCommand(arm));
 
     // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1,
     // Rotation2d.fromDegrees(180))));

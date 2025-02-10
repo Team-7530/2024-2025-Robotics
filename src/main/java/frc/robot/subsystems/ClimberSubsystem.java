@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 // import com.ctre.phoenix6.controls.NeutralOut;
@@ -7,9 +9,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,15 +40,15 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot0.kI = 0; // No output for integrated error
     configs.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
     // Peak output of 8 V
-    configs.Voltage.withPeakForwardVoltage(Voltage.ofBaseUnits(8.0, Units.Volts))
-        .withPeakReverseVoltage(Voltage.ofBaseUnits(-8.0, Units.Volts));
+    configs.Voltage.withPeakForwardVoltage(Volts.of(8.0))
+        .withPeakReverseVoltage(Volts.of(-8.0));
 
     configs.Slot1.kP = 60.0; // An error of 1 rotation results in 60 A output
     configs.Slot1.kI = 0.0; // No output for integrated error
     configs.Slot1.kD = 6.0; // A velocity of 1 rps results in 6 A output
     // Peak output of 120 A
-    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Current.ofBaseUnits(120.0, Units.Amps))
-        .withPeakReverseTorqueCurrent(Current.ofBaseUnits(-120.0, Units.Amps));
+    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(120.0))
+        .withPeakReverseTorqueCurrent(Amps.of(-120.0));
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
