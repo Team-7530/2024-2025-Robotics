@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static frc.robot.Constants.*;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -17,18 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.*;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.PathOnTheFlyCommand;
-import frc.robot.commands.PhotonVisionCommand;
-import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -61,6 +56,8 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final VisionSubsystem vision = new VisionSubsystem();
   public final ArmSubsystem arm = new ArmSubsystem();
+  public final WristSubsystem wrist = new WristSubsystem();
+  public final IntakeSubsystem intake = new IntakeSubsystem();
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   /* Path follower */
@@ -148,11 +145,8 @@ public class RobotContainer {
                 drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
     // oi.getAButton().whileTrue(getAutonomousCommand());
 
-    oi.getAButton().whileTrue(new IntakeCommand(arm));
-    oi.getRightBumper().whileTrue(new OuttakeCommand(arm));
-
-    // oi.getBButton().whileTrue(new PathOnTheFlyCommand(drivetrain, new Pose2d(1, 1,
-    // Rotation2d.fromDegrees(180))));
+    oi.getAButton().whileTrue(new IntakeCommand(intake));
+    oi.getBButton().whileTrue(new OuttakeCommand(intake));
   }
 
   /**

@@ -125,7 +125,6 @@ public final class Constants {
 
     public static final Distance rangeThreshold = Inches.of(5.0);
 
-
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
     public static final double KSConstant = 0.0; // Static feedforward gain
     public static final double proportialPIDConstant =

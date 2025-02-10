@@ -1,19 +1,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.*;
 
 public class IntakeCommand extends Command {
-  private final ArmSubsystem m_ArmSubsystem;
+  private final IntakeSubsystem m_IntakeSubsystem;
 
   private boolean m_isFinished = false;
   private int m_IntakeCounter = 0;
 
-  public IntakeCommand(ArmSubsystem armSubsystem) {
+  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
 
-    this.m_ArmSubsystem = armSubsystem;
-
-    addRequirements(armSubsystem);
+    this.m_IntakeSubsystem = intakeSubsystem;
+    addRequirements(m_IntakeSubsystem);
   }
 
   @Override
@@ -21,19 +20,19 @@ public class IntakeCommand extends Command {
     m_IntakeCounter = 25;
     m_isFinished = false;
 
-    m_ArmSubsystem.intakeIn();
+    m_IntakeSubsystem.intakeIn();
     System.out.println("Intake started");
   }
 
   @Override
   public void execute() {
-    m_isFinished = (--m_IntakeCounter <= 0) || m_ArmSubsystem.hasCoralLoaded();
+    m_isFinished = (--m_IntakeCounter <= 0) || m_IntakeSubsystem.hasCoralLoaded();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_ArmSubsystem.intakeStop();
+    m_IntakeSubsystem.intakeStop();
     System.out.println("Intake stop");
   }
 

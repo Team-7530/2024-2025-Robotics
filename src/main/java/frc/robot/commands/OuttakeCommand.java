@@ -1,19 +1,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.*;
 
 public class OuttakeCommand extends Command {
-  private final ArmSubsystem armSubsystem;
+  private final IntakeSubsystem m_IntakeSubsystem;
 
   private boolean m_isFinished = false;
   private int m_counter = 0;
 
-  public OuttakeCommand(ArmSubsystem arm) {
+  public OuttakeCommand(IntakeSubsystem intake) {
 
-    this.armSubsystem = arm;
+    this.m_IntakeSubsystem = intake;
 
-    addRequirements(armSubsystem);
+    addRequirements(m_IntakeSubsystem);
   }
 
   @Override
@@ -21,7 +21,7 @@ public class OuttakeCommand extends Command {
     m_counter = 25;
     m_isFinished = false;
 
-    armSubsystem.intakeOut();
+    m_IntakeSubsystem.intakeOut();
     System.out.println("Intake - Out");
   }
 
@@ -33,7 +33,7 @@ public class OuttakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.intakeStop();
+    m_IntakeSubsystem.intakeStop();
   }
 
   // Returns true when the command should end.

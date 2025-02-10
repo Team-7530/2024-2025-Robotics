@@ -40,8 +40,7 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot0.kI = 0; // No output for integrated error
     configs.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
     // Peak output of 8 V
-    configs.Voltage.withPeakForwardVoltage(Volts.of(8.0))
-        .withPeakReverseVoltage(Volts.of(-8.0));
+    configs.Voltage.withPeakForwardVoltage(Volts.of(8.0)).withPeakReverseVoltage(Volts.of(-8.0));
 
     configs.Slot1.kP = 60.0; // An error of 1 rotation results in 60 A output
     configs.Slot1.kI = 0.0; // No output for integrated error
