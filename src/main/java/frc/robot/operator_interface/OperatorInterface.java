@@ -44,6 +44,14 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
+  public default double getLeftTrigger() {
+    return 0.0;
+  }
+
+  public default double getRightTrigger() {
+    return 0.0;
+  }
+
   public default Trigger getLeftBumper() {
     return new Trigger(() -> false);
   }

@@ -88,26 +88,22 @@ public class SingleJoystickOI implements OperatorInterface {
 
   @Override
   public double getTranslateX() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(joystick.getY(), STICK_DEADBAND) * scaleVal;
+    return -joystick.getY() * driveScalingValue();
   }
 
   @Override
   public double getTranslateY() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(joystick.getX(), STICK_DEADBAND) * scaleVal;
+    return -joystick.getX() * driveScalingValue();
   }
 
   @Override
   public double getRotate() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(joystick.getTwist(), STICK_DEADBAND) * scaleVal;
+    return -joystick.getTwist() * driveScalingValue();
   }
 
   @Override
   public double getRotateY() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(joystick.getTwist(), STICK_DEADBAND) * scaleVal;
+    return -joystick.getTwist() * driveScalingValue();
   }
 
   @Override

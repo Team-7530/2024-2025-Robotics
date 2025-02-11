@@ -102,26 +102,22 @@ public class DualJoysticksOI implements OperatorInterface {
 
   @Override
   public double getTranslateX() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(translateJoystick.getY(), STICK_DEADBAND) * scaleVal;
+    return -translateJoystick.getY() * driveScalingValue();
   }
 
   @Override
   public double getTranslateY() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(translateJoystick.getX(), STICK_DEADBAND) * scaleVal;
+    return -translateJoystick.getX() * driveScalingValue();
   }
 
   @Override
   public double getRotate() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(rotateJoystick.getX(), STICK_DEADBAND) * scaleVal;
+    return -rotateJoystick.getX() * driveScalingValue();
   }
 
   @Override
   public double getRotateY() {
-    double scaleVal = driveScalingValue();
-    return -MathUtil.applyDeadband(rotateJoystick.getY(), STICK_DEADBAND) * scaleVal;
+    return -rotateJoystick.getY() * driveScalingValue();
   }
 
   @Override

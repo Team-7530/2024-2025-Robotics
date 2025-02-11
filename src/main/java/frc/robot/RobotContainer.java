@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
@@ -95,12 +97,6 @@ public class RobotContainer {
     configureDefaultCommands();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void configureButtonBindings() {
     // reset gyro to 0 degrees
     oi.getResetGyroButton().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -123,9 +119,14 @@ public class RobotContainer {
     oi.getStartButton()
         .and(oi.getXButton())
         .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    oi.getBackButton()
+        .and(oi.getYButton())
+        .whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    oi.getBackButton()
+        .and(oi.getXButton())
+        .whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
 
+    // // Run test routines (forward/back at .5 m/s) when holding start and A/B.
     oi.getStartButton()
         .and(oi.getAButton())
         .whileTrue(
@@ -135,11 +136,14 @@ public class RobotContainer {
         .whileTrue(
             drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-    oi.getXButton()
+    // // Run test pose routines when holding back and A/B.
+    oi.getBackButton()
+        .and(oi.getAButton())
         .whileTrue(
             new PathOnTheFlyCommand(
                 drivetrain, new Pose2d(16.24, 0.8, Rotation2d.fromDegrees(-60))));
-    oi.getYButton()
+    oi.getBackButton()
+        .and(oi.getBButton())
         .whileTrue(
             new PathOnTheFlyCommand(
                 drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
@@ -147,6 +151,20 @@ public class RobotContainer {
 
     oi.getAButton().whileTrue(new IntakeCommand(intake));
     oi.getBButton().whileTrue(new OuttakeCommand(intake));
+
+    oi.getXButton()
+      .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))
+      .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
+    oi.getYButton()
+      .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
+      .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
+      
+    oi.getLeftBumper()
+      .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(0.1), wrist))
+      .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
+    oi.getRightBumper()
+      .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(-0.1), wrist))
+      .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
   }
 
   /**
@@ -184,6 +202,7 @@ public class RobotContainer {
                             * DriveTrainConstants
                                 .maxAngularRate) // Drive counterclockwise with negative X (left)
             ));
+    // arm.setDefaultCommand(Commands.run(() -> arm.teleop(oi.getLeftTrigger()), arm));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 

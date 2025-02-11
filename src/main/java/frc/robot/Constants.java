@@ -93,7 +93,9 @@ public final class Constants {
 
     public static final double kTargetArmHigh = 25.0;
     public static final double kTargetArmLow = 0.0;
-    public static final double kArmGearRatio = 64.0; // gear ratio is 64:1
+    public static final double kArmChainRatio = 14.0/10.0; // 10:14
+    public static final double kArmGearboxRatio = 16.0; // 1:16
+    public static final double kArmGearRatio = kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
   }
 
   public static final class WristConstants {
@@ -109,7 +111,9 @@ public final class Constants {
 
     public static final double kTargetWristHigh = 25.0;
     public static final double kTargetWristLow = 0.0;
-    public static final double kWristGearRatio = 64.0; // gear ratio is 64:1
+    public static final double kWristChainRatio = 1.0; // 1:1
+    public static final double kWristGearboxRatio = 12.0; // 1:12
+    public static final double kWristGearRatio = kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
   }
 
   public static final class IntakeConstants {
@@ -119,6 +123,10 @@ public final class Constants {
 
     public static final double kTargetVelocity = 100.0;
     public static final double kTargetVelocity2 = 200.0;
+    public static final double kIntakeChainRatio = 24.0/10.0; // 24:10
+    public static final double kIntakeGearboxRatio = 1.0; // 1:1
+    public static final double kIntakeGearRatio = kIntakeChainRatio * kIntakeGearboxRatio; // chain ratio * Gearbox ratio
+
     public static final double intakeSpeed = 0.15;
     public static final double outtakeSpeedL = -0.15;
     public static final double outtakeSpeedR = -0.30;
@@ -162,7 +170,9 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int CLIMBMOTOR_ID = 41;
     public static final int ENCODER_ID = 42;
-    public static final double kClimberGearRatio = 1.0;
+    public static final double kClimberChainRatio = 14.0/10.0; // 10:14
+    public static final double kClimberGearboxRatio = 100.0; // 1:100
+    public static final double kClimberGearRatio = kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
     public static final double kClimberMinPosition = 0.0;
     public static final double kClimberMaxPosition = 1.0;
     public static final double kTargetClimberUp = 0.0;

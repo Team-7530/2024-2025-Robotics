@@ -22,7 +22,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final VelocityDutyCycle m_intakerequest = new VelocityDutyCycle(0).withSlot(0);
 
-  private double intakeTargetVelocity = 0;
+  private double LintakeTargetVelocity = 0;
+  private double RintakeTargetVelocity = 0;
   private boolean m_isIntakeIn = false;
   private boolean m_isTeleop = true;
 
@@ -88,17 +89,19 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
-    intakeTargetVelocity = Lvelocity;
+    LintakeTargetVelocity = Lvelocity * IntakeConstants.kIntakeGearRatio;
+    RintakeTargetVelocity = Rvelocity * IntakeConstants.kIntakeGearRatio;
     m_isIntakeIn = Lvelocity > 0.0;
 
-    m_LIntakeMotor.setControl(m_intakerequest.withVelocity(Lvelocity));
-    m_RIntakeMotor.setControl(m_intakerequest.withVelocity(Rvelocity));
+    m_LIntakeMotor.setControl(m_intakerequest.withVelocity(LintakeTargetVelocity));
+    m_RIntakeMotor.setControl(m_intakerequest.withVelocity(RintakeTargetVelocity));
     // m_LIntakeMotor.setControl(m_torqueVelocity.withVelocity(Lvelocity).withFeedForward(1.0));
     // m_RIntakeMotor.setControl(m_torqueVelocity.withVelocity(Rvelocity).withFeedForward(1.0));
   }
 
   public void setIntakeSpeed(double speed) {
-    intakeTargetVelocity = 0;
+    LintakeTargetVelocity = 0;
+    RintakeTargetVelocity = 0;
     m_isIntakeIn = speed > 0.0;
 
     m_LIntakeMotor.set(speed);
@@ -106,8 +109,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeStop() {
-    intakeTargetVelocity = 0;
+    LintakeTargetVelocity = 0;
+    RintakeTargetVelocity = 0;
     m_isIntakeIn = false;
+
     this.setIntakeSpeed(0.0);
   }
 
@@ -140,7 +145,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("LIntake Speed", m_LIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("RIntake Speed", m_RIntakeMotor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Intake TargetVelocity", intakeTargetVelocity);
+    SmartDashboard.putNumber("Intake TargetVelocity", LintakeTargetVelocity);
 
     SmartDashboard.putNumber("Distance", m_RangeSensor.getDistance().getValueAsDouble());
     SmartDashboard.putNumber("Strength", m_RangeSensor.getSignalStrength().getValueAsDouble());
