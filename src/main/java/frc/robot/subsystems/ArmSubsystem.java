@@ -98,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void teleop(double arm) {
     arm = MathUtil.applyDeadband(arm, STICK_DEADBAND) * 0.1;
-    
+
     if (m_isTeleop && (arm != 0.0)) {
       this.setArmSpeed(arm);
     }

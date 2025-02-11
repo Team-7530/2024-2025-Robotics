@@ -116,12 +116,8 @@ public class RobotContainer {
     oi.getStartButton()
         .and(oi.getXButton())
         .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    oi.getBackButton()
-        .and(oi.getYButton())
-        .whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    oi.getBackButton()
-        .and(oi.getXButton())
-        .whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
 
     // // Run test routines (forward/back at .5 m/s) when holding start and A/B.
     oi.getStartButton()
@@ -150,18 +146,18 @@ public class RobotContainer {
     oi.getBButton().whileTrue(new OuttakeCommand(intake));
 
     oi.getXButton()
-      .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))
-      .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
+        .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))
+        .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
     oi.getYButton()
-      .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
-      .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
-      
+        .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
+        .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
+
     oi.getLeftBumper()
-      .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(0.1), wrist))
-      .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
+        .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(0.1), wrist))
+        .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
     oi.getRightBumper()
-      .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(-0.1), wrist))
-      .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
+        .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(-0.1), wrist))
+        .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
   }
 
   /**

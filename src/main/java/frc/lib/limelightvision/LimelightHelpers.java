@@ -623,7 +623,8 @@ public class LimelightHelpers {
   //     double distToRobot = extractArrayEntry(rawFiducialArray, baseIndex + 5);
   //     double ambiguity = extractArrayEntry(rawFiducialArray, baseIndex + 6);
 
-  //     rawFiducials[i] = new RawFiducial(id, txnc, tync, ta, distToCamera, distToRobot, ambiguity);
+  //     rawFiducials[i] = new RawFiducial(id, txnc, tync, ta, distToCamera, distToRobot,
+  // ambiguity);
   //   }
 
   //   return rawFiducials;
