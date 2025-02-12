@@ -20,7 +20,7 @@ import frc.robot.Constants.ClimberConstants;
 public class ClimberSubsystem implements Subsystem {
   private final DutyCycleEncoder m_Encoder =
       new DutyCycleEncoder(new DigitalInput(ClimberConstants.ENCODER_ID));
-  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, "rio");
+  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, "CANFD");
   private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
   private static final TalonFXConfiguration configs = new TalonFXConfiguration();

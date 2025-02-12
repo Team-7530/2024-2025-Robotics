@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, "CANFD");
-  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, "CANFD");
-  private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, "CANFD");
+  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, "rio");
+  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, "rio");
+  private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, "rio");
 
   private final VelocityDutyCycle m_intakerequest = new VelocityDutyCycle(0).withSlot(0);
 

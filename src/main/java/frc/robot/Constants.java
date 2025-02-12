@@ -167,7 +167,7 @@ public final class Constants {
 
   public static final class ClimberConstants {
     public static final int CLIMBMOTOR_ID = 41;
-    public static final int ENCODER_ID = 42;
+    public static final int ENCODER_ID = 0; // Thrubore plugged into DIO 0
     public static final int ROTATEMOTOR_ID = 43;
     public static final double kClimberChainRatio = 14.0 / 10.0; // 10:14
     public static final double kClimberGearboxRatio = 100.0; // 1:100

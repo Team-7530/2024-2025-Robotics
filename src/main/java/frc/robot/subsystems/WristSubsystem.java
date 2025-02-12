@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class WristSubsystem extends SubsystemBase {
 
-  private final TalonFX m_wristMotor = new TalonFX(WristConstants.WRISTMOTOR_ID, "CANFD");
-  private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID, "CANFD");
+  private final TalonFX m_wristMotor = new TalonFX(WristConstants.WRISTMOTOR_ID, "rio");
+  private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID, "rio");
 
   private final PositionDutyCycle m_wristrequest = new PositionDutyCycle(0).withSlot(0);
   // private final MotionMagicVoltage m_wristrequest_mm = new MotionMagicVoltage(0).withSlot(0);
