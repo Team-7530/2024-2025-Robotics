@@ -26,20 +26,26 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Vision.*;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.lib.util.FieldConstants;
 import frc.robot.Robot;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -50,50 +56,55 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem implements Subsystem {
-  private final PhotonCamera camera;
-  private final PhotonPoseEstimator photonEstimator;
+  private final List<PhotonCamera> cameras = new ArrayList<>();
+  private final List<PhotonPoseEstimator> photonEstimators = new ArrayList<>();
   private Matrix<N3, N1> curStdDevs;
 
   // Simulation
-  private PhotonCameraSim cameraSim;
+  private final List<PhotonCameraSim> cameraSims = new ArrayList<>();
   private VisionSystemSim visionSim;
 
   /* Cameras */
   public UsbCamera cam0;
 
   public VisionSubsystem() {
-    camera = new PhotonCamera(kCameraName1);
-
-    photonEstimator =
-        new PhotonPoseEstimator(
-            FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
+    cameras.add(new PhotonCamera(kCameraName1));
+    PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(
+      FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    photonEstimators.add(photonEstimator);
+
+    cameras.add(new PhotonCamera(kCameraName2));
+    photonEstimator = new PhotonPoseEstimator(
+      FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
+    photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    photonEstimators.add(photonEstimator);
 
     // ----- Simulation
     if (Robot.isSimulation()) {
-
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");
       // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
       visionSim.addAprilTags(FieldConstants.fieldLayout);
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
-      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-      cameraProp.setCalibError(0.35, 0.10);
-      cameraProp.setFPS(15);
-      cameraProp.setAvgLatencyMs(50);
-      cameraProp.setLatencyStdDevMs(15);
-      // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
-      // targets.
-      cameraSim = new PhotonCameraSim(camera, cameraProp);
-      // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(cameraSim, kRobotToCam1);
+      cameraProp.setCalibration(640, 360, Rotation2d.fromDegrees(90));
+      cameraProp.setCalibError(0.25, 0.10);
+      cameraProp.setFPS(60);
+      cameraProp.setAvgLatencyMs(10);
+      cameraProp.setLatencyStdDevMs(10);
 
-      cameraSim.enableDrawWireframe(true);
-    }
+      for (int i = 0; i < cameras.size(); i++) {
+        PhotonCameraSim cameraSim = new PhotonCameraSim(cameras.get(i), cameraProp);
+        // Add the simulated camera to view the targets on this simulated field.
+        visionSim.addCamera(cameraSim, photonEstimators.get(i).getRobotToCameraTransform());
+        cameraSim.enableDrawWireframe(true);   
 
-    cam0 = CameraServer.startAutomaticCapture(0);
-    cam0.setConnectVerbose(0);
+        cameraSims.add(cameraSim);
+      }     
+    }  
+    // cam0 = CameraServer.startAutomaticCapture(0);
+    // cam0.setConnectVerbose(0);
   }
 
   /**
@@ -107,23 +118,79 @@ public class VisionSubsystem implements Subsystem {
    *     used for estimation.
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    Optional<EstimatedRobotPose> visionEst = Optional.empty();
-    for (var change : camera.getAllUnreadResults()) {
-      visionEst = photonEstimator.update(change);
-      updateEstimationStdDevs(visionEst, change.getTargets());
+    List<PhotonTrackedTarget> allCameraTargets = new ArrayList<>();
+    List<EstimatedRobotPose> allVisionEstimates = new ArrayList<>();
 
-      if (Robot.isSimulation()) {
-        visionEst.ifPresentOrElse(
+    Optional<EstimatedRobotPose> visionEst = Optional.empty();
+    for (int i = 0; i < cameras.size(); i++) {
+      PhotonCamera camera = cameras.get(i);
+      PhotonPoseEstimator estimator = photonEstimators.get(i);
+
+      for (var change : camera.getAllUnreadResults()) {
+        allCameraTargets.addAll(change.getTargets());
+
+        visionEst = estimator.update(change);
+        if (visionEst.isPresent()) {
+          allVisionEstimates.add(visionEst.get());
+        }
+
+        if (Robot.isSimulation()) {
+          final int index = i;
+          visionEst.ifPresentOrElse(
             est ->
                 getSimDebugField()
-                    .getObject("VisionEstimation")
+                    .getObject("VisionEstimation" + index)
                     .setPose(est.estimatedPose.toPose2d()),
-            () -> {
-              getSimDebugField().getObject("VisionEstimation").setPoses();
-            });
+            () -> getSimDebugField().getObject("VisionEstimation" + index).setPoses());
+        }
       }
     }
-    return visionEst;
+    updateEstimationStdDevs(
+      allVisionEstimates.isEmpty() 
+        ? Optional.empty() 
+        : Optional.of(allVisionEstimates.get(allVisionEstimates.size() - 1)), 
+      allCameraTargets,
+      photonEstimators.get(0));
+
+      return averageVisionEstimates(allVisionEstimates);
+  }
+
+  private Optional<EstimatedRobotPose> averageVisionEstimates(List<EstimatedRobotPose> estimates) {
+    if (estimates.isEmpty()) {
+      return Optional.empty();
+    }
+
+    double x = 0.0, y = 0.0, rotation = 0.0;
+    double latestTimestamp = 0.0;
+    List<PhotonTrackedTarget> combinedTargets = new ArrayList<>();
+    Set<Integer> seenTargets = new HashSet<>();
+
+    for (EstimatedRobotPose estimate : estimates) {
+      Pose2d pose = estimate.estimatedPose.toPose2d();
+      x += pose.getX();
+      y += pose.getY();
+      rotation += pose.getRotation().getRadians();
+
+      if (estimate.timestampSeconds > latestTimestamp) {
+        latestTimestamp = estimate.timestampSeconds;
+      }
+
+      for (PhotonTrackedTarget target : estimate.targetsUsed) {
+        if (seenTargets.add(target.getFiducialId())) {
+          combinedTargets.add(target);
+        }
+      }
+    }
+
+    x /= estimates.size();
+    y /= estimates.size();
+    rotation /= estimates.size();
+
+    Pose3d avgPose = new Pose3d(x, y, 0, new Rotation3d(0, 0, rotation));
+
+    return Optional.of(
+        new EstimatedRobotPose(
+            avgPose, latestTimestamp, combinedTargets, estimates.get(0).strategy));
   }
 
   /**
@@ -134,7 +201,7 @@ public class VisionSubsystem implements Subsystem {
    * @param targets All targets in this camera frame
    */
   private void updateEstimationStdDevs(
-      Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+      Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets, PhotonPoseEstimator estimator) {
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
       curStdDevs = kSingleTagStdDevs;
@@ -147,7 +214,7 @@ public class VisionSubsystem implements Subsystem {
 
       // Precalculation - see how many tags we found, and calculate an average-distance metric
       for (var tgt : targets) {
-        var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+        var tagPose = estimator.getFieldTags().getTagPose(tgt.getFiducialId());
         if (tagPose.isEmpty()) continue;
         numTags++;
         avgDist +=

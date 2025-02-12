@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.generated.TunerConstants;
 
 public final class Constants {
 
@@ -36,7 +37,7 @@ public final class Constants {
     public static final String PHOTONVISIONURL = "photonvision.local";
 
     public static final String kCameraName1 = "OV9281";
-    public static final String kCameraName2 = "camera2";
+    public static final String kCameraName2 = "OV9281-2";
 
     // Cam mounted - x = +toward front, 0 center, -toward rear in meters.
     //               y = +left of center, 0 center, -right of center in meters
@@ -47,7 +48,9 @@ public final class Constants {
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
     public static final Transform3d kRobotToCam1 =
-        new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        new Transform3d(new Translation3d(0.2, -0.2, 0), new Rotation3d(0, 0, 0));
+    public static final Transform3d kRobotToCam2 =
+        new Transform3d(new Translation3d(-0.2, 0.2, 0), new Rotation3d(0, 0, Math.PI));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -56,29 +59,21 @@ public final class Constants {
   }
 
   public static final class DriveTrainConstants {
-    /** Maximum Speed - Meters per Second */
-    public static final double maxSpeed =
-        4.5; // TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+    // Maximum Speed - Meters per Second
+    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); 
 
-    // speed
-
-    public static final double maxAngularRate =
-        5.0; // RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-    // max angular velocity
+    // max angular velocity - Rotations per Second
+    // 3/4 of a rotation per second
+    public static final double maxAngularRate =  RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
   }
 
   public static final class AutoConstants {
     public static final PIDConstants translationPID = new PIDConstants(5.0, 0.0, 0.0);
     public static final PIDConstants rotationPID = new PIDConstants(5.0, 0.0, 0.0);
-
-    public static final double kMaxSpeedMetersPerSecond = 1.0;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 1.5;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
   }
 
   public static final class ArmConstants {
-    public static final int ARMMOTOR_ID = 31; // Figure it out
+    public static final int ARMMOTOR_ID = 31;
     public static final int ARMENCODER_ID = 32;
 
     public static final double armMotorKS = 0.0;
@@ -100,7 +95,7 @@ public final class Constants {
   }
 
   public static final class WristConstants {
-    public static final int WRISTMOTOR_ID = 33; // Figure it out
+    public static final int WRISTMOTOR_ID = 33;
     public static final int WRISTENCODER_ID = 34;
 
     public static final double wristMotorKS = 0.0;
@@ -119,8 +114,8 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int LINTAKEMOTOR_ID = 35; // Figure it out
-    public static final int RINTAKEMOTOR_ID = 36; // Figure it out
+    public static final int LINTAKEMOTOR_ID = 35;
+    public static final int RINTAKEMOTOR_ID = 36;
     public static final int RANGESENSOR_ID = 37;
 
     public static final double kTargetVelocity = 100.0;
