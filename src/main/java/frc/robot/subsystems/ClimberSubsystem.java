@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 // import com.ctre.phoenix6.controls.NeutralOut;
@@ -18,7 +20,8 @@ import frc.robot.Constants.ClimberConstants;
 public class ClimberSubsystem implements Subsystem {
   private final DutyCycleEncoder m_Encoder =
       new DutyCycleEncoder(new DigitalInput(ClimberConstants.ENCODER_ID));
-  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, "CANFD");
+  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, "rio");
+  private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
   private static final TalonFXConfiguration configs = new TalonFXConfiguration();
 
@@ -110,6 +113,14 @@ public class ClimberSubsystem implements Subsystem {
   public boolean getOnTarget() {
     // return Math.abs(this.getPosition() - m_targetPosition) < ClimberConstants.kOnTargetThreshold;
     return false;
+  }
+
+  public void setRotateSpeed(double speed) {
+    m_RotateMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void stopRotate() {
+    m_RotateMotor.set(ControlMode.PercentOutput, 0);
   }
 
   public void teleop(double val) {
