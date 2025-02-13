@@ -6,7 +6,9 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -16,11 +18,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, "rio");
-  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, "rio");
-  private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, "rio");
+  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, IntakeConstants.CANBUS);
+  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, IntakeConstants.CANBUS);
+  private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
 
-  private final VelocityDutyCycle m_intakerequest = new VelocityDutyCycle(0).withSlot(0);
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0).withSlot(0);
+  private final VelocityTorqueCurrentFOC m_torqueRequest = new VelocityTorqueCurrentFOC(0).withSlot(1);
+  private final NeutralOut m_brake = new NeutralOut();
 
   private double LintakeTargetVelocity = 0;
   private double RintakeTargetVelocity = 0;
@@ -37,24 +41,28 @@ public class IntakeSubsystem extends SubsystemBase {
 
     configIntake.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     configIntake.Slot0.kS = IntakeConstants.KSConstant;
+    configIntake.Slot0.kV = IntakeConstants.feedForwardPIDConstant;
     configIntake.Slot0.kP = IntakeConstants.proportialPIDConstant;
     configIntake.Slot0.kI = IntakeConstants.integralPIDConstant;
     configIntake.Slot0.kD = IntakeConstants.derivativePIDConstant;
-    configIntake.Slot0.kV = IntakeConstants.feedForwardPIDConstant;
+
     configIntake.Voltage.PeakForwardVoltage = IntakeConstants.peakForwardVoltage;
     configIntake.Voltage.PeakReverseVoltage = IntakeConstants.peakReverseVoltage;
 
+    configIntake.Slot1.kS = IntakeConstants.TorqueKSConstant;
     configIntake.Slot1.kP = IntakeConstants.proportialTorquePIDConstant;
     configIntake.Slot1.kI = IntakeConstants.integralTorquePIDConstant;
     configIntake.Slot1.kD = IntakeConstants.derivativeTorquePIDConstant;
+
     configIntake.TorqueCurrent.PeakForwardTorqueCurrent = IntakeConstants.peakForwardTorqueCurrent;
     configIntake.TorqueCurrent.PeakReverseTorqueCurrent = IntakeConstants.peakReverseTorqueCurrent;
 
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    status = m_LIntakeMotor.getConfigurator().apply(configIntake);
+    StatusCode status = m_LIntakeMotor.getConfigurator().apply(configIntake);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
+
+    configIntake.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     status = m_RIntakeMotor.getConfigurator().apply(configIntake);
     if (!status.isOK()) {
       System.out.println("Could not apply bottom configs, error code: " + status.toString());
@@ -65,8 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
     CANrangeConfiguration config = new CANrangeConfiguration();
 
     /* User can change the configs if they want, or leave it empty for factory-default */
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    status = m_RangeSensor.getConfigurator().apply(config);
+    StatusCode status = m_RangeSensor.getConfigurator().apply(config);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
@@ -93,10 +100,10 @@ public class IntakeSubsystem extends SubsystemBase {
     RintakeTargetVelocity = Rvelocity * IntakeConstants.kIntakeGearRatio;
     m_isIntakeIn = Lvelocity > 0.0;
 
-    m_LIntakeMotor.setControl(m_intakerequest.withVelocity(LintakeTargetVelocity));
-    m_RIntakeMotor.setControl(m_intakerequest.withVelocity(RintakeTargetVelocity));
-    // m_LIntakeMotor.setControl(m_torqueVelocity.withVelocity(Lvelocity).withFeedForward(1.0));
-    // m_RIntakeMotor.setControl(m_torqueVelocity.withVelocity(Rvelocity).withFeedForward(1.0));
+    m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(LintakeTargetVelocity));
+    m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(RintakeTargetVelocity));
+    // m_LIntakeMotor.setControl(m_torqueRequest.withVelocity(Lvelocity).withFeedForward(1.0));
+    // m_RIntakeMotor.setControl(m_torqueRequest.withVelocity(Rvelocity).withFeedForward(1.0));
   }
 
   public void setIntakeSpeed(double speed) {
@@ -113,19 +120,20 @@ public class IntakeSubsystem extends SubsystemBase {
     RintakeTargetVelocity = 0;
     m_isIntakeIn = false;
 
-    this.setIntakeSpeed(0.0);
+    m_LIntakeMotor.setControl(m_brake);
+    m_RIntakeMotor.setControl(m_brake);
   }
 
   public void intakeIn() {
-    this.setIntakeVelocity(IntakeConstants.intakeSpeed, IntakeConstants.intakeSpeed);
+    this.setIntakeVelocity(IntakeConstants.intakeVelocity, IntakeConstants.intakeVelocity);
   }
 
   public void intakeOut() {
-    this.setIntakeVelocity(IntakeConstants.outtakeSpeedL, IntakeConstants.outtakeSpeedL);
+    this.setIntakeVelocity(IntakeConstants.outtakeVelocityL, IntakeConstants.outtakeVelocityL);
   }
 
   public void intakeOutSpin() {
-    this.setIntakeVelocity(IntakeConstants.outtakeSpeedL, IntakeConstants.outtakeSpeedR);
+    this.setIntakeVelocity(IntakeConstants.outtakeVelocityL, IntakeConstants.outtakeVelocityR);
   }
 
   public boolean hasCoralLoaded() {

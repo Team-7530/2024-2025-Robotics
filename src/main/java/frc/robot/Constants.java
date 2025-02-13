@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -73,6 +74,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final String CANBUS = "CANFD";
     public static final int ARMMOTOR_ID = 31;
     public static final int ARMENCODER_ID = 32;
 
@@ -82,9 +84,9 @@ public final class Constants {
     public static final double armMotorKP = 4.0;
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 40;
-    public static final double MMagicAcceleration = 80;
-    public static final double MMagicJerk = 800;
+    public static final double MMagicCruiseVelocity = 10;
+    public static final double MMagicAcceleration = 20;
+    public static final double MMagicJerk = 200;
 
     public static final double kTargetArmHigh = 25.0;
     public static final double kTargetArmLow = 0.0;
@@ -95,6 +97,7 @@ public final class Constants {
   }
 
   public static final class WristConstants {
+    public static final String CANBUS = "rio";
     public static final int WRISTMOTOR_ID = 33;
     public static final int WRISTENCODER_ID = 34;
 
@@ -111,9 +114,14 @@ public final class Constants {
     public static final double kWristGearboxRatio = 12.0; // 1:12
     public static final double kWristGearRatio =
         kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
+
+    public static final double MMagicCruiseVelocity = 10;
+    public static final double MMagicAcceleration = 20;
+    public static final double MMagicJerk = 200;    
   }
 
   public static final class IntakeConstants {
+    public static final String CANBUS = "rio";
     public static final int LINTAKEMOTOR_ID = 35;
     public static final int RINTAKEMOTOR_ID = 36;
     public static final int RANGESENSOR_ID = 37;
@@ -125,9 +133,9 @@ public final class Constants {
     public static final double kIntakeGearRatio =
         kIntakeChainRatio * kIntakeGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double intakeSpeed = 0.15;
-    public static final double outtakeSpeedL = -0.15;
-    public static final double outtakeSpeedR = -0.30;
+    public static final double intakeVelocity = 0.15;
+    public static final double outtakeVelocityL = -0.15;
+    public static final double outtakeVelocityR = -0.30;
 
     public static final Distance rangeThreshold = Inches.of(5.0);
 
@@ -145,6 +153,7 @@ public final class Constants {
     public static final double peakForwardVoltage = 12.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -12.0; // Peak output of 8 volts
     /* Torque-based velocity does not require a feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
+    public static final double TorqueKSConstant = 0.0; // Static feedforward gain
     public static final double proportialTorquePIDConstant =
         5.0; // An error of 1 rotation per second results in 5 amps output
     public static final double integralTorquePIDConstant =
@@ -166,9 +175,23 @@ public final class Constants {
   }
 
   public static final class ClimberConstants {
+    public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
-    public static final int ENCODER_ID = 0; // Thrubore plugged into DIO 0
     public static final int ROTATEMOTOR_ID = 43;
+
+    public static final int ENCODER_ID = 0; // Thrubore plugged into DIO 0
+    public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
+
+    public static final double climbMotorKS = 0.0;
+    public static final double climbMotorKV = 0.0;
+    public static final double climbMotorKA = 0.0;
+    public static final double climbMotorKP = 4.0;
+    public static final double climbMotorKI = 0.0;
+    public static final double climbMotorKD = 0.0;
+
+    public static final double kTargetWristHigh = 25.0;
+    public static final double kTargetWristLow = 0.0;
+
     public static final double kClimberChainRatio = 14.0 / 10.0; // 10:14
     public static final double kClimberGearboxRatio = 100.0; // 1:100
     public static final double kClimberGearRatio =
@@ -178,13 +201,23 @@ public final class Constants {
     public static final double kTargetClimberUp = 0.0;
     public static final double kTargetClimberDown = 0.5;
 
-    // public static final double[] elevatorPID = {0.05, 0, 0};
-    // public static final double softLimit = 24.8;
-    // public static final double gravityFeedforward = 0;
-    // public static final double maxForwareSpeed = 0.5;
-    // public static final double maxReverseSpeed = -0.3;
-    // public static final double tolerance = 1;
-    // public static final double swerveLimitThreshold = 10;
+    public static final double kUnclampedPosition = 0.39;
+    public static final double kClampedPosition = 0.7;
+
+    public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
+    public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
+
+    public static final double TorqueKSConstant = 0.0; // Static feedforward gain
+    public static final double proportialTorquePIDConstant =
+        5.0; // An error of 1 rotation per second results in 5 amps output
+    public static final double integralTorquePIDConstant =
+        0.1; // An error of 1 rotation per second increases output by 0.1 amps every second
+    public static final double derivativeTorquePIDConstant =
+        0.001; // A change of 1000 rotation per second squared results in 1 amp output
+    public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
+    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
+    public static final double kClimberSpeed = 0.1;
+    public static final double kRotateSpeed = 1.0;
 
     public final class scoringPositioins {
       // TODO find these

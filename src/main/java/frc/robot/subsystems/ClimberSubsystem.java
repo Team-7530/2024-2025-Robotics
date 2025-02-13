@@ -1,56 +1,65 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-// import com.ctre.phoenix6.controls.NeutralOut;
-// import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem implements Subsystem {
+  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
+  private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
   private final DutyCycleEncoder m_Encoder =
       new DutyCycleEncoder(new DigitalInput(ClimberConstants.ENCODER_ID));
-  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, "CANFD");
-  private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
+  private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
-  private static final TalonFXConfiguration configs = new TalonFXConfiguration();
-
-  /* Be able to switch which control request to use based on a button press */
-  /* Start at position 0, use slot 0 */
   private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
-  /* Start at position 0, use slot 1 */
-  // private final PositionTorqueCurrentFOC m_positionTorque = new
-  // PositionTorqueCurrentFOC(0).withSlot(1);
-  /* Keep a brake request so we can disable the motor */
-  // private final NeutralOut m_brake = new NeutralOut();
+  private final PositionTorqueCurrentFOC m_positionTorque = new PositionTorqueCurrentFOC(0).withSlot(1);
+  private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = true;
+  private boolean m_isClamped = false;
 
   public ClimberSubsystem() {
 
-    configs.Slot0.kP = 2.4; // An error of 1 rotation results in 2.4 V output
-    configs.Slot0.kI = 0; // No output for integrated error
-    configs.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
-    // Peak output of 8 V
-    configs.Voltage.withPeakForwardVoltage(Volts.of(8.0)).withPeakReverseVoltage(Volts.of(-8.0));
+    initClimberConfigs();
+  }
 
-    configs.Slot1.kP = 60.0; // An error of 1 rotation results in 60 A output
-    configs.Slot1.kI = 0.0; // No output for integrated error
-    configs.Slot1.kD = 6.0; // A velocity of 1 rps results in 6 A output
-    // Peak output of 120 A
-    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(120.0))
-        .withPeakReverseTorqueCurrent(Amps.of(-120.0));
+  private void initClimberConfigs() {
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+
+    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    configs.Slot0.kS = ClimberConstants.climbMotorKS;
+    configs.Slot0.kV = ClimberConstants.climbMotorKV;
+    configs.Slot0.kA = ClimberConstants.climbMotorKA;
+    configs.Slot0.kP = ClimberConstants.climbMotorKP;
+    configs.Slot0.kI = ClimberConstants.climbMotorKI;
+    configs.Slot0.kD = ClimberConstants.climbMotorKD;
+
+    configs.Voltage.withPeakForwardVoltage(Volts.of(ClimberConstants.peakForwardVoltage));
+    configs.Voltage.withPeakReverseVoltage(Volts.of(ClimberConstants.peakReverseVoltage));
+
+    configs.Slot1.kP = ClimberConstants.proportialTorquePIDConstant;
+    configs.Slot1.kI = ClimberConstants.integralTorquePIDConstant;
+    configs.Slot1.kD = ClimberConstants.derivativeTorquePIDConstant;
+    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(ClimberConstants.peakForwardTorqueCurrent));
+    configs.TorqueCurrent.withPeakReverseTorqueCurrent(Amps.of(ClimberConstants.peakReverseTorqueCurrent));
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -63,6 +72,7 @@ public class ClimberSubsystem implements Subsystem {
     }
     /* Make sure we start at 0 */
     m_ClimbMotor.setPosition(0);
+    m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
   }
 
   @Override
@@ -74,6 +84,8 @@ public class ClimberSubsystem implements Subsystem {
         || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberMinPosition))) {
       m_ClimbMotor.stopMotor();
     }
+
+    m_ClimberClampServo.set(m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
 
     updateSmartDashboard();
   }
@@ -89,11 +101,9 @@ public class ClimberSubsystem implements Subsystem {
   public void setPosition(double pos) {
     m_isTeleop = false;
     m_targetPosition =
-        Math.max(
-                Math.min(pos, ClimberConstants.kClimberMaxPosition),
-                ClimberConstants.kClimberMinPosition)
-            * ClimberConstants.kClimberGearRatio;
-    m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
+        MathUtil.clamp(pos, ClimberConstants.kClimberMinPosition, ClimberConstants.kClimberMaxPosition);
+    // m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
+    m_ClimbMotor.set(m_targetPosition > this.getPosition() ? ClimberConstants.kClimberSpeed : -ClimberConstants.kClimberSpeed);
   }
 
   public void setSpeed(double speed) {
@@ -103,7 +113,7 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void stop() {
-    this.setSpeed(0);
+    m_ClimbMotor.setControl(m_brake);
   }
 
   public double getPosition() {
@@ -115,6 +125,14 @@ public class ClimberSubsystem implements Subsystem {
     return false;
   }
 
+  public void rotateOpen() {
+    this.setRotateSpeed(ClimberConstants.kRotateSpeed);
+  }
+
+  public void rotateClosed() {
+    this.setRotateSpeed(-ClimberConstants.kRotateSpeed);
+  }
+
   public void setRotateSpeed(double speed) {
     m_RotateMotor.set(ControlMode.PercentOutput, speed);
   }
@@ -122,6 +140,17 @@ public class ClimberSubsystem implements Subsystem {
   public void stopRotate() {
     m_RotateMotor.set(ControlMode.PercentOutput, 0);
   }
+
+  // boolean toggles for specific subsystems are meant to be in the subsystem class, not robot container
+  public void toggleClamp() {
+      setClamp(!m_isClamped);
+  }
+
+  public void setClamp(boolean toggle) {
+    m_isClamped = toggle;
+    m_ClimberClampServo.set(m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+  }
+
 
   public void teleop(double val) {
     val = MathUtil.applyDeadband(val, 0.01) * 0.5;
