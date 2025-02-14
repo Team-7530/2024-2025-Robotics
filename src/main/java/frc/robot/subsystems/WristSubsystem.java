@@ -20,6 +20,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -53,6 +55,9 @@ public class WristSubsystem extends SubsystemBase {
     configWrist.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
     configWrist.Feedback.SensorToMechanismRatio = 1.0;
     configWrist.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
+
+    configWrist.Voltage.PeakForwardVoltage = WristConstants.peakForwardVoltage;
+    configWrist.Voltage.PeakReverseVoltage = WristConstants.peakReverseVoltage;
 
     configWrist.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMagicCruiseVelocity;
     configWrist.MotionMagic.MotionMagicAcceleration = WristConstants.MMagicAcceleration;

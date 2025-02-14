@@ -8,7 +8,6 @@ import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -22,8 +21,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, IntakeConstants.CANBUS);
   private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
 
-  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0).withSlot(0);
-  private final VelocityTorqueCurrentFOC m_torqueRequest = new VelocityTorqueCurrentFOC(0).withSlot(1);
+  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(1);
+  private final VelocityTorqueCurrentFOC m_velocityRequest = new VelocityTorqueCurrentFOC(0).withSlot(1);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double LintakeTargetVelocity = 0;
@@ -71,7 +70,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private void initRangeSensor() {
     CANrangeConfiguration config = new CANrangeConfiguration();
-
+    config.FovParams.FOVCenterX = 0;
+    config.FovParams.FOVCenterY = 0;
+    config.FovParams.FOVRangeX = 27;
+    config.FovParams.FOVRangeY = 27;
+    config.ProximityParams.ProximityThreshold = 0.1;
+    config.ProximityParams.ProximityHysteresis = 0.01;
+    config.ProximityParams.MinSignalStrengthForValidMeasurement = 2500;
+    
     /* User can change the configs if they want, or leave it empty for factory-default */
     StatusCode status = m_RangeSensor.getConfigurator().apply(config);
     if (!status.isOK()) {
@@ -137,8 +143,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean hasCoralLoaded() {
-    return m_RangeSensor.getIsDetected().getValue()
-        && (m_RangeSensor.getDistance().getValue().lte(IntakeConstants.rangeThreshold));
+    return m_RangeSensor.getIsDetected().getValue();
   }
 
   public void teleop(double intake) {
