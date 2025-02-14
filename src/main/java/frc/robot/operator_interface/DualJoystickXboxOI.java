@@ -132,6 +132,51 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
   }
 
   @Override
+  public double getLeftThumbstickX() {
+    return operator.getLeftX();
+  }
+  @Override
+  public double getLeftThumbstickY() {
+    return operator.getLeftY();
+  }
+  @Override
+  public Trigger getLeftThumbstickButton() {
+    return new Trigger(() -> operator.getLeftStickButton());
+  }
+  @Override
+  public double getRightThumbstickX() {
+    return operator.getRightX();
+  }
+  @Override
+  public double getRightThumbstickY() {
+    return operator.getRightY();
+  }
+  @Override
+  public Trigger getRightThumbstickButton() {
+    return new Trigger(() -> operator.getLeftStickButton());
+  }
+  @Override
+  public Trigger getPOVUp() {
+    int pov = operator.getPOV();
+    return new Trigger(() -> (pov == 0) || (pov == 45) || (pov == 315));
+  }
+  @Override
+  public Trigger getPOVDown() {
+    int pov = operator.getPOV();
+    return new Trigger(() -> (pov == 180) || (pov == 225) || (pov == 135));
+  }
+  @Override
+  public Trigger getPOVLeft() {
+    int pov = operator.getPOV();
+    return new Trigger(() -> (pov == 270) || (pov == 315) || (pov == 225));
+  }
+  @Override
+  public Trigger getPOVRight() {
+    int pov = operator.getPOV();
+    return new Trigger(() -> (pov == 90) || (pov == 135) || (pov == 45));
+  }
+
+  @Override
   public boolean testResults(int mode) {
     boolean result = true;
     if (mode == DRIVER) {

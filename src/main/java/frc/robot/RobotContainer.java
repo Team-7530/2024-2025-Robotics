@@ -152,12 +152,17 @@ public class RobotContainer {
         .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
         .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
 
+    // oi.getLeftBumper()
+    //     .whileTrue(Commands.runOnce(() -> climber.setRotateSpeed(1.0), climber));
+    // oi.getRightBumper()
+    //     .whileTrue(Commands.runOnce(() -> climber.setRotateSpeed(-1.0), climber));
+    // oi.getRightThumbstickButton()
+    //     .whileTrue(Commands.runOnce(() -> climber.setClamp(false)))
+    //     .whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
     oi.getLeftBumper()
-        .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(0.1), wrist))
-        .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
+      .whileTrue(Commands.runOnce(() -> climber.setClamp(false)));
     oi.getRightBumper()
-        .whileTrue(Commands.runOnce(() -> wrist.setWristSpeed(-0.1), wrist))
-        .whileFalse(Commands.runOnce(() -> wrist.wristStop(), wrist));
+        .whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
   }
 
   /**
@@ -195,7 +200,9 @@ public class RobotContainer {
                             * DriveTrainConstants
                                 .maxAngularRate) // Drive counterclockwise with negative X (left)
             ));
-    // arm.setDefaultCommand(Commands.run(() -> arm.teleop(oi.getLeftTrigger()), arm));
+    arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
+    wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
+    climber.setDefaultCommand(Commands.run(() -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 

@@ -84,6 +84,37 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
+  public default double getLeftThumbstickX() {
+    return 0.0;
+  }
+  public default double getLeftThumbstickY() {
+    return 0.0;
+  }
+  public default Trigger getLeftThumbstickButton() {
+    return new Trigger(() -> false);
+  }
+  public default double getRightThumbstickX() {
+    return 0.0;
+  }
+  public default double getRightThumbstickY() {
+    return 0.0;
+  }
+  public default Trigger getRightThumbstickButton() {
+    return new Trigger(() -> false);
+  }
+  public default Trigger getPOVUp() {
+    return new Trigger(() -> false);
+  }
+  public default Trigger getPOVDown() {
+    return new Trigger(() -> false);
+  }
+  public default Trigger getPOVLeft() {
+    return new Trigger(() -> false);
+  }
+  public default Trigger getPOVRight() {
+    return new Trigger(() -> false);
+  }
+
   public default void testOI(int mode) {}
 
   public default boolean testResults(int mode) {
