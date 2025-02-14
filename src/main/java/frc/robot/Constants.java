@@ -2,7 +2,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -171,16 +170,6 @@ public final class Constants {
     public static final double MMagicJerk = 800;    
   }
 
-  public final class algaePositions { // with offset
-    public static final double L2 = 0;
-    public static final double L3 = 0;
-    public static final double fieldAlgae = 0;
-    public static final double processor = 0;
-    public static final double barge = 0;
-    public static final double home = 0;
-    public static final double floor = 0;
-  }
-
   public static final class ClimberConstants {
     public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
@@ -225,12 +214,5 @@ public final class Constants {
     public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
     public static final double kClimberSpeed = 0.1;
     public static final double kRotateSpeed = 1.0;
-
-    public final class scoringPositioins {
-      // TODO find these
-      public static final double L2 = 0;
-      public static final double L3 = 0;
-      public static final double L4 = 0;
-    }
   }
 }

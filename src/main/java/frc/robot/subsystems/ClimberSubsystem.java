@@ -8,8 +8,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionVoltage;
+// import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+// import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -27,8 +27,8 @@ public class ClimberSubsystem implements Subsystem {
       new DutyCycleEncoder(new DigitalInput(ClimberConstants.ENCODER_ID));
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
-  private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
-  private final PositionTorqueCurrentFOC m_positionTorque = new PositionTorqueCurrentFOC(0).withSlot(1);
+  // private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
+  // private final PositionTorqueCurrentFOC m_positionTorque = new PositionTorqueCurrentFOC(0).withSlot(1);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
