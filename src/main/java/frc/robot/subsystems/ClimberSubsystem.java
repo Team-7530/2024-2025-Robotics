@@ -14,7 +14,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,8 +22,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public class ClimberSubsystem implements Subsystem {
   private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
   private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
-  private final DutyCycleEncoder m_Encoder =
-      new DutyCycleEncoder(new DigitalInput(ClimberConstants.ENCODER_ID));
+  private final DutyCycleEncoder m_Encoder = new DutyCycleEncoder(ClimberConstants.ENCODER_ID);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
   // private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
@@ -80,8 +78,8 @@ public class ClimberSubsystem implements Subsystem {
     double pos = this.getPosition();
     double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
 
-    if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberMaxPosition))
-        || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberMinPosition))) {
+    if (((motorCycle < 0.0) && (pos >= ClimberConstants.kClimberMaxPosition))
+        || ((motorCycle > 0.0) && (pos <= ClimberConstants.kClimberMinPosition))) {
       m_ClimbMotor.stopMotor();
     }
 
@@ -157,7 +155,11 @@ public class ClimberSubsystem implements Subsystem {
     rotate = MathUtil.applyDeadband(rotate, 0.01);
 
     if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val);
+      this.setSpeed(val * 0.1);
+      // System.out.println(this.getPosition());
+      // if (m_Encoder.isConnected())
+      //   System.out.println("IsConnected");
+      
     }
     if (m_isTeleop || (rotate != 0.0)) {
       this.setRotateSpeed(rotate);

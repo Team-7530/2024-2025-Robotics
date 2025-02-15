@@ -20,6 +20,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -40,7 +41,7 @@ public class WristSubsystem extends SubsystemBase {
 
   private void initWristConfigs() {
     TalonFXConfiguration configWrist = new TalonFXConfiguration();
-    configWrist.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    configWrist.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     configWrist.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     configWrist.Slot0.kS = WristConstants.wristMotorKS;
@@ -50,7 +51,7 @@ public class WristSubsystem extends SubsystemBase {
     configWrist.Slot0.kI = WristConstants.wristMotorKI;
     configWrist.Slot0.kD = WristConstants.wristMotorKD;
     configWrist.Feedback.FeedbackRemoteSensorID = m_wristEncoder.getDeviceID();
-    configWrist.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+    configWrist.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     configWrist.Feedback.SensorToMechanismRatio = 1.0;
     configWrist.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
 
@@ -69,9 +70,9 @@ public class WristSubsystem extends SubsystemBase {
 
   private void initEncoderConfigs() {
     CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1));
+    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5));
     cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.4));
+    cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.17728));
 
     StatusCode status = m_wristEncoder.getConfigurator().apply(cc_cfg);
     if (!status.isOK()) {

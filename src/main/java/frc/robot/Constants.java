@@ -87,8 +87,8 @@ public final class Constants {
     public static final double MMagicAcceleration = 20;
     public static final double MMagicJerk = 200;
 
-    public static final double kTargetArmHigh = 0.62;
-    public static final double kTargetArmLow = 0.39;
+    public static final double kTargetArmHigh = -0.65;
+    public static final double kTargetArmLow = -1.0;
     public static final double kArmChainRatio = 14.0 / 10.0; // 10:14
     public static final double kArmGearboxRatio = 80.0; // 1:80
     public static final double kArmGearRatio =
@@ -103,12 +103,12 @@ public final class Constants {
     public static final double wristMotorKS = 0.2;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 40.0;
+    public static final double wristMotorKP = 20.0;
     public static final double wristMotorKI = 5.0;
     public static final double wristMotorKD = 0.0;
 
-    public static final double kTargetWristHigh = 0.52;
-    public static final double kTargetWristLow = 0.1;
+    public static final double kTargetWristHigh = 0.66;
+    public static final double kTargetWristLow = 1.23;
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 48.0; // 1:48
     public static final double kWristGearRatio =
@@ -192,13 +192,13 @@ public final class Constants {
     public static final double kClimberGearboxRatio = 100.0; // 1:100
     public static final double kClimberGearRatio =
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
-    public static final double kClimberMinPosition = 0.0;
-    public static final double kClimberMaxPosition = 1.0;
+    public static final double kClimberMinPosition = 0.315;
+    public static final double kClimberMaxPosition = 0.51;
     public static final double kTargetClimberUp = 0.0;
     public static final double kTargetClimberDown = 0.5;
 
-    public static final double kUnclampedPosition = 0.39;
-    public static final double kClampedPosition = 0.7;
+    public static final double kUnclampedPosition = 0.23;
+    public static final double kClampedPosition = 0.5;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts

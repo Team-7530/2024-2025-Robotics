@@ -51,7 +51,7 @@ public class ArmSubsystem extends SubsystemBase {
     configArm.Slot0.kI = ArmConstants.armMotorKI;
     configArm.Slot0.kD = ArmConstants.armMotorKD;
     configArm.Feedback.FeedbackRemoteSensorID = m_armEncoder.getDeviceID();
-    configArm.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+    configArm.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     configArm.Feedback.SensorToMechanismRatio = 1.0;
     configArm.Feedback.RotorToSensorRatio = ArmConstants.kArmGearRatio;
 
@@ -67,9 +67,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   private void initEncoderConfigs() {
     CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1));
-    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.4));
+    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5));
+    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(-0.406));
 
     StatusCode status = m_armEncoder.getConfigurator().apply(cc_cfg);
     if (!status.isOK()) {
