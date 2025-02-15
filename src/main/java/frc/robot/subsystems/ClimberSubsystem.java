@@ -78,8 +78,8 @@ public class ClimberSubsystem implements Subsystem {
     double pos = this.getPosition();
     double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
 
-    if (((motorCycle < 0.0) && (pos >= ClimberConstants.kClimberMaxPosition))
-        || ((motorCycle > 0.0) && (pos <= ClimberConstants.kClimberMinPosition))) {
+    if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberMaxPosition))
+        || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberMinPosition))) {
       m_ClimbMotor.stopMotor();
     }
 
@@ -101,13 +101,18 @@ public class ClimberSubsystem implements Subsystem {
     m_targetPosition =
         MathUtil.clamp(pos, ClimberConstants.kClimberMinPosition, ClimberConstants.kClimberMaxPosition);
     // m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
-    m_ClimbMotor.set(m_targetPosition > this.getPosition() ? ClimberConstants.kClimberSpeed : -ClimberConstants.kClimberSpeed);
+
+    double speed = m_targetPosition > this.getPosition() ? ClimberConstants.kClimberSpeed : -ClimberConstants.kClimberSpeed;
+    if (!m_isClamped || (speed > 0.0))
+      m_ClimbMotor.set(speed);
   }
 
   public void setSpeed(double speed) {
     m_isTeleop = true;
     m_targetPosition = 0.0;
-    m_ClimbMotor.set(speed);
+  
+    if (!m_isClamped || (speed > 0.0))
+      m_ClimbMotor.set(speed);
   }
 
   public void stop() {
@@ -146,6 +151,7 @@ public class ClimberSubsystem implements Subsystem {
 
   public void setClamp(boolean toggle) {
     m_isClamped = toggle;
+    this.stop();
     m_ClimberClampServo.set(m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
   }
 
@@ -155,11 +161,7 @@ public class ClimberSubsystem implements Subsystem {
     rotate = MathUtil.applyDeadband(rotate, 0.01);
 
     if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val * 0.1);
-      // System.out.println(this.getPosition());
-      // if (m_Encoder.isConnected())
-      //   System.out.println("IsConnected");
-      
+      this.setSpeed(val * 0.1);     
     }
     if (m_isTeleop || (rotate != 0.0)) {
       this.setRotateSpeed(rotate);

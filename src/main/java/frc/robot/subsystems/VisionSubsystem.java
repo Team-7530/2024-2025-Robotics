@@ -35,6 +35,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.lib.util.FieldConstants;
@@ -66,6 +69,8 @@ public class VisionSubsystem implements Subsystem {
 
   /* Cameras */
   public UsbCamera cam0;
+  private Field2d field2d = new Field2d();
+
 
   public VisionSubsystem() {
     cameras.add(new PhotonCamera(kCameraName1));
@@ -74,11 +79,11 @@ public class VisionSubsystem implements Subsystem {
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     photonEstimators.add(photonEstimator);
 
-    cameras.add(new PhotonCamera(kCameraName2));
-    photonEstimator = new PhotonPoseEstimator(
-      FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
-    photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    photonEstimators.add(photonEstimator);
+    // cameras.add(new PhotonCamera(kCameraName2));
+    // photonEstimator = new PhotonPoseEstimator(
+    //   FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
+    // photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // photonEstimators.add(photonEstimator);
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -103,6 +108,10 @@ public class VisionSubsystem implements Subsystem {
         cameraSims.add(cameraSim);
       }     
     }  
+
+    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+    tab.add("PhotonField", field2d).withSize(6, 4).withWidget(BuiltInWidgets.kField);
+
     // cam0 = CameraServer.startAutomaticCapture(0);
     // cam0.setConnectVerbose(0);
   }
@@ -151,6 +160,8 @@ public class VisionSubsystem implements Subsystem {
         : Optional.of(allVisionEstimates.get(allVisionEstimates.size() - 1)), 
       allCameraTargets,
       photonEstimators.get(0));
+
+      // field2d.setRobotPose(drivetrain.getState().Pose);
 
       return averageVisionEstimates(allVisionEstimates);
   }

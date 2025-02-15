@@ -89,7 +89,7 @@ public final class Constants {
 
     public static final double kTargetArmHigh = -0.65;
     public static final double kTargetArmLow = -1.0;
-    public static final double kArmChainRatio = 14.0 / 10.0; // 10:14
+    public static final double kArmChainRatio = 50.0 / 15.0; // 15:50
     public static final double kArmGearboxRatio = 80.0; // 1:80
     public static final double kArmGearRatio =
         kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio

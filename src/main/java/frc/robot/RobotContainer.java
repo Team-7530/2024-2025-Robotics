@@ -143,14 +143,15 @@ public class RobotContainer {
     // oi.getAButton().whileTrue(getAutonomousCommand());
 
     oi.getAButton().whileTrue(new IntakeCommand(intake));
-    oi.getBButton().whileTrue(new OuttakeCommand(intake));
+    oi.getXButton().whileTrue(new OuttakeCommand(intake));
+    oi.getBButton().whileTrue(new OuttakeSpinCommand(intake));
 
-    oi.getXButton()
-        .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))
-        .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
-    oi.getYButton()
-        .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
-        .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
+    // oi.getXButton()
+    //     .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))
+    //     .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
+    // oi.getYButton()
+    //     .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
+    //     .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
 
     // oi.getLeftBumper()
     //     .whileTrue(Commands.runOnce(() -> climber.setRotateSpeed(1.0), climber));
@@ -200,8 +201,8 @@ public class RobotContainer {
                             * DriveTrainConstants
                                 .maxAngularRate) // Drive counterclockwise with negative X (left)
             ));
-    arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
-    wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
+  //  arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
+   // wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(Commands.run(() -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
