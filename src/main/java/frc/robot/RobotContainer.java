@@ -193,8 +193,8 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
-  //  arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
-   // wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
+    arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
+    wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(Commands.run(() -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
