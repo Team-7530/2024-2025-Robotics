@@ -161,7 +161,7 @@ public class ClimberSubsystem implements Subsystem {
     rotate = MathUtil.applyDeadband(rotate, 0.01);
 
     if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val * 0.1);     
+      this.setSpeed(val * 0.45);     
     }
     if (m_isTeleop || (rotate != 0.0)) {
       this.setRotateSpeed(rotate);
