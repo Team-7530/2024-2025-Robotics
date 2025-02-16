@@ -39,7 +39,7 @@ public class SwerveTeleopCommand extends Command {
 
   @Override
   public void execute() {
-    if (!oi.isRobotRelative()) {
+    if (oi.isRobotRelative()) {
       drivetrain.applyRequest(
         () -> driveRobotCentric
                 .withVelocityX(
