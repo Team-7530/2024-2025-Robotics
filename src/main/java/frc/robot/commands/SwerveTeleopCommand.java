@@ -52,8 +52,8 @@ public class SwerveTeleopCommand extends Command {
                 .withRotationalRate(
                     oi.getRotate()
                         * DriveTrainConstants
-                            .maxAngularRate)); 
-} else {
+                            .maxAngularRate));
+    } else {
         drivetrain.applyRequest(
             () -> driveFieldCentric
                     .withVelocityX(
