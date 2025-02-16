@@ -5,6 +5,7 @@ import static frc.robot.Constants.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,14 +35,21 @@ public class RobotContainer {
   private static RobotContainer instance;
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final SwerveRequest.FieldCentric drive =
+  private final SwerveRequest.FieldCentric driveFieldCentric =
       new SwerveRequest.FieldCentric()
           .withDeadband(DriveTrainConstants.maxSpeed * 0.1)
           .withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(
               DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.RobotCentric driveRobotCentric =
+      new SwerveRequest.RobotCentric()
+          .withDeadband(DriveTrainConstants.maxSpeed * 0.1)
+          .withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+          
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final SwerveRequest.RobotCentric forwardStraight =
       new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -101,12 +109,12 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    oi.getRobotRelative()
-        .whileTrue(
-            drivetrain.applyRequest(
-                () ->
-                    point.withModuleDirection(
-                        new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
+    // oi.getRobotRelative()
+    //     .whileTrue(
+    //         drivetrain.applyRequest(
+    //             () ->
+    //                 point.withModuleDirection(
+    //                     new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
 
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
@@ -184,23 +192,7 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    drivetrain.setDefaultCommand(
-        // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(
-            () ->
-                drive
-                    .withVelocityX(
-                        oi.getTranslateX()
-                            * DriveTrainConstants
-                                .maxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(
-                        oi.getTranslateY()
-                            * DriveTrainConstants.maxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        oi.getRotate()
-                            * DriveTrainConstants
-                                .maxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
+    drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
   //  arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
    // wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(Commands.run(() -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
@@ -208,7 +200,9 @@ public class RobotContainer {
   }
 
   private void configureAutoPaths() {
-    // NamedCommands.registerCommand("Intake", new IntakeCommand(shooter));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
+    NamedCommands.registerCommand("Outtake", new OuttakeCommand(intake));
+    NamedCommands.registerCommand("OuttakeSpin", new OuttakeSpinCommand(intake));
     // NamedCommands.registerCommand(
     //     "ElevateUp", new ElevateCommand(elevator, ElevatorConstants.kTargetElevatorHigh));
     // NamedCommands.registerCommand(
