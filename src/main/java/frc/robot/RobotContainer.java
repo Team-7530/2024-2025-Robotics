@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
@@ -192,9 +193,23 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
-    arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
-    wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
+    // drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
+    drivetrain.setDefaultCommand(     
+      drivetrain.applyRequest(
+        () -> driveRobotCentric
+                .withVelocityX(
+                    oi.getTranslateX()
+                        * DriveTrainConstants
+                            .maxSpeed)
+                .withVelocityY(
+                    oi.getTranslateY()
+                        * DriveTrainConstants.maxSpeed)
+                .withRotationalRate(
+                    oi.getRotate()
+                        * DriveTrainConstants
+                            .maxAngularRate)) );
+  //  arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
+   // wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(Commands.run(() -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
