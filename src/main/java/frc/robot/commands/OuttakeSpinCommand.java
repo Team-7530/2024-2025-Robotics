@@ -18,7 +18,7 @@ public class OuttakeSpinCommand extends Command {
 
   @Override
   public void initialize() {
-    m_counter = 25;
+    m_counter = 250;
     m_isFinished = false;
 
     m_IntakeSubsystem.intakeOutSpin();

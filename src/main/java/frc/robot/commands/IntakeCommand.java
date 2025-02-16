@@ -17,7 +17,7 @@ public class IntakeCommand extends Command {
 
   @Override
   public void initialize() {
-    m_IntakeCounter = 25;
+    m_IntakeCounter = 250;
     m_isFinished = false;
 
     m_IntakeSubsystem.intakeIn();

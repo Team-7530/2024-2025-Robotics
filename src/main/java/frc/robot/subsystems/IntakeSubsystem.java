@@ -135,7 +135,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeOut() {
-    this.setIntakeVelocity(IntakeConstants.outtakeVelocityL, IntakeConstants.outtakeVelocityL);
+    this.setIntakeVelocity(IntakeConstants.outtakeVelocityR, IntakeConstants.outtakeVelocityR);
   }
 
   public void intakeOutSpin() {
