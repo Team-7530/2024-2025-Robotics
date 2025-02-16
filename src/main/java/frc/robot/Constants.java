@@ -213,6 +213,7 @@ public final class Constants {
     public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
     public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
     public static final double kClimberSpeed = 0.1;
+    public static final double kClimberSpeed2 = 0.45;
     public static final double kRotateSpeed = 1.0;
   }
 }

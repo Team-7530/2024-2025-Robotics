@@ -88,12 +88,12 @@ public class ClimberSubsystem implements Subsystem {
     updateSmartDashboard();
   }
 
-  public void up() {
-    this.setPosition(ClimberConstants.kTargetClimberUp);
+  public void restore() {
+    this.setPosition(ClimberConstants.kClimberMinPosition);
   }
 
-  public void down() {
-    this.setPosition(ClimberConstants.kTargetClimberDown);
+  public void climb() {
+    this.setPosition(ClimberConstants.kClimberMaxPosition);
   }
 
   public void setPosition(double pos) {
@@ -102,9 +102,13 @@ public class ClimberSubsystem implements Subsystem {
         MathUtil.clamp(pos, ClimberConstants.kClimberMinPosition, ClimberConstants.kClimberMaxPosition);
     // m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
 
-    double speed = m_targetPosition > this.getPosition() ? ClimberConstants.kClimberSpeed : -ClimberConstants.kClimberSpeed;
-    if (!m_isClamped || (speed > 0.0))
-      m_ClimbMotor.set(speed);
+    double speed = 0.0; // default is 0 
+
+    if ( m_targetPosition > this.getPosition()) // is climbing
+      speed = m_isClamped ? ClimberConstants.kClimberSpeed2 : ClimberConstants.kClimberSpeed;
+    else if (!m_isClamped)
+      speed = -ClimberConstants.kClimberSpeed; // not climbing and not clamped
+    m_ClimbMotor.set(speed);
   }
 
   public void setSpeed(double speed) {
