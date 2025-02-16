@@ -200,8 +200,8 @@ public final class Constants {
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
-    public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
+    public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
+    public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
 
     public static final double TorqueKSConstant = 0.0; // Static feedforward gain
     public static final double proportialTorquePIDConstant =
