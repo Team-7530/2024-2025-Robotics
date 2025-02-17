@@ -37,43 +37,48 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   private void initWristConfigs() {
-    TalonFXConfiguration configWrist = new TalonFXConfiguration();
-    configWrist.MotorOutput.Inverted = WristConstants.kWristInverted;
-    configWrist.MotorOutput.NeutralMode = WristConstants.kWristNeutralMode;
-    configWrist.Voltage.PeakForwardVoltage = WristConstants.peakForwardVoltage;
-    configWrist.Voltage.PeakReverseVoltage = WristConstants.peakReverseVoltage;
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.MotorOutput.Inverted = WristConstants.kWristInverted;
+    configs.MotorOutput.NeutralMode = WristConstants.kWristNeutralMode;
+    configs.Voltage.PeakForwardVoltage = WristConstants.peakForwardVoltage;
+    configs.Voltage.PeakReverseVoltage = WristConstants.peakReverseVoltage;
 
-    configWrist.Slot0.kG = WristConstants.wristMotorKG;
-    configWrist.Slot0.kS = WristConstants.wristMotorKS;
-    configWrist.Slot0.kV = WristConstants.wristMotorKV;
-    configWrist.Slot0.kA = WristConstants.wristMotorKA;
-    configWrist.Slot0.kP = WristConstants.wristMotorKP;
-    configWrist.Slot0.kI = WristConstants.wristMotorKI;
-    configWrist.Slot0.kD = WristConstants.wristMotorKD;
-    configWrist.Feedback.FeedbackRemoteSensorID = m_wristEncoder.getDeviceID();
-    configWrist.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    configWrist.Feedback.SensorToMechanismRatio = 1.0;
-    configWrist.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
+    configs.Slot0.kG = WristConstants.wristMotorKG;
+    configs.Slot0.kS = WristConstants.wristMotorKS;
+    configs.Slot0.kV = WristConstants.wristMotorKV;
+    configs.Slot0.kA = WristConstants.wristMotorKA;
+    configs.Slot0.kP = WristConstants.wristMotorKP;
+    configs.Slot0.kI = WristConstants.wristMotorKI;
+    configs.Slot0.kD = WristConstants.wristMotorKD;
+    configs.Feedback.FeedbackRemoteSensorID = m_wristEncoder.getDeviceID();
+    configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    configs.Feedback.SensorToMechanismRatio = 1.0;
+    configs.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
 
-    configWrist.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMagicCruiseVelocity;
-    configWrist.MotionMagic.MotionMagicAcceleration = WristConstants.MMagicAcceleration;
-    configWrist.MotionMagic.MotionMagicJerk = WristConstants.MMagicJerk;
-    configWrist.MotionMagic.MotionMagicExpo_kV = WristConstants.MMagicExpo_kV;
-    configWrist.MotionMagic.MotionMagicExpo_kA = WristConstants.MMagicExpo_kA;
+    configs.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMagicCruiseVelocity;
+    configs.MotionMagic.MotionMagicAcceleration = WristConstants.MMagicAcceleration;
+    configs.MotionMagic.MotionMagicJerk = WristConstants.MMagicJerk;
+    configs.MotionMagic.MotionMagicExpo_kV = WristConstants.MMagicExpo_kV;
+    configs.MotionMagic.MotionMagicExpo_kA = WristConstants.MMagicExpo_kA;
 
-    StatusCode status = m_wristMotor.getConfigurator().apply(configWrist);
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = WristConstants.kWristPositionMax;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = WristConstants.kWristPositionMin;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+    StatusCode status = m_wristMotor.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
   }
 
   private void initEncoderConfigs() {
-    CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
-    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    cc_cfg.MagnetSensor.withMagnetOffset(Units.Rotations.of(0.17728));
+    CANcoderConfiguration configs = new CANcoderConfiguration();
+    configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
+    configs.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(0.17728));
 
-    StatusCode status = m_wristEncoder.getConfigurator().apply(cc_cfg);
+    StatusCode status = m_wristEncoder.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }

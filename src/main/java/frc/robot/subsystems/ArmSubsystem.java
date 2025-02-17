@@ -36,44 +36,49 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void initArmConfigs() {
-    TalonFXConfiguration configArm = new TalonFXConfiguration();
+    TalonFXConfiguration configs = new TalonFXConfiguration();
 
-    configArm.MotorOutput.Inverted = ArmConstants.kArmInverted;
-    configArm.MotorOutput.NeutralMode = ArmConstants.kArmNeutralMode;
-    configArm.Voltage.PeakForwardVoltage = ArmConstants.peakForwardVoltage;
-    configArm.Voltage.PeakReverseVoltage = ArmConstants.peakReverseVoltage;
+    configs.MotorOutput.Inverted = ArmConstants.kArmInverted;
+    configs.MotorOutput.NeutralMode = ArmConstants.kArmNeutralMode;
+    configs.Voltage.PeakForwardVoltage = ArmConstants.peakForwardVoltage;
+    configs.Voltage.PeakReverseVoltage = ArmConstants.peakReverseVoltage;
 
-    configArm.Slot0.kG = ArmConstants.armMotorKG;
-    configArm.Slot0.kS = ArmConstants.armMotorKS;
-    configArm.Slot0.kV = ArmConstants.armMotorKV;
-    configArm.Slot0.kA = ArmConstants.armMotorKA;
-    configArm.Slot0.kP = ArmConstants.armMotorKP;
-    configArm.Slot0.kI = ArmConstants.armMotorKI;
-    configArm.Slot0.kD = ArmConstants.armMotorKD;
-    configArm.Feedback.FeedbackRemoteSensorID = m_armEncoder.getDeviceID();
-    configArm.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    configArm.Feedback.SensorToMechanismRatio = 1.0;
-    configArm.Feedback.RotorToSensorRatio = ArmConstants.kArmGearRatio;
+    configs.Slot0.kG = ArmConstants.armMotorKG;
+    configs.Slot0.kS = ArmConstants.armMotorKS;
+    configs.Slot0.kV = ArmConstants.armMotorKV;
+    configs.Slot0.kA = ArmConstants.armMotorKA;
+    configs.Slot0.kP = ArmConstants.armMotorKP;
+    configs.Slot0.kI = ArmConstants.armMotorKI;
+    configs.Slot0.kD = ArmConstants.armMotorKD;
+    configs.Feedback.FeedbackRemoteSensorID = m_armEncoder.getDeviceID();
+    configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    configs.Feedback.SensorToMechanismRatio = 1.0;
+    configs.Feedback.RotorToSensorRatio = ArmConstants.kArmGearRatio;
 
-    configArm.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.MMagicCruiseVelocity;
-    configArm.MotionMagic.MotionMagicAcceleration = ArmConstants.MMagicAcceleration;
-    configArm.MotionMagic.MotionMagicJerk = ArmConstants.MMagicJerk;
-    configArm.MotionMagic.MotionMagicExpo_kV = ArmConstants.MMagicExpo_kV;
-    configArm.MotionMagic.MotionMagicExpo_kA = ArmConstants.MMagicExpo_kA;
+    configs.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.MMagicCruiseVelocity;
+    configs.MotionMagic.MotionMagicAcceleration = ArmConstants.MMagicAcceleration;
+    configs.MotionMagic.MotionMagicJerk = ArmConstants.MMagicJerk;
+    configs.MotionMagic.MotionMagicExpo_kV = ArmConstants.MMagicExpo_kV;
+    configs.MotionMagic.MotionMagicExpo_kA = ArmConstants.MMagicExpo_kA;
 
-    StatusCode status = m_armMotor.getConfigurator().apply(configArm);
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.kArmPositionMax;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.kArmPositionMin;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+    StatusCode status = m_armMotor.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
   }
 
   private void initEncoderConfigs() {
-    CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
-    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    cc_cfg.MagnetSensor.withMagnetOffset(Units.Rotations.of(-0.406));
+    CANcoderConfiguration configs = new CANcoderConfiguration();
+    configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
+    configs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(-0.406));
 
-    StatusCode status = m_armEncoder.getConfigurator().apply(cc_cfg);
+    StatusCode status = m_armEncoder.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }

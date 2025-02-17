@@ -53,6 +53,11 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot0.kI = ClimberConstants.climbMotorKI;
     configs.Slot0.kD = ClimberConstants.climbMotorKD;
 
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
