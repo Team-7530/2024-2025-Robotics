@@ -87,8 +87,16 @@ public class ClimberSubsystem implements Subsystem {
     this.setPosition(ClimberConstants.kTargetClimberDown);
   }
 
+  public boolean isRestoredPosition() {
+    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberDown) < 0.01;
+  }
+
   public void climb() {
     this.setPosition(ClimberConstants.kTargetClimberUp);
+  }
+
+  public boolean isFullClimbPosition() {
+    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberUp) < 0.01;
   }
 
   public void setPosition(double pos) {
@@ -137,17 +145,15 @@ public class ClimberSubsystem implements Subsystem {
     m_RotateMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  // boolean toggles for specific subsystems are meant to be in the subsystem class, not robot
-  // container
-  public void toggleClamp() {
-    setClamp(!m_isClamped);
-  }
-
-  public void setClamp(boolean toggle) {
-    m_isClamped = toggle;
+  public void setClamp(boolean clampOn) {
+    m_isClamped = clampOn;
     this.stop();
     m_ClimberClampServo.set(
         m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+  }
+
+  public boolean getClamp() {
+    return m_isClamped;
   }
 
   public void teleop(double val, double rotate) {

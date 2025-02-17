@@ -2,19 +2,17 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.*;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
-public class GetCoralCommand extends Command {
+public class GetCoralCommand extends SequentialCommandGroup {
 
-  public GetCoralCommand(ArmSubsystem arm, double position) {
-
-    addRequirements(arm);
+  public GetCoralCommand(ArmSubsystem arm, WristSubsystem wrist) {
+    addCommands(
+        new ArmToPositionCommand(arm, ScoringConstants.LoadArmPosition)
+            .withName("ArmToLoadingPosition"),
+        new WristToPositionCommand(wrist, ScoringConstants.LoadWristPosition)
+            .withName("WristToLoadingPosition"));
   }
-
-  @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {}
 }

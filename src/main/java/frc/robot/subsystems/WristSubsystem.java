@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -95,8 +94,8 @@ public class WristSubsystem extends SubsystemBase {
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition));
   }
 
-  public Angle getWristPosition() {
-    return m_wristEncoder.getPosition().getValue();
+  public double getWristPosition() {
+    return m_wristEncoder.getPosition().getValueAsDouble();
   }
 
   public void setWristSpeed(double wspeed) {
@@ -127,9 +126,7 @@ public class WristSubsystem extends SubsystemBase {
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
-    SmartDashboard.putNumber("Wrist Postion", this.getWristPosition().in(Units.Degrees));
-    SmartDashboard.putNumber(
-        "WristCanCoder Postion", m_wristEncoder.getPosition().getValue().in(Units.Degrees));
+    SmartDashboard.putNumber("Wrist Postion", this.getWristPosition());
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);
   }
 }

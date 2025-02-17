@@ -73,6 +73,17 @@ public final class Constants {
     public static final PIDConstants rotationPID = new PIDConstants(5.0, 0.0, 0.0);
   }
 
+  public static final class ScoringConstants {
+    public static final double L1ArmPosition = 0.1;
+    public static final double L1WristPosition = 0.1;
+
+    public static final double L2ArmPosition = 0.2;
+    public static final double L2WristPosition = 0.2;
+
+    public static final double LoadArmPosition = 0.3;
+    public static final double LoadWristPosition = 0.3;
+  }
+
   public static final class ArmConstants {
     public static final String CANBUS = "CANFD";
     public static final int ARMMOTOR_ID = 31;

@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -95,8 +94,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_armMotor.setControl(m_armRequest.withPosition(armTargetPosition));
   }
 
-  public Angle getArmPosition() {
-    return m_armEncoder.getPosition().getValue();
+  public double getArmPosition() {
+    return m_armEncoder.getPosition().getValueAsDouble();
   }
 
   public void setArmSpeed(double aspeed) {
@@ -127,9 +126,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
-    SmartDashboard.putNumber("Arm Postion", this.getArmPosition().in(Units.Degrees));
-    SmartDashboard.putNumber(
-        "ArmCanCoder Postion", m_armEncoder.getPosition().getValue().in(Units.Degrees));
+    SmartDashboard.putNumber("Arm Postion", this.getArmPosition());
     SmartDashboard.putNumber("Arm TargetPostion", armTargetPosition);
   }
 }
