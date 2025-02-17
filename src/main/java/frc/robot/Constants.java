@@ -61,11 +61,11 @@ public final class Constants {
 
   public static final class DriveTrainConstants {
     // Maximum Speed - Meters per Second
-    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); 
+    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
 
     // max angular velocity - Rotations per Second
     // 3/4 of a rotation per second
-    public static final double maxAngularRate =  RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
+    public static final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
   }
 
   public static final class AutoConstants {
@@ -130,7 +130,7 @@ public final class Constants {
     public static final double wristMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 10;
     public static final double MMagicAcceleration = 20;
-    public static final double MMagicJerk = 200;    
+    public static final double MMagicJerk = 200;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
@@ -142,7 +142,6 @@ public final class Constants {
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
-    
   }
 
   public static final class IntakeConstants {
@@ -163,16 +162,19 @@ public final class Constants {
     public static final double kIntakeGearboxRatio = 1.0; // 1:1
     public static final double kIntakeGearRatio =
         kIntakeChainRatio * kIntakeGearboxRatio; // chain ratio * Gearbox ratio
-    
+
     /* Torque-based velocity does not require a feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
     public static final double intakeMotorTorqueKS = 0.0; // Static feedforward gain
-    public static final double intakeMotorTorqueKP = 8.0; // An error of 1 rps results in 5 amps output
-    public static final double intakeMotorTorqueKI = 0.2; // An error of 1 rps increases by 0.1 amps every second
-    public static final double intakeMotorTorqueKD = 0.001; // A change of 1000 rps squared results in 1 amp output
+    public static final double intakeMotorTorqueKP =
+        8.0; // An error of 1 rps results in 5 amps output
+    public static final double intakeMotorTorqueKI =
+        0.2; // An error of 1 rps increases by 0.1 amps every second
+    public static final double intakeMotorTorqueKD =
+        0.001; // A change of 1000 rps squared results in 1 amp output
 
     public static final double MMagicCruiseVelocity = 40;
     public static final double MMagicAcceleration = 80;
-    public static final double MMagicJerk = 800;    
+    public static final double MMagicJerk = 800;
 
     public static final double intakeVelocity = -3.0;
     public static final double outtakeVelocityL = 2.0;
@@ -186,7 +188,7 @@ public final class Constants {
     public static final double kProxThreshold = 0.1;
     public static final double kProxHysteresis = 0.01;
     public static final double kMinSigStrength = 2500;
-}
+  }
 
   public static final class ClimberConstants {
     public static final String CANBUS = "CANFD";

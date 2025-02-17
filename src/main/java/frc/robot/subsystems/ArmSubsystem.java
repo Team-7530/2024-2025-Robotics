@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -21,7 +20,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmSubsystem extends SubsystemBase {
 
   private final TalonFX m_armMotor = new TalonFX(ArmConstants.ARMMOTOR_ID, ArmConstants.CANBUS);
-  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
+  private final CANcoder m_armEncoder =
+      new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
 
   private final MotionMagicVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
   // private final MotionMagicExpoVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
@@ -34,7 +34,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     initEncoderConfigs();
     initArmConfigs();
-    
   }
 
   private void initArmConfigs() {
@@ -78,11 +77,10 @@ public class ArmSubsystem extends SubsystemBase {
     StatusCode status = m_armEncoder.getConfigurator().apply(cc_cfg);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
-    }   
+    }
     // set starting position to current absolute position
     m_armEncoder.setPosition(m_armEncoder.getAbsolutePosition().getValueAsDouble());
   }
-
 
   @Override
   public void periodic() {
@@ -91,7 +89,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setArmPosition(double pos) {
     m_isTeleop = false;
-    armTargetPosition = MathUtil.clamp(pos, ArmConstants.kArmPositionMin, ArmConstants.kArmPositionMax);
+    armTargetPosition =
+        MathUtil.clamp(pos, ArmConstants.kArmPositionMin, ArmConstants.kArmPositionMax);
 
     m_armMotor.setControl(m_armRequest.withPosition(armTargetPosition));
   }

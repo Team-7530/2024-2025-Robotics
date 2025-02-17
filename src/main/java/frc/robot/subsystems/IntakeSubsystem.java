@@ -16,12 +16,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX m_LIntakeMotor = new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, IntakeConstants.CANBUS);
-  private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, IntakeConstants.CANBUS);
-  private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
+  private final TalonFX m_LIntakeMotor =
+      new TalonFX(IntakeConstants.LINTAKEMOTOR_ID, IntakeConstants.CANBUS);
+  private final TalonFX m_RIntakeMotor =
+      new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, IntakeConstants.CANBUS);
+  private final CANrange m_RangeSensor =
+      new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
 
-  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
-  private final VelocityTorqueCurrentFOC m_velocityRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);
+  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new
+  // MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
+  private final VelocityTorqueCurrentFOC m_velocityRequest =
+      new VelocityTorqueCurrentFOC(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double LintakeTargetVelocity = 0;
@@ -69,8 +74,9 @@ public class IntakeSubsystem extends SubsystemBase {
     config.FovParams.FOVRangeY = IntakeConstants.kRangeFOVRangeY;
     config.ProximityParams.ProximityThreshold = IntakeConstants.kProxThreshold;
     config.ProximityParams.ProximityHysteresis = IntakeConstants.kProxHysteresis;
-    config.ProximityParams.MinSignalStrengthForValidMeasurement = IntakeConstants.kMinSigStrength; //2500;
-    
+    config.ProximityParams.MinSignalStrengthForValidMeasurement =
+        IntakeConstants.kMinSigStrength; // 2500;
+
     /* User can change the configs if they want, or leave it empty for factory-default */
     StatusCode status = m_RangeSensor.getConfigurator().apply(config);
     if (!status.isOK()) {

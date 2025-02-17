@@ -35,20 +35,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.lib.util.FieldConstants;
 import frc.robot.Robot;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -69,13 +64,12 @@ public class VisionSubsystem implements Subsystem {
 
   /* Cameras */
   public UsbCamera cam0;
-  private Field2d field2d = new Field2d();
-
 
   public VisionSubsystem() {
     cameras.add(new PhotonCamera(kCameraName1));
-    PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(
-      FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
+    PhotonPoseEstimator photonEstimator =
+        new PhotonPoseEstimator(
+            FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     photonEstimators.add(photonEstimator);
 
@@ -103,14 +97,11 @@ public class VisionSubsystem implements Subsystem {
         PhotonCameraSim cameraSim = new PhotonCameraSim(cameras.get(i), cameraProp);
         // Add the simulated camera to view the targets on this simulated field.
         visionSim.addCamera(cameraSim, photonEstimators.get(i).getRobotToCameraTransform());
-        cameraSim.enableDrawWireframe(true);   
+        cameraSim.enableDrawWireframe(true);
 
         cameraSims.add(cameraSim);
-      }     
-    }  
-
-    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add("PhotonField", field2d).withSize(6, 4).withWidget(BuiltInWidgets.kField);
+      }
+    }
 
     // cam0 = CameraServer.startAutomaticCapture(0);
     // cam0.setConnectVerbose(0);
@@ -146,24 +137,22 @@ public class VisionSubsystem implements Subsystem {
         if (Robot.isSimulation()) {
           final int index = i;
           visionEst.ifPresentOrElse(
-            est ->
-                getSimDebugField()
-                    .getObject("VisionEstimation" + index)
-                    .setPose(est.estimatedPose.toPose2d()),
-            () -> getSimDebugField().getObject("VisionEstimation" + index).setPoses());
+              est ->
+                  getSimDebugField()
+                      .getObject("VisionEstimation" + index)
+                      .setPose(est.estimatedPose.toPose2d()),
+              () -> getSimDebugField().getObject("VisionEstimation" + index).setPoses());
         }
       }
     }
     updateEstimationStdDevs(
-      allVisionEstimates.isEmpty() 
-        ? Optional.empty() 
-        : Optional.of(allVisionEstimates.get(allVisionEstimates.size() - 1)), 
-      allCameraTargets,
-      photonEstimators.get(0));
+        allVisionEstimates.isEmpty()
+            ? Optional.empty()
+            : Optional.of(allVisionEstimates.get(allVisionEstimates.size() - 1)),
+        allCameraTargets,
+        photonEstimators.get(0));
 
-      // field2d.setRobotPose(drivetrain.getState().Pose);
-
-      return averageVisionEstimates(allVisionEstimates);
+    return averageVisionEstimates(allVisionEstimates);
   }
 
   private Optional<EstimatedRobotPose> averageVisionEstimates(List<EstimatedRobotPose> estimates) {
@@ -212,7 +201,9 @@ public class VisionSubsystem implements Subsystem {
    * @param targets All targets in this camera frame
    */
   private void updateEstimationStdDevs(
-      Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets, PhotonPoseEstimator estimator) {
+      Optional<EstimatedRobotPose> estimatedPose,
+      List<PhotonTrackedTarget> targets,
+      PhotonPoseEstimator estimator) {
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
       curStdDevs = kSingleTagStdDevs;

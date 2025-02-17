@@ -47,7 +47,7 @@ public class RobotContainer {
   //         .withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
   //         .withDriveRequestType(
   //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-          
+
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final SwerveRequest.RobotCentric forwardStraight =
@@ -168,10 +168,8 @@ public class RobotContainer {
     // oi.getRightThumbstickButton()
     //     .whileTrue(Commands.runOnce(() -> climber.setClamp(false)))
     //     .whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
-    oi.getLeftBumper()
-      .whileTrue(Commands.runOnce(() -> climber.setClamp(false)));
-    oi.getRightBumper()
-        .whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
+    oi.getLeftBumper().whileTrue(Commands.runOnce(() -> climber.setClamp(false)));
+    oi.getRightBumper().whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
   }
 
   /**
@@ -193,7 +191,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
-    // drivetrain.setDefaultCommand(     
+    // drivetrain.setDefaultCommand(
     //   drivetrain.applyRequest(
     //     () -> driveRobotCentric
     //             .withVelocityX(
@@ -209,7 +207,9 @@ public class RobotContainer {
     //                         .maxAngularRate)) );
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
-    climber.setDefaultCommand(Commands.run(() -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
+    climber.setDefaultCommand(
+        Commands.run(
+            () -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 

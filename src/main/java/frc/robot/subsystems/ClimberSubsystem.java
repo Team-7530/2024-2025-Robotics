@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 // import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
@@ -18,8 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class ClimberSubsystem implements Subsystem {
-  private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
-  private final DutyCycleEncoder m_ClimbEncoder = new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
+  private final TalonFX m_ClimbMotor =
+      new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
+  private final DutyCycleEncoder m_ClimbEncoder =
+      new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
   private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
@@ -76,7 +77,8 @@ public class ClimberSubsystem implements Subsystem {
       m_ClimbMotor.stopMotor();
     }
 
-    m_ClimberClampServo.set(m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+    m_ClimberClampServo.set(
+        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
 
     updateSmartDashboard();
   }
@@ -92,24 +94,23 @@ public class ClimberSubsystem implements Subsystem {
   public void setPosition(double pos) {
     m_isTeleop = false;
     m_targetPosition =
-        MathUtil.clamp(pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
+        MathUtil.clamp(
+            pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
     // m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
 
-    double speed = 0.0; // default is 0 
+    double speed = 0.0; // default is 0
 
-    if ( m_targetPosition > this.getPosition()) // is climbing
-      speed = m_isClamped ? ClimberConstants.kClimberSpeed2 : ClimberConstants.kClimberSpeed;
-    else if (!m_isClamped)
-      speed = -ClimberConstants.kClimberSpeed; // not climbing and not clamped
+    if (m_targetPosition > this.getPosition()) // is climbing
+    speed = m_isClamped ? ClimberConstants.kClimberSpeed2 : ClimberConstants.kClimberSpeed;
+    else if (!m_isClamped) speed = -ClimberConstants.kClimberSpeed; // not climbing and not clamped
     m_ClimbMotor.set(speed);
   }
 
   public void setSpeed(double speed) {
     m_isTeleop = true;
     m_targetPosition = 0.0;
-  
-    if (!m_isClamped || (speed > 0.0))
-      m_ClimbMotor.set(speed);
+
+    if (!m_isClamped || (speed > 0.0)) m_ClimbMotor.set(speed);
   }
 
   public void stop() {
@@ -136,24 +137,25 @@ public class ClimberSubsystem implements Subsystem {
     m_RotateMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  // boolean toggles for specific subsystems are meant to be in the subsystem class, not robot container
+  // boolean toggles for specific subsystems are meant to be in the subsystem class, not robot
+  // container
   public void toggleClamp() {
-      setClamp(!m_isClamped);
+    setClamp(!m_isClamped);
   }
 
   public void setClamp(boolean toggle) {
     m_isClamped = toggle;
     this.stop();
-    m_ClimberClampServo.set(m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+    m_ClimberClampServo.set(
+        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
   }
-
 
   public void teleop(double val, double rotate) {
     val = MathUtil.applyDeadband(val, 0.01);
     rotate = MathUtil.applyDeadband(rotate, 0.01);
 
     if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val * 0.45);     
+      this.setSpeed(val * 0.45);
     }
     if (m_isTeleop || (rotate != 0.0)) {
       this.setRotateSpeed(rotate);

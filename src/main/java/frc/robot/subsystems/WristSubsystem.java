@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -20,8 +19,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class WristSubsystem extends SubsystemBase {
 
-  private final TalonFX m_wristMotor = new TalonFX(WristConstants.WRISTMOTOR_ID, WristConstants.CANBUS);
-  private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
+  private final TalonFX m_wristMotor =
+      new TalonFX(WristConstants.WRISTMOTOR_ID, WristConstants.CANBUS);
+  private final CANcoder m_wristEncoder =
+      new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
   private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
   // private final MotionMagicExpoVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
@@ -76,7 +77,7 @@ public class WristSubsystem extends SubsystemBase {
     StatusCode status = m_wristEncoder.getConfigurator().apply(cc_cfg);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
-    }    
+    }
     // set starting position to current absolute position
     m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble());
   }
@@ -88,7 +89,8 @@ public class WristSubsystem extends SubsystemBase {
 
   public void setWristPosition(double pos) {
     m_isTeleop = false;
-    wristTargetPosition = MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
+    wristTargetPosition =
+        MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
 
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition));
   }
