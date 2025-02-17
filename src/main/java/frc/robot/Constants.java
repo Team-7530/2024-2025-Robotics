@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -35,7 +37,6 @@ public final class Constants {
     public static final String LIMELIGHTNAME = "limelight";
     public static final String LIMELIGHTURL = "limelight.local";
     public static final String PHOTONVISIONURL = "photonvision.local";
-
     public static final String kCameraName1 = "OV9281";
     public static final String kCameraName2 = "OV9281-2";
 
@@ -77,6 +78,15 @@ public final class Constants {
     public static final int ARMMOTOR_ID = 31;
     public static final int ARMENCODER_ID = 32;
 
+    public static final InvertedValue kArmInverted = InvertedValue.Clockwise_Positive;
+    public static final NeutralModeValue kArmNeutralMode = NeutralModeValue.Brake;
+
+    public static final double kArmChainRatio = 50.0 / 22.0; // 22:50
+    public static final double kArmGearboxRatio = 80.0; // 1:80
+    public static final double kArmGearRatio =
+        kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
+
+    public static final double armMotorKG = 0.0;
     public static final double armMotorKS = 0.0;
     public static final double armMotorKV = 0.0;
     public static final double armMotorKA = 0.0;
@@ -86,13 +96,16 @@ public final class Constants {
     public static final double MMagicCruiseVelocity = 10;
     public static final double MMagicAcceleration = 20;
     public static final double MMagicJerk = 200;
+    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+    public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+    public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
+    public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
+
+    public static final double kArmPositionMax = -0.65;
+    public static final double kArmPositionMin = -1.0;
 
     public static final double kTargetArmHigh = -0.65;
     public static final double kTargetArmLow = -1.0;
-    public static final double kArmChainRatio = 50.0 / 22.0; // 22:50
-    public static final double kArmGearboxRatio = 80.0; // 1:80
-    public static final double kArmGearRatio =
-        kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
   }
 
   public static final class WristConstants {
@@ -100,26 +113,36 @@ public final class Constants {
     public static final int WRISTMOTOR_ID = 33;
     public static final int WRISTENCODER_ID = 34;
 
+    public static final InvertedValue kWristInverted = InvertedValue.CounterClockwise_Positive;
+    public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
+
+    public static final double kWristChainRatio = 1.0; // 1:1
+    public static final double kWristGearboxRatio = 48.0; // 1:48
+    public static final double kWristGearRatio =
+        kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
+
+    public static final double wristMotorKG = 0.0;
     public static final double wristMotorKS = 0.2;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
     public static final double wristMotorKP = 20.0;
     public static final double wristMotorKI = 5.0;
     public static final double wristMotorKD = 0.0;
+    public static final double MMagicCruiseVelocity = 10;
+    public static final double MMagicAcceleration = 20;
+    public static final double MMagicJerk = 200;    
+    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+    public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+
+    public static final double kWristPositionMax = 0.66;
+    public static final double kWristPositionMin = 1.23;
 
     public static final double kTargetWristHigh = 0.66;
     public static final double kTargetWristLow = 1.23;
-    public static final double kWristChainRatio = 1.0; // 1:1
-    public static final double kWristGearboxRatio = 48.0; // 1:48
-    public static final double kWristGearRatio =
-        kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
     
-    public static final double MMagicCruiseVelocity = 10;
-    public static final double MMagicAcceleration = 20;
-    public static final double MMagicJerk = 200;    
   }
 
   public static final class IntakeConstants {
@@ -128,56 +151,64 @@ public final class Constants {
     public static final int RINTAKEMOTOR_ID = 36;
     public static final int RANGESENSOR_ID = 37;
 
-    public static final double kTargetVelocity = 100.0;
-    public static final double kTargetVelocity2 = 200.0;
+    public static final InvertedValue kLIntakeInverted = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue kRIntakeInverted = InvertedValue.Clockwise_Positive;
+    public static final NeutralModeValue kIntakeNeutralMode = NeutralModeValue.Coast;
+    public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
+    public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
+    public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
+    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
+
     public static final double kIntakeChainRatio = 24.0 / 10.0; // 24:10
     public static final double kIntakeGearboxRatio = 1.0; // 1:1
     public static final double kIntakeGearRatio =
         kIntakeChainRatio * kIntakeGearboxRatio; // chain ratio * Gearbox ratio
-
-    public static final double intakeVelocity = 3.0;
-    public static final double outtakeVelocityL = -2.0;
-    public static final double outtakeVelocityR = -4.0;
-
-    public static final Distance rangeThreshold = Inches.of(5.0);
-
-    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    public static final double KSConstant = 0.0; // Static feedforward gain
-    public static final double proportialPIDConstant =
-        0.001; // An error of 1 rotation per second results in 2V output
-    public static final double integralPIDConstant =
-        0.0001; // An error of 1 rotation per second increases output by 0.5V every second
-    public static final double derivativePIDConstant =
-        0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
-    public static final double feedForwardPIDConstant =
-        0.0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
-    // Rotation per second
-    public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
-    public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
+    
     /* Torque-based velocity does not require a feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
-    public static final double TorqueKSConstant = 0.0; // Static feedforward gain
-    public static final double proportialTorquePIDConstant =
-        8.0; // An error of 1 rotation per second results in 5 amps output
-    public static final double integralTorquePIDConstant =
-        0.2; // An error of 1 rotation per second increases output by 0.1 amps every second
-    public static final double derivativeTorquePIDConstant =
-        0.001; // A change of 1000 rotation per second squared results in 1 amp output
-    public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
-    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
+    public static final double intakeMotorTorqueKS = 0.0; // Static feedforward gain
+    public static final double intakeMotorTorqueKP = 8.0; // An error of 1 rps results in 5 amps output
+    public static final double intakeMotorTorqueKI = 0.2; // An error of 1 rps increases by 0.1 amps every second
+    public static final double intakeMotorTorqueKD = 0.001; // A change of 1000 rps squared results in 1 amp output
 
     public static final double MMagicCruiseVelocity = 40;
     public static final double MMagicAcceleration = 80;
     public static final double MMagicJerk = 800;    
-  }
+
+    public static final double intakeVelocity = -3.0;
+    public static final double outtakeVelocityL = 2.0;
+    public static final double outtakeVelocityR = 4.0;
+
+    public static final Distance rangeThreshold = Inches.of(5.0);
+    public static final double kRangeFOVCenterX = 0;
+    public static final double kRangeFOVCenterY = 0;
+    public static final double kRangeFOVRangeX = 27;
+    public static final double kRangeFOVRangeY = 27;
+    public static final double kProxThreshold = 0.1;
+    public static final double kProxHysteresis = 0.01;
+    public static final double kMinSigStrength = 2500;
+}
 
   public static final class ClimberConstants {
     public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
-
-    public static final int ROTATEMOTOR_ID = 43;
-    public static final int ENCODER_ID = 0; // Thrubore plugged into DIO 0
+    public static final int CLIMBENCODER_ID = 0; // Thrubore plugged into DIO 0
     public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
+    public static final int ROTATEMOTOR_ID = 43;
 
+    public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
+    public static final NeutralModeValue kClimberNeutralMode = NeutralModeValue.Brake;
+
+    public static final double kClimberChainRatio = 14.0 / 10.0; // 10:14
+    public static final double kClimberGearboxRatio = 100.0; // 1:100
+    public static final double kClimberGearRatio =
+        kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
+
+    public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
+    public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
+    public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
+    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
+
+    public static final double climbMotorKG = 0.0;
     public static final double climbMotorKS = 0.0;
     public static final double climbMotorKV = 0.0;
     public static final double climbMotorKA = 0.0;
@@ -185,33 +216,15 @@ public final class Constants {
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
-    public static final double kTargetWristHigh = 0.6;
-    public static final double kTargetWristLow = 0.1;
-
-    public static final double kClimberChainRatio = 14.0 / 10.0; // 10:14
-    public static final double kClimberGearboxRatio = 100.0; // 1:100
-    public static final double kClimberGearRatio =
-        kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
-    public static final double kClimberMinPosition = 0.315;
-    public static final double kClimberMaxPosition = 0.51;
-    public static final double kTargetClimberUp = 0.0;
-    public static final double kTargetClimberDown = 0.5;
-
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
-    public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
+    public static final double kClimberPositionMin = 0.315;
+    public static final double kClimberPositionMax = 0.51;
 
-    public static final double TorqueKSConstant = 0.0; // Static feedforward gain
-    public static final double proportialTorquePIDConstant =
-        5.0; // An error of 1 rotation per second results in 5 amps output
-    public static final double integralTorquePIDConstant =
-        0.1; // An error of 1 rotation per second increases output by 0.1 amps every second
-    public static final double derivativeTorquePIDConstant =
-        0.001; // A change of 1000 rotation per second squared results in 1 amp output
-    public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
-    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
+    public static final double kTargetClimberUp = 0.51;
+    public static final double kTargetClimberDown = 0.315;
+
     public static final double kClimberSpeed = 0.1;
     public static final double kClimberSpeed2 = 0.45;
     public static final double kRotateSpeed = 1.0;

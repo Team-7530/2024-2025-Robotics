@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -11,7 +10,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 // import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -21,12 +19,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class ClimberSubsystem implements Subsystem {
   private final TalonFX m_ClimbMotor = new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
-  private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
-  private final DutyCycleEncoder m_Encoder = new DutyCycleEncoder(ClimberConstants.ENCODER_ID);
+  private final DutyCycleEncoder m_ClimbEncoder = new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
+  private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
   // private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
-  // private final PositionTorqueCurrentFOC m_positionTorque = new PositionTorqueCurrentFOC(0).withSlot(1);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
@@ -40,24 +37,20 @@ public class ClimberSubsystem implements Subsystem {
 
   private void initClimberConfigs() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.MotorOutput.Inverted = ClimberConstants.kClimberInverted;
+    configs.MotorOutput.NeutralMode = ClimberConstants.kClimberNeutralMode;
+    configs.Voltage.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
+    configs.Voltage.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
+    configs.TorqueCurrent.PeakForwardTorqueCurrent = ClimberConstants.peakForwardTorqueCurrent;
+    configs.TorqueCurrent.PeakReverseTorqueCurrent = ClimberConstants.peakReverseTorqueCurrent;
 
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
+    configs.Slot0.kG = ClimberConstants.climbMotorKG;
     configs.Slot0.kS = ClimberConstants.climbMotorKS;
     configs.Slot0.kV = ClimberConstants.climbMotorKV;
     configs.Slot0.kA = ClimberConstants.climbMotorKA;
     configs.Slot0.kP = ClimberConstants.climbMotorKP;
     configs.Slot0.kI = ClimberConstants.climbMotorKI;
     configs.Slot0.kD = ClimberConstants.climbMotorKD;
-
-    configs.Voltage.withPeakForwardVoltage(Volts.of(ClimberConstants.peakForwardVoltage));
-    configs.Voltage.withPeakReverseVoltage(Volts.of(ClimberConstants.peakReverseVoltage));
-
-    configs.Slot1.kP = ClimberConstants.proportialTorquePIDConstant;
-    configs.Slot1.kI = ClimberConstants.integralTorquePIDConstant;
-    configs.Slot1.kD = ClimberConstants.derivativeTorquePIDConstant;
-    configs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(ClimberConstants.peakForwardTorqueCurrent));
-    configs.TorqueCurrent.withPeakReverseTorqueCurrent(Amps.of(ClimberConstants.peakReverseTorqueCurrent));
 
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -69,7 +62,7 @@ public class ClimberSubsystem implements Subsystem {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
     /* Make sure we start at 0 */
-    m_ClimbMotor.setPosition(0);
+    m_ClimbMotor.setPosition(m_ClimbEncoder.get());
     m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
   }
 
@@ -78,8 +71,8 @@ public class ClimberSubsystem implements Subsystem {
     double pos = this.getPosition();
     double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
 
-    if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberMaxPosition))
-        || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberMinPosition))) {
+    if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberPositionMax))
+        || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberPositionMin))) {
       m_ClimbMotor.stopMotor();
     }
 
@@ -89,17 +82,17 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void restore() {
-    this.setPosition(ClimberConstants.kClimberMinPosition);
+    this.setPosition(ClimberConstants.kTargetClimberDown);
   }
 
   public void climb() {
-    this.setPosition(ClimberConstants.kClimberMaxPosition);
+    this.setPosition(ClimberConstants.kTargetClimberUp);
   }
 
   public void setPosition(double pos) {
     m_isTeleop = false;
     m_targetPosition =
-        MathUtil.clamp(pos, ClimberConstants.kClimberMinPosition, ClimberConstants.kClimberMaxPosition);
+        MathUtil.clamp(pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
     // m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
 
     double speed = 0.0; // default is 0 
@@ -124,12 +117,7 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public double getPosition() {
-    return m_Encoder.get();
-  }
-
-  public boolean getOnTarget() {
-    // return Math.abs(this.getPosition() - m_targetPosition) < ClimberConstants.kOnTargetThreshold;
-    return false;
+    return m_ClimbEncoder.get();
   }
 
   public void rotateOpen() {

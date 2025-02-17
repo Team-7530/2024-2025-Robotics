@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
 import static frc.robot.Constants.*;
 
 import com.ctre.phoenix6.StatusCode;
@@ -11,8 +10,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -20,7 +17,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -28,6 +24,7 @@ public class WristSubsystem extends SubsystemBase {
   private final CANcoder m_wristEncoder = new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
   private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
+  // private final MotionMagicExpoVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double wristTargetPosition = 0;
@@ -41,9 +38,12 @@ public class WristSubsystem extends SubsystemBase {
 
   private void initWristConfigs() {
     TalonFXConfiguration configWrist = new TalonFXConfiguration();
-    configWrist.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    configWrist.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    configWrist.MotorOutput.Inverted = WristConstants.kWristInverted;
+    configWrist.MotorOutput.NeutralMode = WristConstants.kWristNeutralMode;
+    configWrist.Voltage.PeakForwardVoltage = WristConstants.peakForwardVoltage;
+    configWrist.Voltage.PeakReverseVoltage = WristConstants.peakReverseVoltage;
 
+    configWrist.Slot0.kG = WristConstants.wristMotorKG;
     configWrist.Slot0.kS = WristConstants.wristMotorKS;
     configWrist.Slot0.kV = WristConstants.wristMotorKV;
     configWrist.Slot0.kA = WristConstants.wristMotorKA;
@@ -55,12 +55,11 @@ public class WristSubsystem extends SubsystemBase {
     configWrist.Feedback.SensorToMechanismRatio = 1.0;
     configWrist.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
 
-    configWrist.Voltage.PeakForwardVoltage = WristConstants.peakForwardVoltage;
-    configWrist.Voltage.PeakReverseVoltage = WristConstants.peakReverseVoltage;
-
     configWrist.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMagicCruiseVelocity;
     configWrist.MotionMagic.MotionMagicAcceleration = WristConstants.MMagicAcceleration;
     configWrist.MotionMagic.MotionMagicJerk = WristConstants.MMagicJerk;
+    configWrist.MotionMagic.MotionMagicExpo_kV = WristConstants.MMagicExpo_kV;
+    configWrist.MotionMagic.MotionMagicExpo_kA = WristConstants.MMagicExpo_kA;
 
     StatusCode status = m_wristMotor.getConfigurator().apply(configWrist);
     if (!status.isOK()) {
@@ -70,14 +69,16 @@ public class WristSubsystem extends SubsystemBase {
 
   private void initEncoderConfigs() {
     CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5));
+    cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
     cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.17728));
+    cc_cfg.MagnetSensor.withMagnetOffset(Units.Rotations.of(0.17728));
 
     StatusCode status = m_wristEncoder.getConfigurator().apply(cc_cfg);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }    
+    // set starting position to current absolute position
+    m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble());
   }
 
   @Override
@@ -87,7 +88,7 @@ public class WristSubsystem extends SubsystemBase {
 
   public void setWristPosition(double pos) {
     m_isTeleop = false;
-    wristTargetPosition = MathUtil.clamp(pos, WristConstants.kTargetWristLow, WristConstants.kTargetWristHigh);
+    wristTargetPosition = MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
 
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition));
   }
@@ -104,6 +105,14 @@ public class WristSubsystem extends SubsystemBase {
 
   public void wristStop() {
     m_wristMotor.setControl(m_brake);
+  }
+
+  public void wristUp() {
+    this.setWristPosition(WristConstants.kTargetWristHigh);
+  }
+
+  public void wristDown() {
+    this.setWristPosition(WristConstants.kTargetWristLow);
   }
 
   public void teleop(double wrist) {

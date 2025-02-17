@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,8 +20,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX m_RIntakeMotor = new TalonFX(IntakeConstants.RINTAKEMOTOR_ID, IntakeConstants.CANBUS);
   private final CANrange m_RangeSensor = new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
 
-  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(1);
-  private final VelocityTorqueCurrentFOC m_velocityRequest = new VelocityTorqueCurrentFOC(0).withSlot(1);
+  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
+  private final VelocityTorqueCurrentFOC m_velocityRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double LintakeTargetVelocity = 0;
@@ -38,30 +37,24 @@ public class IntakeSubsystem extends SubsystemBase {
   private void initIntakeConfigs() {
     TalonFXConfiguration configIntake = new TalonFXConfiguration();
 
-    configIntake.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    configIntake.Slot0.kS = IntakeConstants.KSConstant;
-    configIntake.Slot0.kV = IntakeConstants.feedForwardPIDConstant;
-    configIntake.Slot0.kP = IntakeConstants.proportialPIDConstant;
-    configIntake.Slot0.kI = IntakeConstants.integralPIDConstant;
-    configIntake.Slot0.kD = IntakeConstants.derivativePIDConstant;
-
+    configIntake.MotorOutput.Inverted = IntakeConstants.kLIntakeInverted;
+    configIntake.MotorOutput.NeutralMode = IntakeConstants.kIntakeNeutralMode;
     configIntake.Voltage.PeakForwardVoltage = IntakeConstants.peakForwardVoltage;
     configIntake.Voltage.PeakReverseVoltage = IntakeConstants.peakReverseVoltage;
-
-    configIntake.Slot1.kS = IntakeConstants.TorqueKSConstant;
-    configIntake.Slot1.kP = IntakeConstants.proportialTorquePIDConstant;
-    configIntake.Slot1.kI = IntakeConstants.integralTorquePIDConstant;
-    configIntake.Slot1.kD = IntakeConstants.derivativeTorquePIDConstant;
-
     configIntake.TorqueCurrent.PeakForwardTorqueCurrent = IntakeConstants.peakForwardTorqueCurrent;
     configIntake.TorqueCurrent.PeakReverseTorqueCurrent = IntakeConstants.peakReverseTorqueCurrent;
+
+    configIntake.Slot0.kS = IntakeConstants.intakeMotorTorqueKS;
+    configIntake.Slot0.kP = IntakeConstants.intakeMotorTorqueKP;
+    configIntake.Slot0.kI = IntakeConstants.intakeMotorTorqueKI;
+    configIntake.Slot0.kD = IntakeConstants.intakeMotorTorqueKD;
 
     StatusCode status = m_LIntakeMotor.getConfigurator().apply(configIntake);
     if (!status.isOK()) {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
 
-    configIntake.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    configIntake.MotorOutput.Inverted = IntakeConstants.kRIntakeInverted;
     status = m_RIntakeMotor.getConfigurator().apply(configIntake);
     if (!status.isOK()) {
       System.out.println("Could not apply bottom configs, error code: " + status.toString());
@@ -70,13 +63,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private void initRangeSensor() {
     CANrangeConfiguration config = new CANrangeConfiguration();
-    config.FovParams.FOVCenterX = 0;
-    config.FovParams.FOVCenterY = 0;
-    config.FovParams.FOVRangeX = 27;
-    config.FovParams.FOVRangeY = 27;
-    config.ProximityParams.ProximityThreshold = 0.1;
-    config.ProximityParams.ProximityHysteresis = 0.01;
-    config.ProximityParams.MinSignalStrengthForValidMeasurement = 2500;
+    config.FovParams.FOVCenterX = IntakeConstants.kRangeFOVCenterX;
+    config.FovParams.FOVCenterY = IntakeConstants.kRangeFOVCenterY;
+    config.FovParams.FOVRangeX = IntakeConstants.kRangeFOVRangeX;
+    config.FovParams.FOVRangeY = IntakeConstants.kRangeFOVRangeY;
+    config.ProximityParams.ProximityThreshold = IntakeConstants.kProxThreshold;
+    config.ProximityParams.ProximityHysteresis = IntakeConstants.kProxHysteresis;
+    config.ProximityParams.MinSignalStrengthForValidMeasurement = IntakeConstants.kMinSigStrength; //2500;
     
     /* User can change the configs if they want, or leave it empty for factory-default */
     StatusCode status = m_RangeSensor.getConfigurator().apply(config);
@@ -104,7 +97,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
     LintakeTargetVelocity = Lvelocity * IntakeConstants.kIntakeGearRatio;
     RintakeTargetVelocity = Rvelocity * IntakeConstants.kIntakeGearRatio;
-    m_isIntakeIn = Lvelocity > 0.0;
+    m_isIntakeIn = (Lvelocity < 0.0);
 
     m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(LintakeTargetVelocity));
     m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(RintakeTargetVelocity));
@@ -115,7 +108,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeSpeed(double speed) {
     LintakeTargetVelocity = 0;
     RintakeTargetVelocity = 0;
-    m_isIntakeIn = speed > 0.0;
+    m_isIntakeIn = (speed < 0.0);
 
     m_LIntakeMotor.set(speed);
     m_RIntakeMotor.set(speed);
