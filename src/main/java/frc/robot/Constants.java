@@ -218,8 +218,8 @@ public final class Constants {
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
-    public static final double peakForwardTorqueCurrent = 40.0; // Peak output of 40 amps
-    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 40 amps
+    public static final double peakForwardTorqueCurrent = 80.0; // Peak output of 80 amps
+    public static final double peakReverseTorqueCurrent = -80.0; // Peak output of 80 amps
 
     public static final double climbMotorKG = 0.0;
     public static final double climbMotorKS = 0.0;
@@ -228,6 +228,10 @@ public final class Constants {
     public static final double climbMotorKP = 4.0;
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
+
+    public static final double climbMotorTorqueKP = 60.0; // An error of 1 rot. results in 60 A output
+    public static final double climbMotorTorqueKI = 0.0; // No output for integrated error
+    public static final double climbMotorTorqueKD = 6.0; // A velocity of 1 rps results in 6 A output
 
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;

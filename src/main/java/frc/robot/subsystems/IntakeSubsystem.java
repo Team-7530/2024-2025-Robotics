@@ -83,7 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
     config.ProximityParams.ProximityThreshold = IntakeConstants.kProxThreshold;
     config.ProximityParams.ProximityHysteresis = IntakeConstants.kProxHysteresis;
     config.ProximityParams.MinSignalStrengthForValidMeasurement =
-        IntakeConstants.kMinSigStrength; // 2500;
+        IntakeConstants.kMinSigStrength;
 
     /* User can change the configs if they want, or leave it empty for factory-default */
     StatusCode status = m_RangeSensor.getConfigurator().apply(config);

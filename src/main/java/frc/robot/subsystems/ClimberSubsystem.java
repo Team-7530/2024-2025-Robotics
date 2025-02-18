@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
-// import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
@@ -24,99 +24,108 @@ public class ClimberSubsystem implements Subsystem {
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
   private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
-  // private final PositionVoltage m_positionVoltage = new PositionVoltage(0).withSlot(0);
+  // private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
+  private final PositionTorqueCurrentFOC m_positionRequest = new PositionTorqueCurrentFOC(0).withSlot(1);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = true;
   private boolean m_isClamped = false;
-
+  private boolean m_usePositionControl = false;
+  
   public ClimberSubsystem() {
-
-    initClimberConfigs();
+  
+      initClimberConfigs();
   }
-
+  
   private void initClimberConfigs() {
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.MotorOutput.Inverted = ClimberConstants.kClimberInverted;
-    configs.MotorOutput.NeutralMode = ClimberConstants.kClimberNeutralMode;
-    configs.Voltage.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
-    configs.Voltage.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = ClimberConstants.peakForwardTorqueCurrent;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = ClimberConstants.peakReverseTorqueCurrent;
-
-    configs.Slot0.kG = ClimberConstants.climbMotorKG;
-    configs.Slot0.kS = ClimberConstants.climbMotorKS;
-    configs.Slot0.kV = ClimberConstants.climbMotorKV;
-    configs.Slot0.kA = ClimberConstants.climbMotorKA;
-    configs.Slot0.kP = ClimberConstants.climbMotorKP;
-    configs.Slot0.kI = ClimberConstants.climbMotorKI;
-    configs.Slot0.kD = ClimberConstants.climbMotorKD;
-
-    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
-    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
-    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-
-    /* Retry config apply up to 5 times, report if failure */
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = m_ClimbMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
+      TalonFXConfiguration configs = new TalonFXConfiguration();
+      configs.MotorOutput.Inverted = ClimberConstants.kClimberInverted;
+      configs.MotorOutput.NeutralMode = ClimberConstants.kClimberNeutralMode;
+      configs.Voltage.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
+      configs.Voltage.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
+      configs.TorqueCurrent.PeakForwardTorqueCurrent = ClimberConstants.peakForwardTorqueCurrent;
+      configs.TorqueCurrent.PeakReverseTorqueCurrent = ClimberConstants.peakReverseTorqueCurrent;
+  
+      configs.Slot0.kG = ClimberConstants.climbMotorKG;
+      configs.Slot0.kS = ClimberConstants.climbMotorKS;
+      configs.Slot0.kV = ClimberConstants.climbMotorKV;
+      configs.Slot0.kA = ClimberConstants.climbMotorKA;
+      configs.Slot0.kP = ClimberConstants.climbMotorKP;
+      configs.Slot0.kI = ClimberConstants.climbMotorKI;
+      configs.Slot0.kD = ClimberConstants.climbMotorKD;
+  
+      configs.Slot1.kP = ClimberConstants.climbMotorKP;
+      configs.Slot1.kI = ClimberConstants.climbMotorKI;
+      configs.Slot1.kD = ClimberConstants.climbMotorKD;
+  
+      configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
+      configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
+      configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+  
+      /* Retry config apply up to 5 times, report if failure */
+      StatusCode status = StatusCode.StatusCodeNotInitialized;
+      for (int i = 0; i < 5; ++i) {
+        status = m_ClimbMotor.getConfigurator().apply(configs);
+        if (status.isOK()) break;
+      }
+      if (!status.isOK()) {
+        System.out.println("Could not apply configs, error code: " + status.toString());
+      }
+      /* Make sure we start at 0 */
+      m_ClimbMotor.setPosition(m_ClimbEncoder.get());
+      m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
     }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
+  
+    @Override
+    public void periodic() {
+      double pos = this.getPosition();
+      double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
+  
+      if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberPositionMax))
+          || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberPositionMin))) {
+        m_ClimbMotor.stopMotor();
+      }
+  
+      m_ClimberClampServo.set(
+          m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+  
+      updateSmartDashboard();
     }
-    /* Make sure we start at 0 */
-    m_ClimbMotor.setPosition(m_ClimbEncoder.get());
-    m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
-  }
-
-  @Override
-  public void periodic() {
-    double pos = this.getPosition();
-    double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
-
-    if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberPositionMax))
-        || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberPositionMin))) {
-      m_ClimbMotor.stopMotor();
+  
+    public void restore() {
+      this.setPosition(ClimberConstants.kTargetClimberDown);
     }
-
-    m_ClimberClampServo.set(
-        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
-
-    updateSmartDashboard();
-  }
-
-  public void restore() {
-    this.setPosition(ClimberConstants.kTargetClimberDown);
-  }
-
-  public boolean isRestoredPosition() {
-    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberDown) < 0.01;
-  }
-
-  public void climb() {
-    this.setPosition(ClimberConstants.kTargetClimberUp);
-  }
-
-  public boolean isFullClimbPosition() {
-    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberUp) < 0.01;
-  }
-
+  
+    public boolean isRestoredPosition() {
+      return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberDown) < 0.01;
+    }
+  
+    public void climb() {
+      this.setPosition(ClimberConstants.kTargetClimberUp);
+    }
+  
+    public boolean isFullClimbPosition() {
+      return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberUp) < 0.01;
+    }
+  
   public void setPosition(double pos) {
-    m_isTeleop = false;
-    m_targetPosition =
-        MathUtil.clamp(
-            pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
-    // m_ClimbMotor.setControl(m_positionVoltage.withPosition(m_targetPosition));
-
-    double speed = 0.0; // default is 0
-
-    if (m_targetPosition > this.getPosition()) // is climbing
-    speed = m_isClamped ? ClimberConstants.kClimberSpeed2 : ClimberConstants.kClimberSpeed;
-    else if (!m_isClamped) speed = -ClimberConstants.kClimberSpeed; // not climbing and not clamped
-    m_ClimbMotor.set(speed);
+      m_isTeleop = false;
+      m_targetPosition =
+          MathUtil.clamp(
+              pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
+  
+      if (m_usePositionControl) {
+        m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
+      } else {
+        double speed = 0.0; // default is 0
+        if (m_targetPosition > this.getPosition()) // is climbing
+          speed = m_isClamped ? ClimberConstants.kClimberSpeed2 : ClimberConstants.kClimberSpeed;
+       else if (!m_isClamped) 
+          speed = -ClimberConstants.kClimberSpeed; // not climbing and not clamped
+       m_ClimbMotor.set(speed);
+      }
   }
 
   public void setSpeed(double speed) {
