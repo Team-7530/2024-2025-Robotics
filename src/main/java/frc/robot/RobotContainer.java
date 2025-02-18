@@ -109,13 +109,6 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    // oi.getRobotRelative()
-    //     .whileTrue(
-    //         drivetrain.applyRequest(
-    //             () ->
-    //                 point.withModuleDirection(
-    //                     new Rotation2d(oi.getTranslateX(), oi.getTranslateY()))));
-
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
     oi.getStartButton()
@@ -191,20 +184,6 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.applyRequest(
-    //     () -> driveRobotCentric
-    //             .withVelocityX(
-    //                 oi.getTranslateX()
-    //                     * DriveTrainConstants
-    //                         .maxSpeed)
-    //             .withVelocityY(
-    //                 oi.getTranslateY()
-    //                     * DriveTrainConstants.maxSpeed)
-    //             .withRotationalRate(
-    //                 oi.getRotate()
-    //                     * DriveTrainConstants
-    //                         .maxAngularRate)) );
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(
@@ -217,16 +196,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
     NamedCommands.registerCommand("Outtake", new OuttakeCommand(intake));
     NamedCommands.registerCommand("OuttakeSpin", new OuttakeSpinCommand(intake));
-    // NamedCommands.registerCommand(
-    //     "ElevateUp", new ElevateCommand(elevator, ElevatorConstants.kTargetElevatorHigh));
-    // NamedCommands.registerCommand(
-    //     "ElevateDown", new ElevateCommand(elevator, ElevatorConstants.kTargetElevatorLow));
-    // NamedCommands.registerCommand(
-    //     "RotateUp", new RotateWristCommand(wrist, WristConstants.kTargetWristHigh));
-    // NamedCommands.registerCommand(
-    //     "RotateDown", new RotateWristCommand(wrist, WristConstants.kTargetWristLow));
-    // NamedCommands.registerCommand("Shoot", new ShootCommand(shooter));
-    // NamedCommands.registerCommand("ShootSlow", new ShootSlowCommand(shooter));
+    NamedCommands.registerCommand("GetCoral", new GetCoralCommand(arm, wrist));
+    NamedCommands.registerCommand("SetL1Score", new L1ScoringCommand(arm, wrist));
+    NamedCommands.registerCommand("SetL2Score", new L2ScoringCommand(arm, wrist));
   }
 
   private void configureTelemetry() {
