@@ -10,10 +10,12 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -35,21 +37,7 @@ public class RobotContainer {
   private static RobotContainer instance;
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  // private final SwerveRequest.FieldCentric driveFieldCentric =
-  //     new SwerveRequest.FieldCentric()
-  //         .withDeadband(DriveTrainConstants.maxSpeed * 0.1)
-  //         .withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
-  //         .withDriveRequestType(
-  //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  //   private final SwerveRequest.RobotCentric driveRobotCentric =
-  //     new SwerveRequest.RobotCentric()
-  //         .withDeadband(DriveTrainConstants.maxSpeed * 0.1)
-  //         .withRotationalDeadband(DriveTrainConstants.maxAngularRate * 0.1) // Add a 10% deadband
-  //         .withDriveRequestType(
-  //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final SwerveRequest.RobotCentric forwardStraight =
       new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -212,19 +200,20 @@ public class RobotContainer {
   public void simulationInit() {}
 
   public void simulationPeriodic() {
-    // vision.simulationPeriodic(drivetrain.samplePoseAt(Utils.getCurrentTimeSeconds()));
 
-    // var debugField = vision.getSimDebugField();
-    // debugField.getObject("EstimatedRobot").setPose(drivetrain.getPose());
-    // debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
-
+    // Update camera simulation
+    vision.simulationPeriodic(drivetrain.getState().Pose);
+    
+    var debugField = vision.getSimDebugField();
+    debugField.getObject("EstimatedRobot").setPose(drivetrain.getState().Pose);
+    debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
+    
     // // Calculate battery voltage sag due to current draw
     // var batteryVoltage =
     //         BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrain.getCurrentDraw());
-
-    // // Using max(0.1, voltage) here isn't a *physically correct* solution,
-    // // but it avoids problems with battery voltage measuring 0.
-    // RoboRioSim.setVInVoltage(Math.max(0.1, batteryVoltage));
+    // Using max(0.1, voltage) here isn't a *physically correct* solution,
+    // but it avoids problems with battery voltage measuring 0.
+    RoboRioSim.setVInVoltage(Math.max(0.1, RobotController.getBatteryVoltage()));
   }
 
   public void testInit() {}

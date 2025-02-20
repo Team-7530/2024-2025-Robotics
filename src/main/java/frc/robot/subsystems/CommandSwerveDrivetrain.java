@@ -12,7 +12,9 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -238,6 +241,41 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
    */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutineToApply.dynamic(direction);
+  }
+
+    /**
+   * Returns the current module poses.
+   *
+   * @return The current module poses
+   */
+  public Pose2d[] getModulePoses() {
+    // Get the robot's current pose from the drivetrain state.
+    Pose2d robotPose = getState().Pose;
+
+    // Compute each module's field pose by adding the module offset (rotated by the robot's rotation) to the robot's translation.
+    Pose2d frontLeftPose  = addModuleOffset(robotPose, TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY);
+    Pose2d frontRightPose = addModuleOffset(robotPose, TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY);
+    Pose2d backLeftPose   = addModuleOffset(robotPose, TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY);
+    Pose2d backRightPose  = addModuleOffset(robotPose, TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY);
+
+    return new Pose2d[] { frontLeftPose, frontRightPose, backLeftPose, backRightPose };
+  }
+
+    /**
+   * Adds the module offset to the robot's pose.
+   *
+   * @param robotPose The robot's current pose
+   * @param offsetX   The x offset of the module
+   * @param offsetY   The y offset of the module
+   * @return The new pose for the module
+   */
+  private Pose2d addModuleOffset(Pose2d robotPose, double offsetX, double offsetY) {
+    // Create a Translation2d from the offset.
+    Translation2d offset = new Translation2d(offsetX, offsetY);
+    // Rotate the offset according to the robot's current rotation.
+    Translation2d rotatedOffset = offset.rotateBy(robotPose.getRotation());
+    // Return the new pose for the module.
+    return new Pose2d(robotPose.getTranslation().plus(rotatedOffset), robotPose.getRotation());
   }
 
   @Override
