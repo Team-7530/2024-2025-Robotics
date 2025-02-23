@@ -74,19 +74,18 @@ public class ClimberSubsystem implements Subsystem {
         System.out.println("Could not apply configs, error code: " + status.toString());
       }
       /* Make sure we start at 0 */
-      m_ClimbMotor.setPosition(m_ClimbEncoder.get());
+      m_ClimbMotor.setPosition(m_ClimbEncoder.get() * ClimberConstants.kClimberGearRatio);
       m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
     }
   
     @Override
     public void periodic() {
-      double pos = this.getPosition();
-      double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
-  
-      if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberPositionMax))
-          || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberPositionMin))) {
-        m_ClimbMotor.stopMotor();
-      }
+      // double pos = this.getPosition();
+      // double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();  
+      // if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberPositionMax))
+      //     || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberPositionMin))) {
+      //   m_ClimbMotor.stopMotor();
+      // }
   
       m_ClimberClampServo.set(
           m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
@@ -132,7 +131,8 @@ public class ClimberSubsystem implements Subsystem {
     m_isTeleop = true;
     m_targetPosition = 0.0;
 
-    if (!m_isClamped || (speed > 0.0)) m_ClimbMotor.set(speed);
+    if (!m_isClamped || (speed > 0.0)) 
+      m_ClimbMotor.set(speed);
   }
 
   public void stop() {
@@ -140,7 +140,7 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public double getPosition() {
-    return m_ClimbEncoder.get();
+    return m_ClimbMotor.getPosition().getValueAsDouble();
   }
 
   public void rotateOpen() {
@@ -174,17 +174,18 @@ public class ClimberSubsystem implements Subsystem {
     val = MathUtil.applyDeadband(val, 0.01);
     rotate = MathUtil.applyDeadband(rotate, 0.01);
 
-    if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val * 0.45);
-    }
     if (m_isTeleop || (rotate != 0.0)) {
       this.setRotateSpeed(rotate);
+    }
+    if (m_isTeleop || (val != 0.0)) {
+      this.setSpeed(val * 1.0);
     }
   }
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
-    SmartDashboard.putNumber("Climber Encoder Postion", this.getPosition());
+    SmartDashboard.putNumber("Climber Postion", this.getPosition());
+    SmartDashboard.putNumber("Climber Encoder Postion", m_ClimbEncoder.get());
     SmartDashboard.putNumber("Climber TargetPostion", m_targetPosition);
   }
 }

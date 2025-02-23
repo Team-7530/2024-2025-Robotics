@@ -10,8 +10,8 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
-import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,10 +57,10 @@ public class IntakeSubsystem extends SubsystemBase {
     configs.Slot0.kI = IntakeConstants.intakeMotorTorqueKI;
     configs.Slot0.kD = IntakeConstants.intakeMotorTorqueKD;
 
-    configs.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANrange;
-    configs.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
-    configs.HardwareLimitSwitch.ForwardLimitRemoteSensorID = m_RangeSensor.getDeviceID();
-    configs.HardwareLimitSwitch.ForwardLimitEnable = true;
+    configs.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.RemoteCANrange;
+    configs.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
+    configs.HardwareLimitSwitch.ReverseLimitRemoteSensorID = m_RangeSensor.getDeviceID();
+    configs.HardwareLimitSwitch.ReverseLimitEnable = true;
 
     StatusCode status = m_LIntakeMotor.getConfigurator().apply(configs);
     if (!status.isOK()) {

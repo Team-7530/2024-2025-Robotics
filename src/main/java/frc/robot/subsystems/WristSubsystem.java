@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -75,8 +74,8 @@ public class WristSubsystem extends SubsystemBase {
   private void initEncoderConfigs() {
     CANcoderConfiguration configs = new CANcoderConfiguration();
     configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
-    configs.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(0.17728));
+    configs.MagnetSensor.SensorDirection = WristConstants.kWristEncoderDirection;
+    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(WristConstants.kWristEncoderOffset));
 
     StatusCode status = m_wristEncoder.getConfigurator().apply(configs);
     if (!status.isOK()) {

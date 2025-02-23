@@ -10,11 +10,11 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -75,8 +75,8 @@ public class ArmSubsystem extends SubsystemBase {
   private void initEncoderConfigs() {
     CANcoderConfiguration configs = new CANcoderConfiguration();
     configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
-    configs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(-0.406));
+    configs.MagnetSensor.SensorDirection = ArmConstants.kArmEncoderDirection;
+    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(ArmConstants.kArmEncoderOffset));
 
     StatusCode status = m_armEncoder.getConfigurator().apply(configs);
     if (!status.isOK()) {

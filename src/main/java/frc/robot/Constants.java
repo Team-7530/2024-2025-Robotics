@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -89,10 +90,12 @@ public final class Constants {
     public static final int ARMMOTOR_ID = 31;
     public static final int ARMENCODER_ID = 32;
 
-    public static final InvertedValue kArmInverted = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue kArmInverted = InvertedValue.CounterClockwise_Positive;
     public static final NeutralModeValue kArmNeutralMode = NeutralModeValue.Brake;
+    public static final SensorDirectionValue kArmEncoderDirection = SensorDirectionValue.Clockwise_Positive;
+    public static final double kArmEncoderOffset = -0.015869;
 
-    public static final double kArmChainRatio = 50.0 / 22.0; // 22:50
+    public static final double kArmChainRatio = 74.0 / 16.0;
     public static final double kArmGearboxRatio = 80.0; // 1:80
     public static final double kArmGearRatio =
         kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
@@ -109,14 +112,14 @@ public final class Constants {
     public static final double MMagicJerk = 200;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
-    public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
-    public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
+    public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
+    public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kArmPositionMax = -0.65;
-    public static final double kArmPositionMin = -1.0;
+    public static final double kArmPositionMax = 0.424;
+    public static final double kArmPositionMin = 0.085;
 
-    public static final double kTargetArmHigh = -0.65;
-    public static final double kTargetArmLow = -1.0;
+    public static final double kTargetArmHigh = 0.424;
+    public static final double kTargetArmLow = 0.085;
   }
 
   public static final class WristConstants {
@@ -124,11 +127,13 @@ public final class Constants {
     public static final int WRISTMOTOR_ID = 33;
     public static final int WRISTENCODER_ID = 34;
 
-    public static final InvertedValue kWristInverted = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue kWristInverted = InvertedValue.Clockwise_Positive;
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
+    public static final SensorDirectionValue kWristEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+    public static final double kWristEncoderOffset = 0.169;
 
     public static final double kWristChainRatio = 1.0; // 1:1
-    public static final double kWristGearboxRatio = 48.0; // 1:48
+    public static final double kWristGearboxRatio = 45.0; // 1:45
     public static final double kWristGearRatio =
         kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
 
@@ -145,14 +150,14 @@ public final class Constants {
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
-    public static final double kWristPositionMax = 0.66;
-    public static final double kWristPositionMin = 1.23;
+    public static final double kWristPositionMax = 0.25;
+    public static final double kWristPositionMin = -0.25;
 
-    public static final double kTargetWristHigh = 0.66;
-    public static final double kTargetWristLow = 1.23;
+    public static final double kTargetWristHigh = 0.25;
+    public static final double kTargetWristLow = -0.25;
 
-    public static final double peakForwardVoltage = 10.0; // Peak output of 8 volts
-    public static final double peakReverseVoltage = -10.0; // Peak output of 8 volts
+    public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
+    public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
   }
 
   public static final class IntakeConstants {
@@ -210,8 +215,9 @@ public final class Constants {
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
     public static final NeutralModeValue kClimberNeutralMode = NeutralModeValue.Brake;
+    public static final SensorDirectionValue kClimberEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
 
-    public static final double kClimberChainRatio = 14.0 / 10.0; // 10:14
+    public static final double kClimberChainRatio = 40.0 / 10.0;
     public static final double kClimberGearboxRatio = 100.0; // 1:100
     public static final double kClimberGearRatio =
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
@@ -236,14 +242,14 @@ public final class Constants {
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double kClimberPositionMin = 0.315;
-    public static final double kClimberPositionMax = 0.51;
+    public static final double kClimberPositionMin = 128.2; //0.318;
+    public static final double kClimberPositionMax = 195.0; //0.503;
 
-    public static final double kTargetClimberUp = 0.51;
-    public static final double kTargetClimberDown = 0.315;
+    public static final double kTargetClimberUp = 128.2;
+    public static final double kTargetClimberDown = 195.0;
 
-    public static final double kClimberSpeed = 0.1;
-    public static final double kClimberSpeed2 = 0.45;
+    public static final double kClimberSpeed = 0.2;
+    public static final double kClimberSpeed2 = 0.5;
     public static final double kRotateSpeed = 1.0;
   }
 }
