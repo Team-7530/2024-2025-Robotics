@@ -176,25 +176,21 @@ public final class Constants {
 
     public static final double kIntakeChainRatio = 24.0 / 10.0; // 24:10
     public static final double kIntakeGearboxRatio = 1.0; // 1:1
-    public static final double kIntakeGearRatio =
-        kIntakeChainRatio * kIntakeGearboxRatio; // chain ratio * Gearbox ratio
+    public static final double kIntakeGearRatio = kIntakeChainRatio * kIntakeGearboxRatio;
 
     /* Torque-based velocity does not require a feed forward, as torque will accelerate the rotor up to the desired velocity by itself */
     public static final double intakeMotorTorqueKS = 0.0; // Static feedforward gain
-    public static final double intakeMotorTorqueKP =
-        8.0; // An error of 1 rps results in 5 amps output
-    public static final double intakeMotorTorqueKI =
-        0.2; // An error of 1 rps increases by 0.1 amps every second
-    public static final double intakeMotorTorqueKD =
-        0.001; // A change of 1000 rps squared results in 1 amp output
+    public static final double intakeMotorTorqueKP = 8.0; // error of 1 rps results in 8 amps output
+    public static final double intakeMotorTorqueKI = 0.2; // error of 1 rps incr by 0.2 amps per sec
+    public static final double intakeMotorTorqueKD = 0.001; // A change of 1000 rps^2 incr 1 amp output
 
     public static final double MMagicCruiseVelocity = 40;
     public static final double MMagicAcceleration = 80;
     public static final double MMagicJerk = 800;
 
     public static final double intakeVelocity = -3.0;
-    public static final double outtakeVelocityL = 2.0;
-    public static final double outtakeVelocityR = 4.0;
+    public static final double outtakeVelocityL = 3.0;
+    public static final double outtakeVelocityR = 6.0;
 
     public static final Distance rangeThreshold = Inches.of(5.0);
     public static final double kRangeFOVCenterX = 0;

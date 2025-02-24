@@ -19,11 +19,10 @@ import frc.robot.Constants.ArmConstants;
 public class ArmSubsystem extends SubsystemBase {
 
   private final TalonFX m_armMotor = new TalonFX(ArmConstants.ARMMOTOR_ID, ArmConstants.CANBUS);
-  private final CANcoder m_armEncoder =
-      new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
+  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
 
   private final MotionMagicVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
-  // private final MotionMagicExpoVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
+  // private final MotionMagicExpoVoltage m_armRequest = new MotionMagicExpoVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double armTargetPosition = 0;
@@ -50,6 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
     configs.Slot0.kP = ArmConstants.armMotorKP;
     configs.Slot0.kI = ArmConstants.armMotorKI;
     configs.Slot0.kD = ArmConstants.armMotorKD;
+
     configs.Feedback.FeedbackRemoteSensorID = m_armEncoder.getDeviceID();
     configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     configs.Feedback.SensorToMechanismRatio = 1.0;
