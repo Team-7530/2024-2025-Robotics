@@ -10,6 +10,9 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,6 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
     configs.Slot0.kP = ArmConstants.armMotorKP;
     configs.Slot0.kI = ArmConstants.armMotorKI;
     configs.Slot0.kD = ArmConstants.armMotorKD;
+    configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Feedback.FeedbackRemoteSensorID = m_armEncoder.getDeviceID();
     configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;

@@ -25,10 +25,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private final CANrange m_RangeSensor =
       new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
 
-  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest =
-  //    new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
   private final VelocityTorqueCurrentFOC m_velocityRequest =
       new VelocityTorqueCurrentFOC(0).withSlot(0);
+  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest =
+  //    new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double LintakeTargetVelocity = 0;

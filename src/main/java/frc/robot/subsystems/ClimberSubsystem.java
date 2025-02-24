@@ -10,6 +10,9 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
@@ -24,18 +27,16 @@ public class ClimberSubsystem implements Subsystem {
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
   private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
-  // private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
   private final PositionTorqueCurrentFOC m_positionRequest =
       new PositionTorqueCurrentFOC(0).withSlot(1);
+  // private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = true;
   private boolean m_isClamped = false;
-  private boolean m_usePositionControl = false;
 
   public ClimberSubsystem() {
-
     initClimberConfigs();
   }
 
@@ -55,10 +56,14 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot0.kP = ClimberConstants.climbMotorKP;
     configs.Slot0.kI = ClimberConstants.climbMotorKI;
     configs.Slot0.kD = ClimberConstants.climbMotorKD;
+    configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+    configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Slot1.kP = ClimberConstants.climbMotorKP;
     configs.Slot1.kI = ClimberConstants.climbMotorKI;
     configs.Slot1.kD = ClimberConstants.climbMotorKD;
+    configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+    configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
     configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -81,16 +86,6 @@ public class ClimberSubsystem implements Subsystem {
 
   @Override
   public void periodic() {
-    // double pos = this.getPosition();
-    // double motorCycle = m_ClimbMotor.getDutyCycle().getValueAsDouble();
-    // if (((motorCycle > 0.0) && (pos >= ClimberConstants.kClimberPositionMax))
-    //     || ((motorCycle < 0.0) && (pos <= ClimberConstants.kClimberPositionMin))) {
-    //   m_ClimbMotor.stopMotor();
-    // }
-
-    m_ClimberClampServo.set(
-        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
-
     updateSmartDashboard();
   }
 
@@ -116,15 +111,8 @@ public class ClimberSubsystem implements Subsystem {
         MathUtil.clamp(
             pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
 
-    if (m_usePositionControl) {
-      m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
-    } else {
-      double speed = 0.0; // default is 0
-      if (m_targetPosition > this.getPosition()) // is climbing
-      speed = m_isClamped ? ClimberConstants.kClimberSpeed2 : ClimberConstants.kClimberSpeed;
-      else if (!m_isClamped)
-        speed = -ClimberConstants.kClimberSpeed; // not climbing and not clamped
-      m_ClimbMotor.set(speed);
+    if (!m_isClamped || (m_targetPosition > this.getPosition())) { // is climbing or no ratchet
+        m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
     }
   }
 
@@ -132,7 +120,8 @@ public class ClimberSubsystem implements Subsystem {
     m_isTeleop = true;
     m_targetPosition = 0.0;
 
-    if (!m_isClamped || (speed > 0.0)) m_ClimbMotor.set(speed);
+    if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
+      m_ClimbMotor.set(speed);
   }
 
   public void stop() {
@@ -178,7 +167,7 @@ public class ClimberSubsystem implements Subsystem {
       this.setRotateSpeed(rotate);
     }
     if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val * 1.0);
+      this.setSpeed(val * 0.5);
     }
   }
 
