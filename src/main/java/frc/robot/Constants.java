@@ -92,7 +92,8 @@ public final class Constants {
 
     public static final InvertedValue kArmInverted = InvertedValue.CounterClockwise_Positive;
     public static final NeutralModeValue kArmNeutralMode = NeutralModeValue.Brake;
-    public static final SensorDirectionValue kArmEncoderDirection = SensorDirectionValue.Clockwise_Positive;
+    public static final SensorDirectionValue kArmEncoderDirection =
+        SensorDirectionValue.Clockwise_Positive;
     public static final double kArmEncoderOffset = -0.015869;
 
     public static final double kArmChainRatio = 74.0 / 16.0;
@@ -129,7 +130,8 @@ public final class Constants {
 
     public static final InvertedValue kWristInverted = InvertedValue.Clockwise_Positive;
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
-    public static final SensorDirectionValue kWristEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+    public static final SensorDirectionValue kWristEncoderDirection =
+        SensorDirectionValue.CounterClockwise_Positive;
     public static final double kWristEncoderOffset = 0.169;
 
     public static final double kWristChainRatio = 1.0; // 1:1
@@ -182,7 +184,8 @@ public final class Constants {
     public static final double intakeMotorTorqueKS = 0.0; // Static feedforward gain
     public static final double intakeMotorTorqueKP = 8.0; // error of 1 rps results in 8 amps output
     public static final double intakeMotorTorqueKI = 0.2; // error of 1 rps incr by 0.2 amps per sec
-    public static final double intakeMotorTorqueKD = 0.001; // A change of 1000 rps^2 incr 1 amp output
+    public static final double intakeMotorTorqueKD =
+        0.001; // A change of 1000 rps^2 incr 1 amp output
 
     public static final double MMagicCruiseVelocity = 40;
     public static final double MMagicAcceleration = 80;
@@ -211,7 +214,8 @@ public final class Constants {
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
     public static final NeutralModeValue kClimberNeutralMode = NeutralModeValue.Brake;
-    public static final SensorDirectionValue kClimberEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+    public static final SensorDirectionValue kClimberEncoderDirection =
+        SensorDirectionValue.CounterClockwise_Positive;
 
     public static final double kClimberChainRatio = 40.0 / 10.0;
     public static final double kClimberGearboxRatio = 100.0; // 1:100
@@ -231,15 +235,17 @@ public final class Constants {
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
-    public static final double climbMotorTorqueKP = 60.0; // An error of 1 rot. results in 60 A output
+    public static final double climbMotorTorqueKP =
+        60.0; // An error of 1 rot. results in 60 A output
     public static final double climbMotorTorqueKI = 0.0; // No output for integrated error
-    public static final double climbMotorTorqueKD = 6.0; // A velocity of 1 rps results in 6 A output
+    public static final double climbMotorTorqueKD =
+        6.0; // A velocity of 1 rps results in 6 A output
 
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double kClimberPositionMin = 128.2; //0.318;
-    public static final double kClimberPositionMax = 195.0; //0.503;
+    public static final double kClimberPositionMin = 128.2; // 0.318;
+    public static final double kClimberPositionMax = 195.0; // 0.503;
 
     public static final double kTargetClimberUp = 128.2;
     public static final double kTargetClimberDown = 195.0;

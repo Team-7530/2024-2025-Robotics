@@ -34,6 +34,8 @@ deploy {
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
+                    deleteOldFiles = true // Change to true to delete files on roboRIO that no
+                    // longer exist in deploy directory of this project
                 }
             }
         }
@@ -114,8 +116,7 @@ spotless {
             exclude '**/build/**', '**/build-*/**', '**/bin/**'
         }
         toggleOffOn()
-        googleJavaFormat('1.8').aosp().reflowLongStrings(false)
-//        googleJavaFormat()
+        googleJavaFormat().reflowLongStrings(false)
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()

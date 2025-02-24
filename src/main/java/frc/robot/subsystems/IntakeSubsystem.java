@@ -12,7 +12,6 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final CANrange m_RangeSensor =
       new CANrange(IntakeConstants.RANGESENSOR_ID, IntakeConstants.CANBUS);
 
-  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = 
+  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest =
   //    new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
   private final VelocityTorqueCurrentFOC m_velocityRequest =
       new VelocityTorqueCurrentFOC(0).withSlot(0);
@@ -85,8 +84,7 @@ public class IntakeSubsystem extends SubsystemBase {
     config.FovParams.FOVRangeY = IntakeConstants.kRangeFOVRangeY;
     config.ProximityParams.ProximityThreshold = IntakeConstants.kProxThreshold;
     config.ProximityParams.ProximityHysteresis = IntakeConstants.kProxHysteresis;
-    config.ProximityParams.MinSignalStrengthForValidMeasurement =
-        IntakeConstants.kMinSigStrength;
+    config.ProximityParams.MinSignalStrengthForValidMeasurement = IntakeConstants.kMinSigStrength;
 
     /* User can change the configs if they want, or leave it empty for factory-default */
     StatusCode status = m_RangeSensor.getConfigurator().apply(config);

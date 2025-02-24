@@ -243,7 +243,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return m_sysIdRoutineToApply.dynamic(direction);
   }
 
-    /**
+  /**
    * Returns the current module poses.
    *
    * @return The current module poses
@@ -252,21 +252,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // Get the robot's current pose from the drivetrain state.
     Pose2d robotPose = getState().Pose;
 
-    // Compute each module's field pose by adding the module offset (rotated by the robot's rotation) to the robot's translation.
-    Pose2d frontLeftPose  = addModuleOffset(robotPose, TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY);
-    Pose2d frontRightPose = addModuleOffset(robotPose, TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY);
-    Pose2d backLeftPose   = addModuleOffset(robotPose, TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY);
-    Pose2d backRightPose  = addModuleOffset(robotPose, TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY);
+    // Compute each module's field pose by adding the module offset (rotated by the robot's
+    // rotation) to the robot's translation.
+    Pose2d frontLeftPose =
+        addModuleOffset(
+            robotPose, TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY);
+    Pose2d frontRightPose =
+        addModuleOffset(
+            robotPose, TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY);
+    Pose2d backLeftPose =
+        addModuleOffset(
+            robotPose, TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY);
+    Pose2d backRightPose =
+        addModuleOffset(
+            robotPose, TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY);
 
-    return new Pose2d[] { frontLeftPose, frontRightPose, backLeftPose, backRightPose };
+    return new Pose2d[] {frontLeftPose, frontRightPose, backLeftPose, backRightPose};
   }
 
-    /**
+  /**
    * Adds the module offset to the robot's pose.
    *
    * @param robotPose The robot's current pose
-   * @param offsetX   The x offset of the module
-   * @param offsetY   The y offset of the module
+   * @param offsetX The x offset of the module
+   * @param offsetY The y offset of the module
    * @return The new pose for the module
    */
   private Pose2d addModuleOffset(Pose2d robotPose, double offsetX, double offsetY) {

@@ -203,11 +203,11 @@ public class RobotContainer {
 
     // Update camera simulation
     vision.simulationPeriodic(drivetrain.getState().Pose);
-    
+
     var debugField = vision.getSimDebugField();
     debugField.getObject("EstimatedRobot").setPose(drivetrain.getState().Pose);
     debugField.getObject("EstimatedRobotModules").setPoses(drivetrain.getModulePoses());
-    
+
     // // Calculate battery voltage sag due to current draw
     // var batteryVoltage =
     //         BatterySim.calculateDefaultBatteryLoadedVoltage(drivetrain.getCurrentDraw());

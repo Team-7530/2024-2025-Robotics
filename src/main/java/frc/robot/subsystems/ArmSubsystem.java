@@ -19,7 +19,8 @@ import frc.robot.Constants.ArmConstants;
 public class ArmSubsystem extends SubsystemBase {
 
   private final TalonFX m_armMotor = new TalonFX(ArmConstants.ARMMOTOR_ID, ArmConstants.CANBUS);
-  private final CANcoder m_armEncoder = new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
+  private final CANcoder m_armEncoder =
+      new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
 
   private final MotionMagicVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
   // private final MotionMagicExpoVoltage m_armRequest = new MotionMagicExpoVoltage(0).withSlot(0);
