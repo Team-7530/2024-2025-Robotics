@@ -75,14 +75,17 @@ public final class Constants {
   }
 
   public static final class ScoringConstants {
-    public static final double L1ArmPosition = 0.1;
-    public static final double L1WristPosition = 0.1;
+    public static final double L1ArmPosition = 0.28;
+    public static final double L1WristPosition = -0.3;
 
-    public static final double L2ArmPosition = 0.2;
-    public static final double L2WristPosition = 0.2;
+    public static final double L2ArmPosition = 0.25;
+    public static final double L2WristPosition = -0.22;
 
-    public static final double LoadArmPosition = 0.3;
-    public static final double LoadWristPosition = 0.3;
+    public static final double LoadArmPosition = 0.25;
+    public static final double LoadWristPosition = -0.14;
+
+    public static final double StowArmPosition = 0.43;
+    public static final double StowWristPosition = 0.25;
   }
 
   public static final class ArmConstants {
@@ -101,26 +104,26 @@ public final class Constants {
     public static final double kArmGearRatio =
         kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double armMotorKG = 0.0;
+    public static final double armMotorKG = 0.5;
     public static final double armMotorKS = 0.0;
     public static final double armMotorKV = 0.0;
     public static final double armMotorKA = 0.0;
-    public static final double armMotorKP = 4.0;
+    public static final double armMotorKP = 90.0;
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 10;
-    public static final double MMagicAcceleration = 20;
-    public static final double MMagicJerk = 200;
+    public static final double MMagicCruiseVelocity = 60;
+    public static final double MMagicAcceleration = 120;
+    public static final double MMagicJerk = 800;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kArmPositionMax = 0.424;
-    public static final double kArmPositionMin = 0.085;
+    public static final double kArmPositionMax = 0.437;
+    public static final double kArmPositionMin = 0.089;
 
-    public static final double kTargetArmHigh = 0.424;
-    public static final double kTargetArmLow = 0.085;
+    public static final double kTargetArmHigh = 0.437;
+    public static final double kTargetArmLow = 0.089;
   }
 
   public static final class WristConstants {
@@ -140,23 +143,23 @@ public final class Constants {
         kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
 
     public static final double wristMotorKG = 0.0;
-    public static final double wristMotorKS = 0.2;
+    public static final double wristMotorKS = 0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 20.0;
-    public static final double wristMotorKI = 5.0;
+    public static final double wristMotorKP = 70.0;
+    public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 10;
-    public static final double MMagicAcceleration = 20;
-    public static final double MMagicJerk = 200;
-    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+    public static final double MMagicCruiseVelocity = 20;
+    public static final double MMagicAcceleration = 40;
+    public static final double MMagicJerk = 400;
+    public static final double MMagicExpo_kV = 0.13; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
     public static final double kWristPositionMax = 0.25;
-    public static final double kWristPositionMin = -0.25;
+    public static final double kWristPositionMin = -0.3;
 
     public static final double kTargetWristHigh = 0.25;
-    public static final double kTargetWristLow = -0.25;
+    public static final double kTargetWristLow = -0.3;
 
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts

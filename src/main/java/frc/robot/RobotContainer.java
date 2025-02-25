@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
@@ -134,6 +135,13 @@ public class RobotContainer {
     oi.getAButton().whileTrue(new IntakeCommand(intake));
     oi.getXButton().whileTrue(new OuttakeCommand(intake));
     oi.getBButton().whileTrue(new OuttakeSpinCommand(intake));
+    oi.getPOVUp().whileTrue(new GetCoralCommand(arm, wrist));
+    oi.getPOVDown().whileTrue(new StowCommand(arm, wrist));
+    oi.getPOVLeft().whileTrue(new L1ScoringCommand(arm, wrist));
+    oi.getPOVRight().whileTrue(new L2ScoringCommand(arm, wrist));
+
+    // oi.getYButton().whileTrue(new ArmToPositionCommand(arm, ScoringConstants.LoadArmPosition));
+    // oi.getPOVRight().whileTrue(new WristToPositionCommand(wrist, ScoringConstants.LoadWristPosition));
 
     // oi.getXButton()
     //     .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))

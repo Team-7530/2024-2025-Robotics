@@ -111,8 +111,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(LintakeTargetVelocity));
     m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(RintakeTargetVelocity));
-    // m_LIntakeMotor.setControl(m_torqueRequest.withVelocity(Lvelocity).withFeedForward(1.0));
-    // m_RIntakeMotor.setControl(m_torqueRequest.withVelocity(Rvelocity).withFeedForward(1.0));
   }
 
   public void setIntakeSpeed(double speed) {

@@ -163,26 +163,22 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
 
   @Override
   public Trigger getPOVUp() {
-    int pov = operator.getPOV();
-    return new Trigger(() -> (pov == 0) || (pov == 45) || (pov == 315));
+    return new Trigger(() -> (operator.getPOV() == 0) || (operator.getPOV() == 45) || (operator.getPOV() == 315));
   }
 
   @Override
   public Trigger getPOVDown() {
-    int pov = operator.getPOV();
-    return new Trigger(() -> (pov == 180) || (pov == 225) || (pov == 135));
+    return new Trigger(() -> (operator.getPOV() == 180) || (operator.getPOV() == 225) || (operator.getPOV() == 135));
   }
 
   @Override
   public Trigger getPOVLeft() {
-    int pov = operator.getPOV();
-    return new Trigger(() -> (pov == 270) || (pov == 315) || (pov == 225));
+    return new Trigger(() -> (operator.getPOV() == 270) || (operator.getPOV() == 315) || (operator.getPOV() == 225));
   }
 
   @Override
   public Trigger getPOVRight() {
-    int pov = operator.getPOV();
-    return new Trigger(() -> (pov == 90) || (pov == 135) || (pov == 45));
+    return new Trigger(() -> (operator.getPOV() == 90) || (operator.getPOV() == 135) || (operator.getPOV() == 45));
   }
 
   @Override

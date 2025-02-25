@@ -5,7 +5,7 @@ import static frc.robot.Constants.*;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -25,8 +25,8 @@ public class ArmSubsystem extends SubsystemBase {
   private final CANcoder m_armEncoder =
       new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
 
-  private final MotionMagicVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
-  // private final MotionMagicExpoVoltage m_armRequest = new MotionMagicExpoVoltage(0).withSlot(0);
+  // private final MotionMagicVoltage m_armRequest = new MotionMagicVoltage(0).withSlot(0);
+  private final MotionMagicExpoVoltage m_armRequest = new MotionMagicExpoVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double armTargetPosition = 0;
