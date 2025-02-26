@@ -108,12 +108,12 @@ public final class Constants {
     public static final double armMotorKS = 0.0;
     public static final double armMotorKV = 0.0;
     public static final double armMotorKA = 0.0;
-    public static final double armMotorKP = 90.0;
+    public static final double armMotorKP = 45.0;
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 60;
-    public static final double MMagicAcceleration = 120;
-    public static final double MMagicJerk = 800;
+    public static final double MMagicCruiseVelocity = 40;
+    public static final double MMagicAcceleration = 80;
+    public static final double MMagicJerk = 1200;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
@@ -151,7 +151,7 @@ public final class Constants {
     public static final double wristMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 20;
     public static final double MMagicAcceleration = 40;
-    public static final double MMagicJerk = 400;
+    public static final double MMagicJerk = 1200;
     public static final double MMagicExpo_kV = 0.13; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
