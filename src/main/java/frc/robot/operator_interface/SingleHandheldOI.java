@@ -151,7 +151,7 @@ public class SingleHandheldOI implements OperatorInterface {
 
   @Override
   public boolean isRobotRelative() {
-    return !controller.getLeftBumperButton();
+    return controller.getLeftBumperButton();
   }
 
   @Override

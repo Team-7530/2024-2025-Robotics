@@ -74,8 +74,9 @@ public class VisionSubsystem implements Subsystem {
     photonEstimators.add(photonEstimator);
 
     cameras.add(new PhotonCamera(kCameraName2));
-    photonEstimator = new PhotonPoseEstimator(
-      FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
+    photonEstimator =
+        new PhotonPoseEstimator(
+            FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     photonEstimators.add(photonEstimator);
 

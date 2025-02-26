@@ -69,6 +69,8 @@ public class RobotContainer {
 
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
     LiveWindow.disableAllTelemetry();
+
+    drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate);
     configureAutoPaths();
     configureAutoCommands();
     configureTelemetry();
@@ -139,23 +141,6 @@ public class RobotContainer {
     oi.getPOVLeft().whileTrue(new L1ScoringCommand(arm, wrist));
     oi.getPOVRight().whileTrue(new L2ScoringCommand(arm, wrist));
 
-    // oi.getYButton().whileTrue(new ArmToPositionCommand(arm, ScoringConstants.LoadArmPosition));
-    // oi.getPOVRight().whileTrue(new WristToPositionCommand(wrist, ScoringConstants.LoadWristPosition));
-
-    // oi.getXButton()
-    //     .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(0.1), arm))
-    //     .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
-    // oi.getYButton()
-    //     .whileTrue(Commands.runOnce(() -> arm.setArmSpeed(-0.1), arm))
-    //     .whileFalse(Commands.runOnce(() -> arm.armStop(), arm));
-
-    // oi.getLeftBumper()
-    //     .whileTrue(Commands.runOnce(() -> climber.setRotateSpeed(1.0), climber));
-    // oi.getRightBumper()
-    //     .whileTrue(Commands.runOnce(() -> climber.setRotateSpeed(-1.0), climber));
-    // oi.getRightThumbstickButton()
-    //     .whileTrue(Commands.runOnce(() -> climber.setClamp(false)))
-    //     .whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
     oi.getLeftBumper().whileTrue(Commands.runOnce(() -> climber.setClamp(false)));
     oi.getRightBumper().whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
   }
@@ -178,7 +163,17 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
+    drivetrain.setDefaultCommand(
+        Commands.run(
+            () ->
+                drivetrain.setDriveControl(
+                    oi.getTranslateX(),
+                    oi.getTranslateY(),
+                    oi.getRotate(),
+                    oi.getRobotRelative().getAsBoolean()),
+            drivetrain));
+    // new SwerveTeleopCommand(drivetrain, oi));
+
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(

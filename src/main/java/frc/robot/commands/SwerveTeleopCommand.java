@@ -37,7 +37,7 @@ public class SwerveTeleopCommand extends Command {
 
   @Override
   public void execute() {
-    if (!oi.isRobotRelative()) {
+    if (oi.getRobotRelative().getAsBoolean()) {
       drivetrain.setControl(
           driveRobotCentric
               .withVelocityX(oi.getTranslateX() * DriveTrainConstants.maxSpeed)

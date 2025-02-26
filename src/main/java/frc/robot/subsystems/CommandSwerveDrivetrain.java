@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -43,6 +45,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean m_hasAppliedOperatorPerspective = false;
+
+  private final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric();
+  private final SwerveRequest.RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric();
+  private final ChassisSpeeds maxSpeed = new ChassisSpeeds(3.0, 3.0, 2.0);
 
   /** Swerve request to apply during robot-centric path following */
   private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds =
@@ -285,6 +291,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Translation2d rotatedOffset = offset.rotateBy(robotPose.getRotation());
     // Return the new pose for the module.
     return new Pose2d(robotPose.getTranslation().plus(rotatedOffset), robotPose.getRotation());
+  }
+
+  public void setMaxSpeeds(double xySpeed, double rotRate) {
+    maxSpeed.vxMetersPerSecond = xySpeed;
+    maxSpeed.vyMetersPerSecond = xySpeed;
+    maxSpeed.omegaRadiansPerSecond = rotRate;
+  }
+
+  public void setDriveControl(double x, double y, double rot, boolean relative) {
+    if (relative) {
+      this.setControl(
+          driveRobotCentric
+              .withDeadband(maxSpeed.vxMetersPerSecond * 0.05)
+              .withRotationalDeadband(maxSpeed.omegaRadiansPerSecond * 0.05) // Add a 5% deadband
+              .withVelocityX(x * maxSpeed.vxMetersPerSecond)
+              .withVelocityY(y * maxSpeed.vyMetersPerSecond)
+              .withRotationalRate(rot * maxSpeed.omegaRadiansPerSecond)
+              .withDriveRequestType(DriveRequestType.OpenLoopVoltage)); // Use open-loop control
+    } else {
+      this.setControl(
+          driveFieldCentric
+              .withDeadband(maxSpeed.vxMetersPerSecond * 0.05)
+              .withRotationalDeadband(maxSpeed.omegaRadiansPerSecond * 0.05) // Add a 5% deadband
+              .withVelocityX(x * maxSpeed.vxMetersPerSecond)
+              .withVelocityY(y * maxSpeed.vyMetersPerSecond)
+              .withRotationalRate(rot * maxSpeed.omegaRadiansPerSecond)
+              .withDriveRequestType(DriveRequestType.OpenLoopVoltage)); // Use open-loop control
+    }
   }
 
   @Override

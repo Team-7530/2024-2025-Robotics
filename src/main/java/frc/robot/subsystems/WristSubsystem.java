@@ -12,7 +12,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,7 +25,8 @@ public class WristSubsystem extends SubsystemBase {
       new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
   private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
-  // private final MotionMagicExpoVoltage m_wristRequest = new MotionMagicExpoVoltage(0).withSlot(0);
+  // private final MotionMagicExpoVoltage m_wristRequest = new
+  // MotionMagicExpoVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double wristTargetPosition = 0;

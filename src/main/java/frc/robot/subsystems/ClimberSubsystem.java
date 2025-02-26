@@ -12,7 +12,6 @@ import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
@@ -112,7 +111,7 @@ public class ClimberSubsystem implements Subsystem {
             pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
 
     if (!m_isClamped || (m_targetPosition > this.getPosition())) { // is climbing or no ratchet
-        m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
+      m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
     }
   }
 
@@ -121,7 +120,7 @@ public class ClimberSubsystem implements Subsystem {
     m_targetPosition = 0.0;
 
     if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
-      m_ClimbMotor.set(speed);
+    m_ClimbMotor.set(speed);
   }
 
   public void stop() {
