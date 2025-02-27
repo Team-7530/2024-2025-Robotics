@@ -50,7 +50,7 @@ public final class Constants {
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
     public static final Transform3d kRobotToCam1 =
-        new Transform3d(new Translation3d(0.2, -0.2, 0), new Rotation3d(0, 0, 0));
+        new Transform3d(new Translation3d(0.2, -0.2, 0), new Rotation3d(0, -Math.PI * 0.25, 0));
     public static final Transform3d kRobotToCam2 =
         new Transform3d(new Translation3d(-0.2, 0.2, 0), new Rotation3d(0, 0, Math.PI));
 
