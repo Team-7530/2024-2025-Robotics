@@ -163,16 +163,16 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    drivetrain.setDefaultCommand(
-        Commands.run(
-            () ->
-                drivetrain.setDriveControl(
-                    oi.getTranslateX(),
-                    oi.getTranslateY(),
-                    oi.getRotate(),
-                    oi.getRobotRelative().getAsBoolean()),
-            drivetrain));
-    // new SwerveTeleopCommand(drivetrain, oi));
+    // drivetrain.setDefaultCommand(
+    //     Commands.run(
+    //         () ->
+    //             drivetrain.setDriveControl(
+    //                 oi.getTranslateX(),
+    //                 oi.getTranslateY(),
+    //                 oi.getRotate(),
+    //                 oi.getRobotRelative().getAsBoolean()),
+    //         drivetrain));
+    drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
 
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
