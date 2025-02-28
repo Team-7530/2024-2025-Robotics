@@ -146,7 +146,7 @@ public final class Constants {
     public static final double wristMotorKS = 0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 70.0;
+    public static final double wristMotorKP = 55.0; //70 2/27/25
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 20;
@@ -251,7 +251,7 @@ public final class Constants {
     public static final double kClimberPositionMax = 215.0; // 0.503;
 
     public static final double kTargetClimberUp = 128.2;
-    public static final double kTargetClimberDown = 215.0;
+    public static final double kTargetClimberDown = 215.0; //
 
     public static final double kClimberSpeed = 0.2;
     public static final double kClimberSpeed2 = 0.5;
