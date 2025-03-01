@@ -133,18 +133,18 @@ public class RobotContainer {
                 drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
     // oi.getAButton().whileTrue(getAutonomousCommand());
 
-    oi.getAButton().whileTrue(new IntakeCommand(intake));
-    oi.getXButton().whileTrue(new OuttakeCommand(intake));
-    oi.getBButton().whileTrue(new OuttakeSpinCommand(intake));
-    oi.getYButton().whileTrue(new CruisePositionCommand(arm, wrist));
+    oi.getAButton().onTrue(new IntakeCommand(intake));
+    oi.getXButton().onTrue(new OuttakeCommand(intake));
+    oi.getBButton().onTrue(new OuttakeSpinCommand(intake));
+    oi.getYButton().onTrue(new CruisePositionCommand(arm, wrist));
 
-    oi.getPOVUp().whileTrue(new GetCoralCommand(arm, wrist));
-    oi.getPOVDown().whileTrue(new ClimbPositionCommand(arm, wrist));
-    oi.getPOVLeft().whileTrue(new L1ScoringCommand(arm, wrist));
-    oi.getPOVRight().whileTrue(new L2ScoringCommand(arm, wrist));
+    oi.getPOVUp().onTrue(new GetCoralCommand(arm, wrist));
+    oi.getPOVDown().onTrue(new ClimbPositionCommand(arm, wrist));
+    oi.getPOVLeft().onTrue(new L1ScoringCommand(arm, wrist));
+    oi.getPOVRight().onTrue(new L2ScoringCommand(arm, wrist));
 
-    oi.getLeftBumper().whileTrue(Commands.runOnce(() -> climber.setClamp(false)));
-    oi.getRightBumper().whileFalse(Commands.runOnce(() -> climber.setClamp(true)));
+    oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
+    oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
   }
 
   /**

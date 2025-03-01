@@ -34,7 +34,6 @@ public class ClimberSubsystem implements Subsystem {
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = true;
   private boolean m_isClamped = false;
-  private int m_counter = 0;
   
     public ClimberSubsystem() {
       initClimberConfigs();
@@ -87,12 +86,7 @@ public class ClimberSubsystem implements Subsystem {
     @Override
     public void periodic() {
       updateSmartDashboard();
-  
-      // if (++m_counter > 10) {
-      //   m_counter = 0;
-      //   resetMotorPostion();
-      // }
-  }
+    }
 
   public void restore() {
     this.setPosition(ClimberConstants.kTargetClimberUp);

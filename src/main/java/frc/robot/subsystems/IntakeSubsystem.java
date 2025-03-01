@@ -134,11 +134,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeOut() {
-    this.setIntakeVelocity(IntakeConstants.outtakeVelocityR, IntakeConstants.outtakeVelocityR);
+    this.setIntakeVelocity(IntakeConstants.outtakeL2Velocity, IntakeConstants.outtakeL2Velocity);
   }
 
   public void intakeOutSpin() {
-    this.setIntakeVelocity(IntakeConstants.outtakeVelocityL, IntakeConstants.outtakeVelocityR);
+    this.setIntakeVelocity(IntakeConstants.outtakeL1VelocityL, IntakeConstants.outtakeL1VelocityR);
   }
 
   public boolean hasCoralLoaded() {

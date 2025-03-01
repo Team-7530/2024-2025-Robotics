@@ -199,8 +199,9 @@ public final class Constants {
     public static final double MMagicJerk = 800;
 
     public static final double intakeVelocity = -3.0;
-    public static final double outtakeVelocityL = 3.0;
-    public static final double outtakeVelocityR = 6.0;
+    public static final double outtakeL1VelocityL = 3.0;
+    public static final double outtakeL1VelocityR = 6.0;
+    public static final double outtakeL2Velocity = 8.0;
 
     public static final Distance rangeThreshold = Inches.of(5.0);
     public static final double kRangeFOVCenterX = 0;
