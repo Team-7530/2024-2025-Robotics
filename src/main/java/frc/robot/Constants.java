@@ -220,7 +220,7 @@ public final class Constants {
     public static final SensorDirectionValue kClimberEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
 
-    public static final double kClimberChainRatio = 40.0 / 10.0;
+    public static final double kClimberChainRatio = 40.0 / 16.0;
     public static final double kClimberGearboxRatio = 100.0; // 1:100
     public static final double kClimberGearRatio =
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
