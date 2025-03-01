@@ -50,9 +50,9 @@ public final class Constants {
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
     public static final Transform3d kRobotToCam1 =
-        new Transform3d(new Translation3d(0.2, -0.2, 0), new Rotation3d(0, -Math.PI * 0.25, 0));
+        new Transform3d(new Translation3d(0.2, -0.2, 0), new Rotation3d(0, 0, 0));
     public static final Transform3d kRobotToCam2 =
-        new Transform3d(new Translation3d(-0.2, 0.2, 0), new Rotation3d(0, 0, Math.PI));
+        new Transform3d(new Translation3d(-0.2, 0.2, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -84,8 +84,11 @@ public final class Constants {
     public static final double LoadArmPosition = 0.25;
     public static final double LoadWristPosition = -0.14;
 
-    public static final double StowArmPosition = 0.43;
-    public static final double StowWristPosition = 0.25;
+    public static final double ClimbArmPosition = 0.43;
+    public static final double ClimbWristPosition = 0.2;
+
+    public static final double CruiseArmPosition = 0.43;
+    public static final double CruiseWristPosition = -0.3;
   }
 
   public static final class ArmConstants {
@@ -146,7 +149,8 @@ public final class Constants {
     public static final double wristMotorKS = 0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 55.0; //70 2/27/25
+    public static final double wristMotorKP = 45.0; //70 2/27/25
+    public static final double wristMotorKP_slow = 8.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 20;
@@ -220,10 +224,12 @@ public final class Constants {
     public static final SensorDirectionValue kClimberEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
 
-    public static final double kClimberChainRatio = 40.0 / 16.0;
+    public static final double kClimberChainRatio = 40.0 / 14.0;
     public static final double kClimberGearboxRatio = 100.0; // 1:100
     public static final double kClimberGearRatio =
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
+    public static final double kClimberEncoderMin = 0.315;
+    public static final double kClimberEncoderMax = 0.503;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
@@ -247,11 +253,11 @@ public final class Constants {
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double kClimberPositionMin = 128.2; // 0.318;
-    public static final double kClimberPositionMax = 215.0; // 0.503;
+    public static final double kClimberPositionMin = 0.0;
+    public static final double kClimberPositionMax = (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
 
-    public static final double kTargetClimberUp = 128.2;
-    public static final double kTargetClimberDown = 215.0; //
+    public static final double kTargetClimberUp = kClimberPositionMin;
+    public static final double kTargetClimberDown = kClimberPositionMax;
 
     public static final double kClimberSpeed = 0.2;
     public static final double kClimberSpeed2 = 0.5;

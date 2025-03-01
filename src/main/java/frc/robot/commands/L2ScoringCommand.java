@@ -11,7 +11,7 @@ public class L2ScoringCommand extends SequentialCommandGroup {
   public L2ScoringCommand(ArmSubsystem arm, WristSubsystem wrist) {
     addCommands(
         new ArmToPositionCommand(arm, ScoringConstants.L2ArmPosition).withName("ArmToL2Position"),
-        new WristToPositionCommand(wrist, ScoringConstants.L2WristPosition)
+        new WristToPositionCommand(wrist, ScoringConstants.L2WristPosition, false)
             .withName("WristToL2Position"));
   }
 }

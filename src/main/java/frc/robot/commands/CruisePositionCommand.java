@@ -1,3 +1,4 @@
+
 package frc.robot.commands;
 
 import static frc.robot.Constants.*;
@@ -6,13 +7,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-public class StowCommand extends SequentialCommandGroup {
+public class CruisePositionCommand extends SequentialCommandGroup {
 
-  public StowCommand(ArmSubsystem arm, WristSubsystem wrist) {
+  public CruisePositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
     addCommands(
-        new ArmToPositionCommand(arm, ScoringConstants.StowArmPosition)
+        new ArmToPositionCommand(arm, ScoringConstants.CruiseArmPosition)
             .withName("ArmToLoadingPosition"),
-        new WristToPositionCommand(wrist, ScoringConstants.StowWristPosition)
+        new WristToPositionCommand(wrist, ScoringConstants.CruiseWristPosition, true)
             .withName("WristToLoadingPosition"));
   }
 }

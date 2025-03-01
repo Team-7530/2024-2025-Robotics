@@ -55,6 +55,16 @@ public class WristSubsystem extends SubsystemBase {
     configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
+    configs.Slot1.kG = WristConstants.wristMotorKG;
+    configs.Slot1.kS = WristConstants.wristMotorKS;
+    configs.Slot1.kV = WristConstants.wristMotorKV;
+    configs.Slot1.kA = WristConstants.wristMotorKA;
+    configs.Slot1.kP = WristConstants.wristMotorKP_slow;
+    configs.Slot1.kI = WristConstants.wristMotorKI;
+    configs.Slot1.kD = WristConstants.wristMotorKD;
+    configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+    configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+
     configs.Feedback.FeedbackRemoteSensorID = m_wristEncoder.getDeviceID();
     configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     configs.Feedback.SensorToMechanismRatio = 1.0;
@@ -101,7 +111,15 @@ public class WristSubsystem extends SubsystemBase {
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
 
-    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition));
+    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
+  }
+
+  public void setWristPosition(double pos, boolean slow) {
+    m_isTeleop = false;
+    wristTargetPosition =
+        MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
+
+    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(1));
   }
 
   public double getWristPosition() {
@@ -129,7 +147,7 @@ public class WristSubsystem extends SubsystemBase {
   public void teleop(double wrist) {
     wrist = MathUtil.applyDeadband(wrist, STICK_DEADBAND) * 0.1;
 
-    if (m_isTeleop && (wrist != 0.0)) {
+    if (m_isTeleop || (wrist != 0.0)) {
       this.setWristSpeed(wrist);
     }
   }

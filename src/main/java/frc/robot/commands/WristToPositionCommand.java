@@ -7,9 +7,10 @@ public class WristToPositionCommand extends Command {
   private final WristSubsystem m_wrist;
 
   private double m_targetPosition = 0.0;
+  private boolean m_targetSlow = false;
   private boolean m_isFinished = false;
 
-  public WristToPositionCommand(WristSubsystem wrist, double position) {
+  public WristToPositionCommand(WristSubsystem wrist, double position, boolean slow) {
     this.m_wrist = wrist;
     this.m_targetPosition = position;
 
@@ -19,7 +20,7 @@ public class WristToPositionCommand extends Command {
   @Override
   public void initialize() {
     m_isFinished = false;
-    m_wrist.setWristPosition(m_targetPosition);
+    m_wrist.setWristPosition(m_targetPosition, m_targetSlow);
   }
 
   @Override

@@ -136,8 +136,10 @@ public class RobotContainer {
     oi.getAButton().whileTrue(new IntakeCommand(intake));
     oi.getXButton().whileTrue(new OuttakeCommand(intake));
     oi.getBButton().whileTrue(new OuttakeSpinCommand(intake));
+    oi.getYButton().whileTrue(new CruisePositionCommand(arm, wrist));
+
     oi.getPOVUp().whileTrue(new GetCoralCommand(arm, wrist));
-    oi.getPOVDown().whileTrue(new StowCommand(arm, wrist));
+    oi.getPOVDown().whileTrue(new ClimbPositionCommand(arm, wrist));
     oi.getPOVLeft().whileTrue(new L1ScoringCommand(arm, wrist));
     oi.getPOVRight().whileTrue(new L2ScoringCommand(arm, wrist));
 

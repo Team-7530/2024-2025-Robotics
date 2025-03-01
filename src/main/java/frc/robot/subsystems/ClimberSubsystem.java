@@ -34,74 +34,80 @@ public class ClimberSubsystem implements Subsystem {
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = true;
   private boolean m_isClamped = false;
-
-  public ClimberSubsystem() {
-    initClimberConfigs();
-  }
-
-  private void initClimberConfigs() {
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.MotorOutput.Inverted = ClimberConstants.kClimberInverted;
-    configs.MotorOutput.NeutralMode = ClimberConstants.kClimberNeutralMode;
-    configs.Voltage.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
-    configs.Voltage.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = ClimberConstants.peakForwardTorqueCurrent;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = ClimberConstants.peakReverseTorqueCurrent;
-
-    configs.Slot0.kG = ClimberConstants.climbMotorKG;
-    configs.Slot0.kS = ClimberConstants.climbMotorKS;
-    configs.Slot0.kV = ClimberConstants.climbMotorKV;
-    configs.Slot0.kA = ClimberConstants.climbMotorKA;
-    configs.Slot0.kP = ClimberConstants.climbMotorKP;
-    configs.Slot0.kI = ClimberConstants.climbMotorKI;
-    configs.Slot0.kD = ClimberConstants.climbMotorKD;
-    configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
-    configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
-
-    configs.Slot1.kP = ClimberConstants.climbMotorKP;
-    configs.Slot1.kI = ClimberConstants.climbMotorKI;
-    configs.Slot1.kD = ClimberConstants.climbMotorKD;
-    configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
-    configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
-
-    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
-    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
-    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-
-    /* Retry config apply up to 5 times, report if failure */
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = m_ClimbMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
+  private int m_counter = 0;
+  
+    public ClimberSubsystem() {
+      initClimberConfigs();
     }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
+  
+    private void initClimberConfigs() {
+      TalonFXConfiguration configs = new TalonFXConfiguration();
+      configs.MotorOutput.Inverted = ClimberConstants.kClimberInverted;
+      configs.MotorOutput.NeutralMode = ClimberConstants.kClimberNeutralMode;
+      configs.Voltage.PeakForwardVoltage = ClimberConstants.peakForwardVoltage;
+      configs.Voltage.PeakReverseVoltage = ClimberConstants.peakReverseVoltage;
+      configs.TorqueCurrent.PeakForwardTorqueCurrent = ClimberConstants.peakForwardTorqueCurrent;
+      configs.TorqueCurrent.PeakReverseTorqueCurrent = ClimberConstants.peakReverseTorqueCurrent;
+  
+      configs.Slot0.kG = ClimberConstants.climbMotorKG;
+      configs.Slot0.kS = ClimberConstants.climbMotorKS;
+      configs.Slot0.kV = ClimberConstants.climbMotorKV;
+      configs.Slot0.kA = ClimberConstants.climbMotorKA;
+      configs.Slot0.kP = ClimberConstants.climbMotorKP;
+      configs.Slot0.kI = ClimberConstants.climbMotorKI;
+      configs.Slot0.kD = ClimberConstants.climbMotorKD;
+      configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+      configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+  
+      configs.Slot1.kP = ClimberConstants.climbMotorKP;
+      configs.Slot1.kI = ClimberConstants.climbMotorKI;
+      configs.Slot1.kD = ClimberConstants.climbMotorKD;
+      configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+      configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+  
+      configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
+      configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
+      configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+  
+      /* Retry config apply up to 5 times, report if failure */
+      StatusCode status = StatusCode.StatusCodeNotInitialized;
+      for (int i = 0; i < 5; ++i) {
+        status = m_ClimbMotor.getConfigurator().apply(configs);
+        if (status.isOK()) break;
+      }
+      if (!status.isOK()) {
+        System.out.println("Could not apply configs, error code: " + status.toString());
+      }
+      /* Make sure we start at 0 */
+      this.resetMotorPostion();
+      m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
     }
-    /* Make sure we start at 0 */
-    m_ClimbMotor.setPosition(m_ClimbEncoder.get() * ClimberConstants.kClimberGearRatio);
-    m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
-  }
-
-  @Override
-  public void periodic() {
-    updateSmartDashboard();
+  
+    @Override
+    public void periodic() {
+      updateSmartDashboard();
+  
+      // if (++m_counter > 10) {
+      //   m_counter = 0;
+      //   resetMotorPostion();
+      // }
   }
 
   public void restore() {
-    this.setPosition(ClimberConstants.kTargetClimberDown);
-  }
-
-  public boolean isRestoredPosition() {
-    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberDown) < 0.01;
-  }
-
-  public void climb() {
     this.setPosition(ClimberConstants.kTargetClimberUp);
   }
 
-  public boolean isFullClimbPosition() {
+  public boolean isRestoredPosition() {
     return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberUp) < 0.01;
+  }
+
+  public void climb() {
+    this.setPosition(ClimberConstants.kTargetClimberDown);
+  }
+
+  public boolean isFullClimbPosition() {
+    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberDown) < 0.01;
   }
 
   public void setPosition(double pos) {
@@ -168,6 +174,11 @@ public class ClimberSubsystem implements Subsystem {
     if (m_isTeleop || (val != 0.0)) {
       this.setSpeed(val * 0.5);
     }
+  }
+
+  void resetMotorPostion() {
+    m_ClimbMotor.setPosition((m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin) * ClimberConstants.kClimberGearRatio);
+
   }
 
   // Update the smart dashboard
