@@ -24,7 +24,7 @@ public class ArmToPositionCommand extends Command {
 
   @Override
   public void execute() {
-    m_isFinished = Math.abs(m_arm.getArmPosition() - m_targetPosition) < 0.01;
+    m_isFinished = Math.abs(m_arm.getArmPosition() - m_targetPosition) < 0.05;
   }
 
   @Override

@@ -112,6 +112,9 @@ public class ArmSubsystem extends SubsystemBase {
     armTargetPosition = 0;
     m_isTeleop = true;
     m_armMotor.set(aspeed);
+
+    // if (Math.abs(aspeed) <= 0.01 )
+    //   this.armStop();
   }
 
   public void armStop() {

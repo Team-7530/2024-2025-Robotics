@@ -5,7 +5,8 @@ import static frc.robot.Constants.*;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+// import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -24,9 +26,9 @@ public class WristSubsystem extends SubsystemBase {
   private final CANcoder m_wristEncoder =
       new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
-  private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
-  // private final MotionMagicExpoVoltage m_wristRequest = new
-  // MotionMagicExpoVoltage(0).withSlot(0);
+  // private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
+  private final MotionMagicExpoVoltage m_wristRequest = new
+    MotionMagicExpoVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double wristTargetPosition = 0;
@@ -56,7 +58,7 @@ public class WristSubsystem extends SubsystemBase {
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Slot1.kG = WristConstants.wristMotorKG;
-    configs.Slot1.kS = WristConstants.wristMotorKS;
+    configs.Slot1.kS = WristConstants.wristMotorKS_slow;
     configs.Slot1.kV = WristConstants.wristMotorKV;
     configs.Slot1.kA = WristConstants.wristMotorKA;
     configs.Slot1.kP = WristConstants.wristMotorKP_slow;
@@ -110,7 +112,6 @@ public class WristSubsystem extends SubsystemBase {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
   }
 
@@ -118,8 +119,7 @@ public class WristSubsystem extends SubsystemBase {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-
-    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(1));
+        m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(slow ? 1 :0));
   }
 
   public double getWristPosition() {
@@ -129,10 +129,15 @@ public class WristSubsystem extends SubsystemBase {
   public void setWristSpeed(double wspeed) {
     wristTargetPosition = 0;
     m_isTeleop = true;
-    m_wristMotor.set(wspeed);
-  }
+
+    // if (Math.abs(wspeed) < 0.1 )
+    //   this.wristStop();
+    
+      m_wristMotor.set(wspeed);
+    }
 
   public void wristStop() {
+    System.out.println("wristStop");
     m_wristMotor.setControl(m_brake);
   }
 

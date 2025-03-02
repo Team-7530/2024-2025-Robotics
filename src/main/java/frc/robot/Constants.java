@@ -102,7 +102,7 @@ public final class Constants {
         SensorDirectionValue.Clockwise_Positive;
     public static final double kArmEncoderOffset = -0.015869;
 
-    public static final double kArmChainRatio = 74.0 / 16.0;
+    public static final double kArmChainRatio = 74.0 / 50.0;
     public static final double kArmGearboxRatio = 80.0; // 1:80
     public static final double kArmGearRatio =
         kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
@@ -111,12 +111,12 @@ public final class Constants {
     public static final double armMotorKS = 0.0;
     public static final double armMotorKV = 0.0;
     public static final double armMotorKA = 0.0;
-    public static final double armMotorKP = 45.0;
+    public static final double armMotorKP = 20.0; //45
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 40;
-    public static final double MMagicAcceleration = 80;
-    public static final double MMagicJerk = 1200;
+    public static final double MMagicCruiseVelocity = 2;
+    public static final double MMagicAcceleration = 4;
+    public static final double MMagicJerk = 8000;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
@@ -147,16 +147,17 @@ public final class Constants {
 
     public static final double wristMotorKG = 0.0;
     public static final double wristMotorKS = 0.0;
+    public static final double wristMotorKS_slow = -0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 45.0; //70 2/27/25
+    public static final double wristMotorKP = 35.0; //70 2/27/25
     public static final double wristMotorKP_slow = 8.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 20;
-    public static final double MMagicAcceleration = 40;
-    public static final double MMagicJerk = 1200;
-    public static final double MMagicExpo_kV = 0.13; // kV is around 0.12 V/rps
+    public static final double MMagicCruiseVelocity = 1;
+    public static final double MMagicAcceleration = 1;
+    public static final double MMagicJerk = 8000;
+    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
     public static final double kWristPositionMax = 0.25;

@@ -13,6 +13,7 @@ public class WristToPositionCommand extends Command {
   public WristToPositionCommand(WristSubsystem wrist, double position, boolean slow) {
     this.m_wrist = wrist;
     this.m_targetPosition = position;
+    this.m_targetSlow = slow;
 
     addRequirements(wrist);
   }
@@ -25,7 +26,7 @@ public class WristToPositionCommand extends Command {
 
   @Override
   public void execute() {
-    m_isFinished = Math.abs(m_wrist.getWristPosition() - m_targetPosition) < 0.01;
+    m_isFinished = Math.abs(m_wrist.getWristPosition() - m_targetPosition) < 0.05;
   }
 
   @Override
