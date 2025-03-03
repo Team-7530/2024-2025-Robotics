@@ -27,8 +27,7 @@ public class WristSubsystem extends SubsystemBase {
       new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
   // private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
-  private final MotionMagicExpoVoltage m_wristRequest = new
-    MotionMagicExpoVoltage(0).withSlot(0);
+  private final MotionMagicExpoVoltage m_wristRequest = new MotionMagicExpoVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double wristTargetPosition = 0;
@@ -112,14 +111,9 @@ public class WristSubsystem extends SubsystemBase {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
-  }
 
-  public void setWristPosition(double pos, boolean slow) {
-    m_isTeleop = false;
-    wristTargetPosition =
-        MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-        m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(slow ? 1 :0));
+    int slot = ((this.getWristPosition() * wristTargetPosition) <= 0.0) ? 1 : 0;
+    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(slot));
   }
 
   public double getWristPosition() {
@@ -130,14 +124,10 @@ public class WristSubsystem extends SubsystemBase {
     wristTargetPosition = 0;
     m_isTeleop = true;
 
-    // if (Math.abs(wspeed) < 0.1 )
-    //   this.wristStop();
-    
-      m_wristMotor.set(wspeed);
-    }
+    m_wristMotor.set(wspeed);
+  }
 
   public void wristStop() {
-    System.out.println("wristStop");
     m_wristMotor.setControl(m_brake);
   }
 

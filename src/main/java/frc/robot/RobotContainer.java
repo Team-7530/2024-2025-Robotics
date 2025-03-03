@@ -138,10 +138,10 @@ public class RobotContainer {
     oi.getBButton().onTrue(new OuttakeSpinCommand(intake));
     oi.getYButton().onTrue(new CruisePositionCommand(arm, wrist));
 
-    oi.getPOVUp().onTrue(new GetCoralCommand(arm, wrist));
+    oi.getPOVUp().onTrue(new GetCoralPositionCommand(arm, wrist));
     oi.getPOVDown().onTrue(new ClimbPositionCommand(arm, wrist));
-    oi.getPOVLeft().onTrue(new L1ScoringCommand(arm, wrist));
-    oi.getPOVRight().onTrue(new L2ScoringCommand(arm, wrist));
+    oi.getPOVLeft().onTrue(new L1ScoringPositionCommand(arm, wrist));
+    oi.getPOVRight().onTrue(new L2ScoringPositionCommand(arm, wrist));
 
     oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
     oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
@@ -188,9 +188,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
     NamedCommands.registerCommand("Outtake", new OuttakeCommand(intake));
     NamedCommands.registerCommand("OuttakeSpin", new OuttakeSpinCommand(intake));
-    NamedCommands.registerCommand("GetCoral", new GetCoralCommand(arm, wrist));
-    NamedCommands.registerCommand("SetL1Score", new L1ScoringCommand(arm, wrist));
-    NamedCommands.registerCommand("SetL2Score", new L2ScoringCommand(arm, wrist));
+    NamedCommands.registerCommand("GetCoral", new GetCoralPositionCommand(arm, wrist));
+    NamedCommands.registerCommand("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
+    NamedCommands.registerCommand("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
+    NamedCommands.registerCommand("DoL2Score", new L2ScoringCommand(this));
   }
 
   private void configureTelemetry() {

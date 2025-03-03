@@ -52,7 +52,8 @@ public final class Constants {
     public static final Transform3d kRobotToCam1 =
         new Transform3d(new Translation3d(0.2, -0.2, 0), new Rotation3d(0, 0, 0));
     public static final Transform3d kRobotToCam2 =
-        new Transform3d(new Translation3d(-0.2, 0.2, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
+        new Transform3d(
+            new Translation3d(-0.2, 0.2, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -89,6 +90,9 @@ public final class Constants {
 
     public static final double CruiseArmPosition = 0.43;
     public static final double CruiseWristPosition = -0.3;
+
+    public static final double L2BackupAmountX = -0.3;
+    public static final double L2BackupAmountY = 0.0;
   }
 
   public static final class ArmConstants {
@@ -111,7 +115,7 @@ public final class Constants {
     public static final double armMotorKS = 0.0;
     public static final double armMotorKV = 0.0;
     public static final double armMotorKA = 0.0;
-    public static final double armMotorKP = 20.0; //45
+    public static final double armMotorKP = 20.0; // 45
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 2;
@@ -150,7 +154,7 @@ public final class Constants {
     public static final double wristMotorKS_slow = -0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 35.0; //70 2/27/25
+    public static final double wristMotorKP = 35.0; // 70 2/27/25
     public static final double wristMotorKP_slow = 8.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
@@ -256,7 +260,8 @@ public final class Constants {
     public static final double kClampedPosition = 0.5;
 
     public static final double kClimberPositionMin = 0.0;
-    public static final double kClimberPositionMax = (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
+    public static final double kClimberPositionMax =
+        (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
 
     public static final double kTargetClimberUp = kClimberPositionMin;
     public static final double kTargetClimberDown = kClimberPositionMax;

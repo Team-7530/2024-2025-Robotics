@@ -1,17 +1,14 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.*;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotContainer;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.WristSubsystem;
+public class L2ScoringCommand extends SequentialCommandGroup {
 
-public class L2ScoringCommand extends ParallelCommandGroup {
-
-  public L2ScoringCommand(ArmSubsystem arm, WristSubsystem wrist) {
+  public L2ScoringCommand(RobotContainer rc) {
     addCommands(
-        new ArmToPositionCommand(arm, ScoringConstants.L2ArmPosition).withName("ArmToL2Position"),
-        new WristToPositionCommand(wrist, ScoringConstants.L2WristPosition, false)
-            .withName("WristToL2Position"));
+        new L2ScoringPositionCommand(rc.arm, rc.wrist).withName("L2ScoringPositionCommand"),
+        new L2ScoringBackUpCommand(rc.drivetrain).withName("L2ScoringBackUpCommand"),
+        new OuttakeCommand(rc.intake).withName("OuttakeCommand"));
   }
 }
