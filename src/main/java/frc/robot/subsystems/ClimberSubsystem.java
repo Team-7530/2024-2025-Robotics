@@ -170,7 +170,7 @@ public class ClimberSubsystem implements Subsystem {
     }
   }
 
-  void resetMotorPostion() {
+  public void resetMotorPostion() {
     m_ClimbMotor.setPosition(
         (m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin)
             * ClimberConstants.kClimberGearRatio);

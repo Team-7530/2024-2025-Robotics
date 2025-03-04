@@ -12,11 +12,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+// import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -82,6 +83,7 @@ public class RobotContainer {
    */
   public void updateOI() {
     if (!OISelector.didJoysticksChange()) {
+      SmartDashboard.putNumber("DriveTrain/Drive Scaling", oi.driveScalingValue());
       return;
     }
 
@@ -188,6 +190,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
     NamedCommands.registerCommand("Outtake", new OuttakeCommand(intake));
     NamedCommands.registerCommand("OuttakeSpin", new OuttakeSpinCommand(intake));
+    NamedCommands.registerCommand("SetClimbPos", new ClimbPositionCommand(arm, wrist));
+    NamedCommands.registerCommand("SetCruisePos", new CruisePositionCommand(arm, wrist));
     NamedCommands.registerCommand("GetCoral", new GetCoralPositionCommand(arm, wrist));
     NamedCommands.registerCommand("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
     NamedCommands.registerCommand("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
@@ -197,9 +201,26 @@ public class RobotContainer {
   private void configureTelemetry() {
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    tab.add("AutoChooser", autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
-    tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
+    SmartDashboard.putData("AutoChooser", autoChooser);
+    SmartDashboard.putData("Intake", new IntakeCommand(intake));
+    SmartDashboard.putData("Outtake", new OuttakeCommand(intake));
+    SmartDashboard.putData("OuttakeSpin", new OuttakeSpinCommand(intake));
+    SmartDashboard.putData("GetCoral", new GetCoralPositionCommand(arm, wrist));
+    SmartDashboard.putData("SetClimbPos", new ClimbPositionCommand(arm, wrist));
+    SmartDashboard.putData("SetCruisePos", new CruisePositionCommand(arm, wrist));
+    SmartDashboard.putData("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
+    SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
+    SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
+    SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
+    SmartDashboard.putData("ClimbToFull", new ClimbCommand(climber));
+    SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
+    SmartDashboard.putData("ClimbRotateOpen", new ClimberRotateOpenCommand(climber));
+    SmartDashboard.putData("ClimbRotateClosed", new ClimberRotateClosedCommand(climber));
+    SmartDashboard.putData("ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
+
+    // ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
+    // tab.add("AutoChooser", autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+    // tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
   }
 
   public void simulationInit() {}

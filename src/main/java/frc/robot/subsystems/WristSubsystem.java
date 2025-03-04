@@ -6,7 +6,6 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-// import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,11 +25,11 @@ public class WristSubsystem extends SubsystemBase {
   private final CANcoder m_wristEncoder =
       new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
-  // private final MotionMagicVoltage m_wristRequest = new MotionMagicVoltage(0).withSlot(0);
   private final MotionMagicExpoVoltage m_wristRequest = new MotionMagicExpoVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double wristTargetPosition = 0;
+  private int wristSlot = 0;
   private boolean m_isTeleop = true;
 
   public WristSubsystem() {
@@ -111,9 +110,9 @@ public class WristSubsystem extends SubsystemBase {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
+    wristSlot = ((this.getWristPosition() * wristTargetPosition) <= 0.0) ? 1 : 0;
 
-    int slot = ((this.getWristPosition() * wristTargetPosition) <= 0.0) ? 1 : 0;
-    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(slot));
+    m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(wristSlot));
   }
 
   public double getWristPosition() {
@@ -139,17 +138,28 @@ public class WristSubsystem extends SubsystemBase {
     this.setWristPosition(WristConstants.kTargetWristLow);
   }
 
-  public void teleop(double wrist) {
-    wrist = MathUtil.applyDeadband(wrist, STICK_DEADBAND) * 0.1;
+  public void wristHold() {
+    this.setWristPosition(this.getWristPosition());
+  }
 
-    if (m_isTeleop || (wrist != 0.0)) {
-      this.setWristSpeed(wrist);
+  public void teleop(double wspeed) {
+    wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND) * 0.1;
+
+    if (m_isTeleop || (wspeed != 0.0)) {
+      this.setWristSpeed(wspeed);
     }
+
+    // if (wspeed != 0.0) {
+    //   this.setArmSpeed(wspeed);
+    // } else if (m_isTeleop) {
+    //   this.armHold();
+    // }
   }
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Wrist Postion", this.getWristPosition());
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);
+    SmartDashboard.putNumber("Wrist Slot", wristSlot);
   }
 }

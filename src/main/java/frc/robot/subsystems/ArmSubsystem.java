@@ -125,12 +125,22 @@ public class ArmSubsystem extends SubsystemBase {
     this.setArmPosition(ArmConstants.kTargetArmLow);
   }
 
-  public void teleop(double arm) {
-    arm = MathUtil.applyDeadband(arm, STICK_DEADBAND) * 0.1;
+  public void armHold() {
+    this.setArmPosition(this.getArmPosition());
+  }
 
-    if (m_isTeleop || (arm != 0.0)) {
-      this.setArmSpeed(arm);
+  public void teleop(double aspeed) {
+    aspeed = MathUtil.applyDeadband(aspeed, STICK_DEADBAND) * 0.1;
+
+    if (m_isTeleop || (aspeed != 0.0)) {
+      this.setArmSpeed(aspeed);
     }
+
+    // if (aspeed != 0.0) {
+    //   this.setArmSpeed(aspeed);
+    // } else if (m_isTeleop) {
+    //   this.armHold();
+    // }
   }
 
   // Update the smart dashboard
