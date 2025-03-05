@@ -18,7 +18,7 @@ public class OuttakeCommand extends Command {
 
   @Override
   public void initialize() {
-    m_counter = 250;
+    m_counter = 100;
     m_isFinished = false;
 
     m_IntakeSubsystem.intakeOut();
