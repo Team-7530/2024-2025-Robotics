@@ -22,7 +22,6 @@ public class OuttakeCommand extends Command {
     m_isFinished = false;
 
     m_IntakeSubsystem.intakeOut();
-    System.out.println("Intake - Out");
   }
 
   @Override

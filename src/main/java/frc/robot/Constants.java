@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -52,13 +51,13 @@ public final class Constants {
     public static final Transform3d kRobotToCam1 =
         new Transform3d(new Translation3d(0.23, -0.3, 0), new Rotation3d(0, 0, 0));
     public static final Transform3d kRobotToCam2 =
-        new Transform3d(
-            new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
+        new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI));
+          // new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(2, 2, 8);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 2);
   }
 
   public static final class DriveTrainConstants {
@@ -68,11 +67,6 @@ public final class Constants {
     // max angular velocity - Rotations per Second
     // 3/4 of a rotation per second
     public static final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-  }
-
-  public static final class AutoConstants {
-    public static final PIDConstants translationPID = new PIDConstants(5.0, 0.0, 0.0);
-    public static final PIDConstants rotationPID = new PIDConstants(5.0, 0.0, 0.0);
   }
 
   public static final class ScoringConstants {

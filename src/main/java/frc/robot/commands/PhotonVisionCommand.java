@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.Utils;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.VisionSubsystem;
@@ -21,6 +23,7 @@ public class PhotonVisionCommand extends Command {
 
   @Override
   public void execute() {
+
     // Correct pose estimate with vision measurements
     var visionEst = vision.getEstimatedGlobalPose();
 
@@ -30,10 +33,12 @@ public class PhotonVisionCommand extends Command {
 
           var estStdDevs = vision.getEstimationStdDevs();
 
-          drivetrain.addVisionMeasurement(
+          if (!DriverStation.isTeleopEnabled()) {
+            drivetrain.addVisionMeasurement(
               est.estimatedPose.toPose2d(),
               Utils.fpgaToCurrentTime(est.timestampSeconds),
               estStdDevs);
+          }
         });
   }
 }
