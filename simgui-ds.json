@@ -11,19 +11,35 @@
           "incKey": 83
         },
         {
-          "decKey": 69,
-          "decayRate": 0.0,
-          "incKey": 82,
-          "keyRate": 0.009999999776482582
+          "decayRate": 0.10000000149011612,
+          "incKey": 81
+        },
+        {
+          "decayRate": 0.10000000149011612,
+          "incKey": 69
+        },
+        {
+          "decKey": 70,
+          "incKey": 72
+        },
+        {
+          "decKey": 84,
+          "incKey": 71
         }
       ],
-      "axisCount": 3,
-      "buttonCount": 4,
+      "axisCount": 6,
+      "buttonCount": 10,
       "buttonKeys": [
         90,
         88,
         67,
-        86
+        86,
+        66,
+        78,
+        77,
+        44,
+        46,
+        47
       ],
       "povConfig": [
         {
@@ -48,20 +64,15 @@
         {
           "decKey": 73,
           "incKey": 75
-        }
-      ],
-      "axisCount": 2,
-      "buttonCount": 4,
-      "buttonKeys": [
-        77,
-        44,
-        46,
-        47
-      ],
-      "povCount": 0
-    },
-    {
-      "axisConfig": [
+        },
+        {
+          "decayRate": 0.10000000149011612,
+          "incKey": 82
+        },
+        {
+          "decayRate": 0.10000000149011612,
+          "incKey": 89
+        },
         {
           "decKey": 263,
           "incKey": 262
@@ -71,6 +82,17 @@
           "incKey": 264
         }
       ],
+      "axisCount": 6,
+      "buttonCount": 4,
+      "buttonKeys": [
+        -1,
+        -1,
+        45,
+        61
+      ],
+      "povCount": 0
+    },
+    {
       "axisCount": 2,
       "buttonCount": 6,
       "buttonKeys": [
@@ -95,9 +117,6 @@
     },
     {
       "guid": "Keyboard1"
-    },
-    {
-      "guid": "Keyboard2"
     }
   ]
 }

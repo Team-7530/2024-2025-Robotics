@@ -22,7 +22,6 @@ public class OuttakeSpinCommand extends Command {
     m_isFinished = false;
 
     m_IntakeSubsystem.intakeOutSpin();
-    System.out.println("Intake - SpinOut");
   }
 
   @Override

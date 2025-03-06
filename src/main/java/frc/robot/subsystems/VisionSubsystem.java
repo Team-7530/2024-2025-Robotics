@@ -69,16 +69,16 @@ public class VisionSubsystem implements Subsystem {
     cameras.add(new PhotonCamera(kCameraName1));
     PhotonPoseEstimator photonEstimator =
         new PhotonPoseEstimator(
-            FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam1);
+            FieldConstants.fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, kRobotToCam1);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     photonEstimators.add(photonEstimator);
 
-    cameras.add(new PhotonCamera(kCameraName2));
-    photonEstimator =
-        new PhotonPoseEstimator(
-            FieldConstants.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam2);
-    photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    photonEstimators.add(photonEstimator);
+    // cameras.add(new PhotonCamera(kCameraName2));
+    // photonEstimator =
+    //     new PhotonPoseEstimator(
+    //         FieldConstants.fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, kRobotToCam2);
+    // photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // photonEstimators.add(photonEstimator);
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -88,7 +88,7 @@ public class VisionSubsystem implements Subsystem {
       visionSim.addAprilTags(FieldConstants.fieldLayout);
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
-      cameraProp.setCalibration(640, 360, Rotation2d.fromDegrees(90));
+      cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(90));
       cameraProp.setCalibError(0.25, 0.10);
       cameraProp.setFPS(60);
       cameraProp.setAvgLatencyMs(10);

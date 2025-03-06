@@ -21,7 +21,6 @@ public class IntakeCommand extends Command {
     m_isFinished = false;
 
     m_IntakeSubsystem.intakeIn();
-    System.out.println("Intake started");
   }
 
   @Override
@@ -33,7 +32,6 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_IntakeSubsystem.intakeStop();
-    System.out.println("Intake stop");
   }
 
   // Returns true when the command should end.

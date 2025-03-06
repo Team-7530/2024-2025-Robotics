@@ -69,12 +69,7 @@ public class ClimberSubsystem implements Subsystem {
     configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
     configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-    /* Retry config apply up to 5 times, report if failure */
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = m_ClimbMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
+    StatusCode status = m_ClimbMotor.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
