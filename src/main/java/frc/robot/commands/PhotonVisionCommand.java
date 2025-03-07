@@ -33,12 +33,12 @@ public class PhotonVisionCommand extends Command {
 
           var estStdDevs = vision.getEstimationStdDevs();
 
-          if (!DriverStation.isTeleopEnabled()) {
+        //  if (!DriverStation.isAutonomousEnabled()) {
             drivetrain.addVisionMeasurement(
               est.estimatedPose.toPose2d(),
               Utils.fpgaToCurrentTime(est.timestampSeconds),
               estStdDevs);
-          }
+        //  }
         });
   }
 }
