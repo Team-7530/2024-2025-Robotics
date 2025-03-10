@@ -66,7 +66,7 @@ public class VisionSubsystem implements Subsystem {
   public UsbCamera cam0;
 
   public VisionSubsystem() {
-    cameras.add(new PhotonCamera(kCameraName2));
+    cameras.add(new PhotonCamera(kCameraName1));
     PhotonPoseEstimator photonEstimator =
         new PhotonPoseEstimator(
             FieldConstants.fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, kRobotToCam1);
