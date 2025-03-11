@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.630427631578947,
-        "y": 5.8061677631578945
+        "x": 5.063655821917808,
+        "y": 6.076005993150685
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 1.4,
+        "y": 7.1
       },
       "prevControl": {
-        "x": 2.5882401315789476,
-        "y": 6.661348684210526
+        "x": 2.8274400996968767,
+        "y": 7.160101998632955
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 1.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 10.0,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 135.0
+    "rotation": 124.69515353123393
   },
   "reversed": false,
   "folder": "Reef_To_Coral",

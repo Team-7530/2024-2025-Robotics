@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 1.4,
+        "y": 7.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.136019736842105,
-        "y": 6.593996710526316
+        "x": 2.5543664383561646,
+        "y": 6.111237157534246
       },
       "isLocked": false,
       "linkedName": null
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 1.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 10.0,
@@ -48,7 +48,7 @@
   "folder": "Coral_To_Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 124.39999999999999
   },
   "useDefaultConstraints": true
 }

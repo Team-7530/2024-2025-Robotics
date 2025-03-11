@@ -65,9 +65,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "SetL1Score"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SetL1Score"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -77,6 +90,12 @@
           "type": "named",
           "data": {
             "name": "OuttakeSpin"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetCruisePos"
           }
         }
       ]

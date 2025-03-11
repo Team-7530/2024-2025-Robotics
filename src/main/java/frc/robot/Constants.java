@@ -77,7 +77,7 @@ public final class Constants {
     public static final double L2WristPosition = -0.22;
 
     public static final double LoadArmPosition = 0.25;
-    public static final double LoadWristPosition = -0.14;
+    public static final double LoadWristPosition = -0.125;
 
     public static final double ClimbArmPosition = 0.43;
     public static final double ClimbWristPosition = 0.2;
@@ -112,8 +112,8 @@ public final class Constants {
     public static final double armMotorKP = 20.0; // 45
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 2;
-    public static final double MMagicAcceleration = 4;
+    public static final double MMagicCruiseVelocity = 1;
+    public static final double MMagicAcceleration = 2;
     public static final double MMagicJerk = 8000;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
@@ -254,8 +254,8 @@ public final class Constants {
     public static final double kClampedPosition = 0.5;
 
     public static final double kClimberPositionMin = 0.0;
-    public static final double kClimberPositionMax = 24.74;
-        // (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
+    public static final double kClimberPositionMax = //24.74;
+        (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
 
     public static final double kTargetClimberUp = kClimberPositionMin;
     public static final double kTargetClimberDown = kClimberPositionMax;
