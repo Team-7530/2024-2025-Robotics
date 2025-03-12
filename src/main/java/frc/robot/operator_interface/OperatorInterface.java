@@ -24,6 +24,18 @@ public interface OperatorInterface {
     return 0.0;
   }
 
+  public default Trigger driveScalingUp() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger driveScalingDown() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger driveScalingSlow() {
+    return new Trigger(() -> false);
+  }
+
   public default double driveScalingValue() {
     return 1.0;
   }
@@ -44,11 +56,19 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default double getLeftTrigger() {
+  public default Trigger getLeftTrigger() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getRightTrigger() {
+    return new Trigger(() -> false);
+  }
+
+  public default double getLeftTriggerValue() {
     return 0.0;
   }
 
-  public default double getRightTrigger() {
+  public default double getRightTriggerValue() {
     return 0.0;
   }
 

@@ -102,22 +102,37 @@ public class DualJoysticksOI implements OperatorInterface {
 
   @Override
   public double getTranslateX() {
-    return -translateJoystick.getY() * driveScalingValue();
+    return -translateJoystick.getY();
   }
 
   @Override
   public double getTranslateY() {
-    return -translateJoystick.getX() * driveScalingValue();
+    return -translateJoystick.getX();
   }
 
   @Override
   public double getRotate() {
-    return -rotateJoystick.getX() * driveScalingValue();
+    return -rotateJoystick.getX();
   }
 
   @Override
   public double getRotateY() {
-    return -rotateJoystick.getY() * driveScalingValue();
+    return -rotateJoystick.getY();
+  }
+
+  @Override
+  public Trigger driveScalingUp() {
+    return new Trigger(() -> (translateJoystick.getHID().getPOV() == 0));
+  }
+
+  @Override
+  public Trigger driveScalingDown() {
+    return new Trigger(() -> (translateJoystick.getHID().getPOV() == 180));
+  }
+
+  @Override
+  public Trigger driveScalingSlow() {
+    return translateJoystickButtons[1];
   }
 
   @Override

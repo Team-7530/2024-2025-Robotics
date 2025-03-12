@@ -82,12 +82,22 @@ public class DualJoystickXboxOI extends DualJoysticksOI {
   }
 
   @Override
-  public double getLeftTrigger() {
+  public Trigger getLeftTrigger() {
+    return new Trigger(() -> operator.getLeftTriggerAxis() >= 0.5);
+  }
+
+  @Override
+  public Trigger getRightTrigger() {
+    return new Trigger(() -> operator.getRightTriggerAxis() >= 0.5);
+  }
+
+  @Override
+  public double getLeftTriggerValue() {
     return operator.getLeftTriggerAxis();
   }
 
   @Override
-  public double getRightTrigger() {
+  public double getRightTriggerValue() {
     return operator.getRightTriggerAxis();
   }
 

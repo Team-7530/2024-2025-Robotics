@@ -262,8 +262,7 @@ public final class Constants {
 
     //24.74 and 0.432
 
-    public static final double kClimberSpeed = 0.2;
-    public static final double kClimberSpeed2 = 0.5;
+    public static final double kClimberSpeed = 0.75;
     public static final double kRotateSpeed = 1.0;
   }
 }

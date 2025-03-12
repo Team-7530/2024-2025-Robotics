@@ -32,7 +32,8 @@ public class ClimberSubsystem implements Subsystem {
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
-  private boolean m_isTeleop = true;
+  private boolean m_isTeleop = false;
+  private boolean m_isTeleopRotate = false;
   private boolean m_isClamped = false;
 
   public ClimberSubsystem() {
@@ -111,7 +112,6 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void setSpeed(double speed) {
-    m_isTeleop = true;
     m_targetPosition = 0.0;
 
     if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
@@ -127,10 +127,12 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void rotateOpen() {
+    m_isTeleopRotate = false;
     this.setRotateSpeed(ClimberConstants.kRotateSpeed);
   }
 
   public void rotateClosed() {
+    m_isTeleopRotate = false;
     this.setRotateSpeed(-ClimberConstants.kRotateSpeed);
   }
 
@@ -157,11 +159,13 @@ public class ClimberSubsystem implements Subsystem {
     val = MathUtil.applyDeadband(val, 0.01);
     rotate = MathUtil.applyDeadband(rotate, 0.01);
 
-    if (m_isTeleop || (rotate != 0.0)) {
+    if (m_isTeleopRotate || (rotate != 0.0)) {
+      m_isTeleopRotate = true;
       this.setRotateSpeed(rotate);
     }
     if (m_isTeleop || (val != 0.0)) {
-      this.setSpeed(val * 0.5);
+      m_isTeleop = true;
+      this.setSpeed(val * ClimberConstants.kClimberSpeed);
     }
   }
 

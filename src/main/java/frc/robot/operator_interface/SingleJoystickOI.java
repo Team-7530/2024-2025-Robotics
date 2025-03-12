@@ -88,22 +88,37 @@ public class SingleJoystickOI implements OperatorInterface {
 
   @Override
   public double getTranslateX() {
-    return -joystick.getY() * driveScalingValue();
+    return -joystick.getY();
   }
 
   @Override
   public double getTranslateY() {
-    return -joystick.getX() * driveScalingValue();
+    return -joystick.getX();
   }
 
   @Override
   public double getRotate() {
-    return -joystick.getTwist() * driveScalingValue();
+    return -joystick.getTwist();
   }
 
   @Override
   public double getRotateY() {
-    return -joystick.getTwist() * driveScalingValue();
+    return -joystick.getTwist();
+  }
+
+  @Override
+  public Trigger driveScalingUp() {
+    return new Trigger(() -> (joystick.getHID().getPOV() == 0));
+  }
+
+  @Override
+  public Trigger driveScalingDown() {
+    return new Trigger(() -> (joystick.getHID().getPOV() == 180));
+  }
+
+  @Override
+  public Trigger driveScalingSlow() {
+    return joystickButtons[1];
   }
 
   @Override

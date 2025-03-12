@@ -104,32 +104,42 @@ public class SingleHandheldOI implements OperatorInterface {
 
   @Override
   public double getTranslateX() {
-    return -controller.getLeftY() * driveScalingValue();
+    return -controller.getLeftY();
   }
 
   @Override
   public double getTranslateY() {
-    return -controller.getLeftX() * driveScalingValue();
+    return -controller.getLeftX();
   }
 
   @Override
   public double getRotate() {
-    return -controller.getRightX() * driveScalingValue();
+    return -controller.getRightX();
   }
 
   @Override
   public double getRotateY() {
-    return -controller.getRightY() * driveScalingValue();
+    return -controller.getRightY();
   }
 
   @Override
-  public double getLeftTrigger() {
-    return controller.getLeftTriggerAxis();
+  public Trigger getLeftTrigger() {
+    return new Trigger(() -> controller.getLeftTriggerAxis() >= 0.5);
   }
 
   @Override
-  public double getRightTrigger() {
-    return controller.getRightTriggerAxis();
+  public Trigger getRightTrigger() {
+    return new Trigger(() -> controller.getRightTriggerAxis() >= 0.5);
+  }
+
+  @Override
+  public Trigger driveScalingUp() {
+    return new Trigger(() -> (controller.getPOV() == 0));
+  }
+
+  @Override
+  public Trigger driveScalingDown() {
+    return new Trigger(() -> (controller.getPOV() == 180));
   }
 
   @Override
