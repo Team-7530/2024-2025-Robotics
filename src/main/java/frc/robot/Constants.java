@@ -233,8 +233,8 @@ public final class Constants {
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
-    public static final double peakForwardTorqueCurrent = 80.0; // Peak output of 80 amps
-    public static final double peakReverseTorqueCurrent = -80.0; // Peak output of 80 amps
+    public static final double peakForwardTorqueCurrent = 120.0; // Peak output of 80 amps
+    public static final double peakReverseTorqueCurrent = -120.0; // Peak output of 80 amps
 
     public static final double climbMotorKG = 0.0;
     public static final double climbMotorKS = 0.0;
@@ -243,6 +243,10 @@ public final class Constants {
     public static final double climbMotorKP = 4.0;
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
+    
+    public static final double climbMotorKP_Tor = 60.0;
+    public static final double climbMotorKI_Tor = 0.0;
+    public static final double climbMotorKD_Tor = 6.0;
 
     public static final double climbMotorTorqueKP =
         60.0; // An error of 1 rot. results in 60 A output
@@ -254,11 +258,11 @@ public final class Constants {
     public static final double kClampedPosition = 0.5;
 
     public static final double kClimberPositionMin = 0.0;
-    public static final double kClimberPositionMax = 38;
-        //(kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
+    public static final double kClimberPositionMax =
+        (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
 
     public static final double kTargetClimberUp = kClimberPositionMin;
-    public static final double kTargetClimberDown = kClimberPositionMax;
+    public static final double kTargetClimberDown = 24.75;
 
     //24.74 and 0.432
 

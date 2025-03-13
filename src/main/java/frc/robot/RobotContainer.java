@@ -148,8 +148,10 @@ public class RobotContainer {
     oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
     oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
 
-    oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
-    oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
+    // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
+    // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
+    oi.getLeftTrigger().onTrue(new ClimberRotateClosedCommand(climber));
+    oi.getRightTrigger().onTrue(new ClimbCommand(climber));
 
     oi.driveScalingUp().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
     oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));

@@ -135,12 +135,6 @@ public class ArmSubsystem extends SubsystemBase {
     if (m_isTeleop || (aspeed != 0.0)) {
       this.setArmSpeed(aspeed);
     }
-
-    // if (aspeed != 0.0) {
-    //   this.setArmSpeed(aspeed);
-    // } else if (m_isTeleop) {
-    //   this.armHold();
-    // }
   }
 
   // Update the smart dashboard
