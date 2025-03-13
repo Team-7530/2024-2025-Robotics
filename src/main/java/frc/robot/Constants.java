@@ -79,10 +79,10 @@ public final class Constants {
     public static final double LoadArmPosition = 0.25;
     public static final double LoadWristPosition = -0.125;
 
-    public static final double ClimbArmPosition = 0.43;
+    public static final double ClimbArmPosition = 0.427;
     public static final double ClimbWristPosition = 0.2;
 
-    public static final double CruiseArmPosition = 0.43;
+    public static final double CruiseArmPosition = 0.427;
     public static final double CruiseWristPosition = -0.3;
 
     public static final double L2BackupAmountX = -0.3;
@@ -120,10 +120,10 @@ public final class Constants {
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kArmPositionMax = 0.437;
+    public static final double kArmPositionMax = 0.427;
     public static final double kArmPositionMin = 0.089;
 
-    public static final double kTargetArmHigh = 0.437;
+    public static final double kTargetArmHigh = 0.427;
     public static final double kTargetArmLow = 0.089;
   }
 
@@ -254,15 +254,15 @@ public final class Constants {
     public static final double kClampedPosition = 0.5;
 
     public static final double kClimberPositionMin = 0.0;
-    public static final double kClimberPositionMax = //24.74;
-        (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
+    public static final double kClimberPositionMax = 38;
+        //(kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
 
     public static final double kTargetClimberUp = kClimberPositionMin;
     public static final double kTargetClimberDown = kClimberPositionMax;
 
     //24.74 and 0.432
 
-    public static final double kClimberSpeed = 0.75;
+    public static final double kClimberSpeed = 0.8;
     public static final double kRotateSpeed = 1.0;
   }
 }
