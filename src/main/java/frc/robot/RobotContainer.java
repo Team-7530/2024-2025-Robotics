@@ -154,7 +154,7 @@ public class RobotContainer {
     oi.driveScalingUp().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
     oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
     oi.driveScalingSlow().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.1, DriveTrainConstants.maxAngularRate * 0.2)))
-                        ols.onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
+                         .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
     
   }
 
