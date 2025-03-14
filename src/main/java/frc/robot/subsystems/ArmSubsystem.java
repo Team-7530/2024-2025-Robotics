@@ -16,7 +16,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -130,10 +129,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void teleop(double aspeed) {
-    aspeed = MathUtil.applyDeadband(aspeed, STICK_DEADBAND) * 0.1;
+    aspeed = MathUtil.applyDeadband(aspeed, STICK_DEADBAND);
 
-    if (m_isTeleop || (aspeed != 0.0)) {
-      this.setArmSpeed(aspeed);
+    if (USE_POSITIONCONTROL) {
+      if (aspeed != 0.0)
+        this.setArmPosition(this.getArmPosition() + (aspeed * ArmConstants.kArmTeleopFactor));
+
+    }
+    else {
+      if (m_isTeleop || (aspeed != 0.0)) {
+        this.setArmSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
+      }
     }
   }
 

@@ -146,10 +146,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void teleop(double intake) {
-    intake = MathUtil.applyDeadband(intake, STICK_DEADBAND) * 0.1;
+    intake = MathUtil.applyDeadband(intake, STICK_DEADBAND);
 
     if (m_isTeleop || (intake != 0.0)) {
-      this.setIntakeSpeed(intake);
+      this.setIntakeSpeed(intake * 0.1);
     }
   }
 

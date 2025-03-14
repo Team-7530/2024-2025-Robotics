@@ -21,6 +21,7 @@ public final class Constants {
 
   public static final boolean DEBUGGING = true;
   public static final boolean TESTING = false;
+  public static final boolean USE_POSITIONCONTROL = false;
 
   public static final double TRIGGER_DEADBAND = 0.01;
   public static final double STICK_DEADBAND = 0.01;
@@ -125,6 +126,8 @@ public final class Constants {
 
     public static final double kTargetArmHigh = 0.427;
     public static final double kTargetArmLow = 0.089;
+    public static final double kArmTeleopSpeed = 0.1;
+    public static final double kArmTeleopFactor = 0.02;
   }
 
   public static final class WristConstants {
@@ -166,6 +169,8 @@ public final class Constants {
 
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
+    public static final double kWristTeleopSpeed = 0.1;
+    public static final double kWristTeleopFactor = 0.05;
   }
 
   public static final class IntakeConstants {
@@ -254,6 +259,12 @@ public final class Constants {
     public static final double climbMotorTorqueKD =
         6.0; // A velocity of 1 rps results in 6 A output
 
+    public static final double MMagicCruiseVelocity = 1;
+    public static final double MMagicAcceleration = 2;
+    public static final double MMagicJerk = 8000;
+    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+    public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+    
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
@@ -268,5 +279,6 @@ public final class Constants {
 
     public static final double kClimberSpeed = 0.8;
     public static final double kRotateSpeed = 1.0;
+    public static final double kClimbTeleopFactor = 2.0;
   }
 }

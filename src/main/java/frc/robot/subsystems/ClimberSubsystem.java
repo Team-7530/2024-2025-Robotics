@@ -6,8 +6,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+// import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -26,14 +27,13 @@ public class ClimberSubsystem implements Subsystem {
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
   private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
 
-  private final PositionTorqueCurrentFOC m_positionRequest =
-      new PositionTorqueCurrentFOC(0).withSlot(1);
+  private final MotionMagicTorqueCurrentFOC m_positionRequest =
+      new MotionMagicTorqueCurrentFOC(0).withSlot(1);
   // private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = false;
-  private boolean m_isTeleopRotate = false;
   private boolean m_isClamped = false;
 
   public ClimberSubsystem() {
@@ -64,6 +64,12 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot1.kD = ClimberConstants.climbMotorKD_Tor;
     configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+
+    configs.MotionMagic.MotionMagicCruiseVelocity = ClimberConstants.MMagicCruiseVelocity;
+    configs.MotionMagic.MotionMagicAcceleration = ClimberConstants.MMagicAcceleration;
+    configs.MotionMagic.MotionMagicJerk = ClimberConstants.MMagicJerk;
+    configs.MotionMagic.MotionMagicExpo_kV = ClimberConstants.MMagicExpo_kV;
+    configs.MotionMagic.MotionMagicExpo_kA = ClimberConstants.MMagicExpo_kA;
 
     configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
     configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -127,12 +133,10 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void rotateOpen() {
-    m_isTeleopRotate = false;
     this.setRotateSpeed(ClimberConstants.kRotateSpeed);
   }
 
   public void rotateClosed() {
-    m_isTeleopRotate = false;
     this.setRotateSpeed(-ClimberConstants.kRotateSpeed);
   }
 
@@ -155,18 +159,26 @@ public class ClimberSubsystem implements Subsystem {
     return m_isClamped;
   }
 
-  public void teleop(double val, double rotate) {
-    val = MathUtil.applyDeadband(val, 0.01);
-    rotate = MathUtil.applyDeadband(rotate, 0.01);
+  public void teleopClimb(double val) {
+    val = MathUtil.applyDeadband(val, STICK_DEADBAND);
 
-    if (m_isTeleopRotate || (rotate != 0.0)) {
-      m_isTeleopRotate = true;
+    if (USE_POSITIONCONTROL) {
+      if (val != 0.0)
+        this.setPosition(this.getPosition() + (val * ClimberConstants.kClimbTeleopFactor));
+    }
+    else {
+      if (m_isTeleop || (val != 0.0)) {
+        m_isTeleop = true;
+        this.setSpeed(val * ClimberConstants.kClimberSpeed);
+      }
+    }
+  }
+
+  public void teleopRotate(double rotate) {
+    rotate = MathUtil.applyDeadband(rotate, STICK_DEADBAND);
+
+    if (rotate != 0.0)
       this.setRotateSpeed(rotate);
-    }
-    if (m_isTeleop || (val != 0.0)) {
-      m_isTeleop = true;
-      this.setSpeed(val * ClimberConstants.kClimberSpeed);
-    }
   }
 
   public void resetMotorPostion() {

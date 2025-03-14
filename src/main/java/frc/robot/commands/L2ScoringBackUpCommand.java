@@ -15,13 +15,19 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class L2ScoringBackUpCommand extends Command {
 
-  private PathConstraints pathConstraints;
+  private final PathConstraints pathConstraints;
+  private final CommandSwerveDrivetrain drivetrain;
   private Command pathCommand;
 
   public L2ScoringBackUpCommand(CommandSwerveDrivetrain drivetrain) {
+    this.drivetrain = drivetrain;
     this.pathConstraints =
         new PathConstraints(1.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    addRequirements(drivetrain);
+  }
 
+  @Override
+  public void initialize() {
     Pose2d currentPose = drivetrain.getState().Pose;
 
     // The rotation component in these poses represents the direction of travel
@@ -44,8 +50,6 @@ public class L2ScoringBackUpCommand extends Command {
     path.preventFlipping = true;
 
     pathCommand = AutoBuilder.followPath(path);
-
-    addRequirements(drivetrain);
   }
 
   @Override

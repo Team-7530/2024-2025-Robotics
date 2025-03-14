@@ -16,7 +16,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -143,17 +142,17 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public void teleop(double wspeed) {
-    wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND) * 0.1;
+    wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND);
 
-    if (m_isTeleop || (wspeed != 0.0)) {
-      this.setWristSpeed(wspeed);
+    if (USE_POSITIONCONTROL) {
+      if (wspeed != 0.0)      
+        this.setWristPosition(this.getWristPosition() + (wspeed * WristConstants.kWristTeleopFactor));
     }
-
-    // if (wspeed != 0.0) {
-    //   this.setArmSpeed(wspeed);
-    // } else if (m_isTeleop) {
-    //   this.armHold();
-    // }
+    else {
+      if (m_isTeleop || (wspeed != 0.0)) {
+        this.setWristSpeed(wspeed * WristConstants.kWristTeleopSpeed);
+      }
+    }
   }
 
   // Update the smart dashboard

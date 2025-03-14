@@ -2,13 +2,13 @@ package frc.robot;
 
 import static frc.robot.Constants.*;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+// import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+// import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
@@ -39,8 +39,8 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.RobotCentric forwardStraight =
-      new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  // private final SwerveRequest.RobotCentric forwardStraight =
+  //     new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   private final Telemetry logger = new Telemetry(DriveTrainConstants.maxSpeed);
 
@@ -101,39 +101,43 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
+    oi.driveScalingUp().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
+    oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
+    oi.driveScalingSlow().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.1, DriveTrainConstants.maxAngularRate * 0.2)))
+                         .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
+
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
-    oi.getStartButton()
-        .and(oi.getYButton())
-        .whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    oi.getStartButton()
-        .and(oi.getXButton())
-        .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    // oi.getStartButton()
+    //     .and(oi.getYButton())
+    //     .whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    // oi.getStartButton()
+    //     .and(oi.getXButton())
+    //     .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    // oi.getBackButton().and(oi.getYButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    // oi.getBackButton().and(oi.getXButton()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
 
     // // Run test routines (forward/back at .5 m/s) when holding start and A/B.
-    oi.getStartButton()
-        .and(oi.getAButton())
-        .whileTrue(
-            drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-    oi.getStartButton()
-        .and(oi.getBButton())
-        .whileTrue(
-            drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
+    // oi.getStartButton()
+    //     .and(oi.getAButton())
+    //     .whileTrue(
+    //         drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+    // oi.getStartButton()
+    //     .and(oi.getBButton())
+    //     .whileTrue(
+    //         drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
     // // Run test pose routines when holding back and A/B.
-    oi.getBackButton()
-        .and(oi.getAButton())
-        .whileTrue(
-            new PathOnTheFlyCommand(
-                drivetrain, new Pose2d(16.24, 0.8, Rotation2d.fromDegrees(-60))));
-    oi.getBackButton()
-        .and(oi.getBButton())
-        .whileTrue(
-            new PathOnTheFlyCommand(
-                drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
-    // oi.getAButton().whileTrue(getAutonomousCommand());
+    // oi.getBackButton()
+    //     .and(oi.getAButton())
+    //     .whileTrue(
+    //         new PathOnTheFlyCommand(
+    //             drivetrain, new Pose2d(16.24, 0.8, Rotation2d.fromDegrees(-60))));
+    // oi.getBackButton()
+    //     .and(oi.getBButton())
+    //     .whileTrue(
+    //         new PathOnTheFlyCommand(
+    //             drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
 
     oi.getAButton().onTrue(new IntakeCommand(intake));
     oi.getXButton().onTrue(new OuttakeCommand(intake));
@@ -153,10 +157,8 @@ public class RobotContainer {
     oi.getLeftTrigger().onTrue(new ClimberRotateClosedCommand(climber));
     oi.getRightTrigger().onTrue(new ClimbCommand(climber));
 
-    oi.driveScalingUp().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
-    oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
-    oi.driveScalingSlow().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.1, DriveTrainConstants.maxAngularRate * 0.2)))
-                         .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
+    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
+    oi.getBackButton().onTrue(new ClimberRotateOpenCommand(climber));
   }
 
   /**
@@ -177,22 +179,13 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    // drivetrain.setDefaultCommand(
-    //     Commands.run(
-    //         () ->
-    //             drivetrain.setDriveControl(
-    //                 oi.getTranslateX(),
-    //                 oi.getTranslateY(),
-    //                 oi.getRotate(),
-    //                 oi.getRobotRelative().getAsBoolean()),
-    //         drivetrain));
     drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
 
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
     climber.setDefaultCommand(
         Commands.run(
-            () -> climber.teleop(-oi.getRightThumbstickY(), oi.getRightThumbstickX()), climber));
+            () -> { climber.teleopClimb(-oi.getRightThumbstickY()); climber.teleopRotate(oi.getRightThumbstickX()); }, climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
