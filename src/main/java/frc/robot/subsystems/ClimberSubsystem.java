@@ -99,6 +99,7 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void climb() {
+    this.setClamp(true);
     this.setPosition(ClimberConstants.kTargetClimberDown);
   }
 

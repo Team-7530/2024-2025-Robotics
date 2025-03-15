@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.DriveTrainConstants;
 // import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
@@ -154,11 +155,11 @@ public class RobotContainer {
 
     oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
     oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
-    // oi.getLeftTrigger().onTrue(new ClimberRotateClosedCommand(climber));
-    // oi.getRightTrigger().onTrue(new ClimbCommand(climber));
+    // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
+    // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
 
     oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
-    oi.getBackButton().onTrue(new ClimberRotateOpenCommand(climber));
+    oi.getBackButton().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
   }
 
   /**
