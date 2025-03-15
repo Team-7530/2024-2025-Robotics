@@ -38,6 +38,12 @@
         {
           "type": "named",
           "data": {
+            "name": "GetCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "SetCruisePos"
           }
         }

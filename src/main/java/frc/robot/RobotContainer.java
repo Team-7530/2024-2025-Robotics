@@ -102,9 +102,9 @@ public class RobotContainer {
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
     oi.driveScalingUp().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
-    oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
+    oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.6, DriveTrainConstants.maxAngularRate * 0.6)));
     oi.driveScalingSlow().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.1, DriveTrainConstants.maxAngularRate * 0.2)))
-                         .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.5, DriveTrainConstants.maxAngularRate * 0.5)));
+                         .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.6, DriveTrainConstants.maxAngularRate * 0.6)));
 
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
@@ -152,10 +152,10 @@ public class RobotContainer {
     oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
     oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
 
-    // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
-    // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
-    oi.getLeftTrigger().onTrue(new ClimberRotateClosedCommand(climber));
-    oi.getRightTrigger().onTrue(new ClimbCommand(climber));
+    oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
+    oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
+    // oi.getLeftTrigger().onTrue(new ClimberRotateClosedCommand(climber));
+    // oi.getRightTrigger().onTrue(new ClimbCommand(climber));
 
     oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
     oi.getBackButton().onTrue(new ClimberRotateOpenCommand(climber));

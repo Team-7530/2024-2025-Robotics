@@ -275,7 +275,7 @@ public final class Constants {
     public static final double kTargetClimberUp = kClimberPositionMin;
     public static final double kTargetClimberDown = 24.75;
 
-    //24.74 and 0.432
+    //26.18 and 0.437
 
     public static final double kClimberSpeed = 0.8;
     public static final double kRotateSpeed = 1.0;
