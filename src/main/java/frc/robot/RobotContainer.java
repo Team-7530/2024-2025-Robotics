@@ -54,7 +54,7 @@ public class RobotContainer {
   public final ArmSubsystem arm = new ArmSubsystem();
   public final WristSubsystem wrist = new WristSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
-  public final ClimberSubsystem climber = new ClimberSubsystem();
+  // public final ClimberSubsystem climber = new ClimberSubsystem();
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -149,16 +149,16 @@ public class RobotContainer {
     oi.getPOVLeft().onTrue(new L1ScoringPositionCommand(arm, wrist));
     oi.getPOVRight().onTrue(new L2ScoringPositionCommand(arm, wrist));
 
-    oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
-    oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
+    // oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
+    // oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
 
-    oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
-    oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
-    // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
-    // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
+    // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
+    // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
+    // // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
+    // // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
 
-    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
-    oi.getBackButton().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
+    // oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
+    // oi.getBackButton().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
   }
 
   /**
@@ -183,9 +183,9 @@ public class RobotContainer {
 
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
-    climber.setDefaultCommand(
-        Commands.run(
-            () -> { climber.teleopClimb(-oi.getRightThumbstickY()); climber.teleopRotate(oi.getRightThumbstickX()); }, climber));
+    // climber.setDefaultCommand(
+    //     Commands.run(
+    //         () -> { climber.teleopClimb(-oi.getRightThumbstickY()); climber.teleopRotate(oi.getRightThumbstickX()); }, climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
@@ -215,11 +215,11 @@ public class RobotContainer {
     SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
     SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
-    SmartDashboard.putData("ClimbToFull", new ClimbCommand(climber));
-    SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
-    SmartDashboard.putData("ClimbRotateOpen", new ClimberRotateOpenCommand(climber));
-    SmartDashboard.putData("ClimbRotateClosed", new ClimberRotateClosedCommand(climber));
-    SmartDashboard.putData("ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
+    // SmartDashboard.putData("ClimbToFull", new ClimbCommand(climber));
+    // SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
+    // SmartDashboard.putData("ClimbRotateOpen", new ClimberRotateOpenCommand(climber));
+    // SmartDashboard.putData("ClimbRotateClosed", new ClimberRotateClosedCommand(climber));
+    // SmartDashboard.putData("ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
 
     // ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
     // tab.add("AutoChooser", autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
