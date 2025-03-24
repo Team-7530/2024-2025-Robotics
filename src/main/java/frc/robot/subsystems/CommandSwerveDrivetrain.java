@@ -201,7 +201,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                       .withSpeeds(speeds)
                       .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                       .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                      /*.withDriveRequestType(DriveRequestType.Velocity)*/),
+                  /*.withDriveRequestType(DriveRequestType.Velocity)*/ ),
           new PPHolonomicDriveController(
               // PID constants for translation
               new PIDConstants(10, 0, 0),

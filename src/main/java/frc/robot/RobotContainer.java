@@ -2,26 +2,19 @@ package frc.robot;
 
 import static frc.robot.Constants.*;
 
-// import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-// import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-// import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
@@ -54,7 +47,7 @@ public class RobotContainer {
   public final ArmSubsystem arm = new ArmSubsystem();
   public final WristSubsystem wrist = new WristSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
-  // public final ClimberSubsystem climber = new ClimberSubsystem();
+  public final ClimberSubsystem climber = new ClimberSubsystem();
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -101,10 +94,32 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    oi.driveScalingUp().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
-    oi.driveScalingDown().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.6, DriveTrainConstants.maxAngularRate * 0.6)));
-    oi.driveScalingSlow().onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.1, DriveTrainConstants.maxAngularRate * 0.2)))
-                         .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed * 0.6, DriveTrainConstants.maxAngularRate * 0.6)));
+    oi.driveScalingUp()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    drivetrain.setMaxSpeeds(
+                        DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
+    oi.driveScalingDown()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    drivetrain.setMaxSpeeds(
+                        DriveTrainConstants.maxSpeed * 0.6,
+                        DriveTrainConstants.maxAngularRate * 0.6)));
+    oi.driveScalingSlow()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    drivetrain.setMaxSpeeds(
+                        DriveTrainConstants.maxSpeed * 0.1,
+                        DriveTrainConstants.maxAngularRate * 0.2)))
+        .onFalse(
+            Commands.runOnce(
+                () ->
+                    drivetrain.setMaxSpeeds(
+                        DriveTrainConstants.maxSpeed * 0.6,
+                        DriveTrainConstants.maxAngularRate * 0.6)));
 
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
@@ -149,15 +164,13 @@ public class RobotContainer {
     oi.getPOVLeft().onTrue(new L1ScoringPositionCommand(arm, wrist));
     oi.getPOVRight().onTrue(new L2ScoringPositionCommand(arm, wrist));
 
-    // oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
-    // oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
+    oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
+    oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
 
-    // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
-    // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
-    // // oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.rotateClosed()));
-    // // oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
+    oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.restore()));
+    oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
 
-    // oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
+    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
     // oi.getBackButton().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
   }
 
@@ -183,9 +196,8 @@ public class RobotContainer {
 
     arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
     wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
-    // climber.setDefaultCommand(
-    //     Commands.run(
-    //         () -> { climber.teleopClimb(-oi.getRightThumbstickY()); climber.teleopRotate(oi.getRightThumbstickX()); }, climber));
+    climber.setDefaultCommand(
+        Commands.run(() -> climber.teleopClimb(-oi.getRightThumbstickY()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
@@ -215,14 +227,14 @@ public class RobotContainer {
     SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
     SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
-    // SmartDashboard.putData("ClimbToFull", new ClimbCommand(climber));
-    // SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
-    // SmartDashboard.putData("ClimbRotateOpen", new ClimberRotateOpenCommand(climber));
-    // SmartDashboard.putData("ClimbRotateClosed", new ClimberRotateClosedCommand(climber));
-    // SmartDashboard.putData("ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
+    SmartDashboard.putData("ClimbToFull", new ClimbCommand(climber));
+    SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
+    SmartDashboard.putData(
+        "ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
 
     // ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    // tab.add("AutoChooser", autoChooser).withSize(2, 1).withWidget(BuiltInWidgets.kComboBoxChooser);
+    // tab.add("AutoChooser", autoChooser).withSize(2,
+    // 1).withWidget(BuiltInWidgets.kComboBoxChooser);
     // tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
   }
 

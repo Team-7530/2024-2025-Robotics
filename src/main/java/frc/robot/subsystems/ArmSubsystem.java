@@ -135,8 +135,7 @@ public class ArmSubsystem extends SubsystemBase {
       if (aspeed != 0.0)
         this.setArmPosition(this.getArmPosition() + (aspeed * ArmConstants.kArmTeleopFactor));
 
-    }
-    else {
+    } else {
       if (m_isTeleop || (aspeed != 0.0)) {
         this.setArmSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
       }

@@ -145,10 +145,10 @@ public class WristSubsystem extends SubsystemBase {
     wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND);
 
     if (USE_POSITIONCONTROL) {
-      if (wspeed != 0.0)      
-        this.setWristPosition(this.getWristPosition() + (wspeed * WristConstants.kWristTeleopFactor));
-    }
-    else {
+      if (wspeed != 0.0)
+        this.setWristPosition(
+            this.getWristPosition() + (wspeed * WristConstants.kWristTeleopFactor));
+    } else {
       if (m_isTeleop || (wspeed != 0.0)) {
         this.setWristSpeed(wspeed * WristConstants.kWristTeleopSpeed);
       }

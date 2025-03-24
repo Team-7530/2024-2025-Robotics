@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
@@ -20,12 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class ClimberSubsystem implements Subsystem {
-  // private final TalonFX m_ClimbMotor =
-  //     new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
-  // private final DutyCycleEncoder m_ClimbEncoder =
-  //     new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
-  // private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
-  // private final VictorSPX m_RotateMotor = new VictorSPX(ClimberConstants.ROTATEMOTOR_ID);
+  private final TalonFX m_ClimbMotor =
+      new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
+  private final DutyCycleEncoder m_ClimbEncoder =
+      new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
+  private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
   private final MotionMagicTorqueCurrentFOC m_positionRequest =
       new MotionMagicTorqueCurrentFOC(0).withSlot(1);
@@ -76,13 +73,13 @@ public class ClimberSubsystem implements Subsystem {
     configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
     configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-    // StatusCode status = m_ClimbMotor.getConfigurator().apply(configs);
-    // if (!status.isOK()) {
-    //   System.out.println("Could not apply configs, error code: " + status.toString());
-    // }
-    // /* Make sure we start at 0 */
-    // this.resetMotorPostion();
-    // m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
+    StatusCode status = m_ClimbMotor.getConfigurator().apply(configs);
+    if (!status.isOK()) {
+      System.out.println("Could not apply configs, error code: " + status.toString());
+    }
+    /* Make sure we start at 0 */
+    this.resetMotorPostion();
+    m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
   }
 
   @Override
@@ -113,48 +110,32 @@ public class ClimberSubsystem implements Subsystem {
         MathUtil.clamp(
             pos, ClimberConstants.kClimberPositionMin, ClimberConstants.kClimberPositionMax);
 
-    // if (!m_isClamped || (m_targetPosition > this.getPosition())) { // is climbing or no ratchet
-    //   m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
-    // }
+    if (!m_isClamped || (m_targetPosition > this.getPosition())) { // is climbing or no ratchet
+      m_ClimbMotor.setControl(m_positionRequest.withPosition(m_targetPosition));
+    }
   }
 
   public void setSpeed(double speed) {
     m_targetPosition = 0.0;
 
-    // if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
-    // m_ClimbMotor.set(speed);
+    if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
+    m_ClimbMotor.set(speed);
   }
 
   public void stop() {
-    // m_ClimbMotor.setControl(m_brake);
+    m_ClimbMotor.setControl(m_brake);
   }
 
   public double getPosition() {
-    // return m_ClimbMotor.getPosition().getValueAsDouble();
-    return 0;
-  }
-
-  public void rotateOpen() {
-    this.setRotateSpeed(ClimberConstants.kRotateSpeed);
-  }
-
-  public void rotateClosed() {
-    this.setRotateSpeed(-ClimberConstants.kRotateSpeed);
-  }
-
-  public void setRotateSpeed(double speed) {
-    // m_RotateMotor.set(ControlMode.PercentOutput, speed);
-  }
-
-  public void stopRotate() {
-    // m_RotateMotor.set(ControlMode.PercentOutput, 0);
+    return m_ClimbMotor.getPosition().getValueAsDouble();
   }
 
   public void setClamp(boolean clampOn) {
     m_isClamped = clampOn;
     this.stop();
-    // m_ClimberClampServo.set(
-    //     m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+
+    m_ClimberClampServo.set(
+        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
   }
 
   public boolean getClamp() {
@@ -167,8 +148,7 @@ public class ClimberSubsystem implements Subsystem {
     if (USE_POSITIONCONTROL) {
       if (val != 0.0)
         this.setPosition(this.getPosition() + (val * ClimberConstants.kClimbTeleopFactor));
-    }
-    else {
+    } else {
       if (m_isTeleop || (val != 0.0)) {
         m_isTeleop = true;
         this.setSpeed(val * ClimberConstants.kClimberSpeed);
@@ -176,23 +156,16 @@ public class ClimberSubsystem implements Subsystem {
     }
   }
 
-  public void teleopRotate(double rotate) {
-    rotate = MathUtil.applyDeadband(rotate, STICK_DEADBAND);
-
-    if (rotate != 0.0)
-      this.setRotateSpeed(rotate);
-  }
-
   public void resetMotorPostion() {
-    // m_ClimbMotor.setPosition(
-    //     (m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin)
-    //         * ClimberConstants.kClimberGearRatio);
+    m_ClimbMotor.setPosition(
+        (m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin)
+            * ClimberConstants.kClimberGearRatio);
   }
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Climber Postion", this.getPosition());
-    // SmartDashboard.putNumber("Climber Encoder Postion", m_ClimbEncoder.get());
+    SmartDashboard.putNumber("Climber Encoder Postion", m_ClimbEncoder.get());
     SmartDashboard.putNumber("Climber TargetPostion", m_targetPosition);
   }
 }

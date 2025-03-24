@@ -53,7 +53,7 @@ public final class Constants {
         new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0));
     public static final Transform3d kRobotToCam2 =
         new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI));
-          // new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
+    // new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -248,7 +248,7 @@ public final class Constants {
     public static final double climbMotorKP = 4.0;
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
-    
+
     public static final double climbMotorKP_Tor = 60.0;
     public static final double climbMotorKI_Tor = 0.0;
     public static final double climbMotorKD_Tor = 6.0;
@@ -264,7 +264,7 @@ public final class Constants {
     public static final double MMagicJerk = 8000;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
-    
+
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
@@ -275,7 +275,7 @@ public final class Constants {
     public static final double kTargetClimberUp = kClimberPositionMin;
     public static final double kTargetClimberDown = 24.75;
 
-    //26.18 and 0.437
+    // 26.18 and 0.437
 
     public static final double kClimberSpeed = 0.8;
     public static final double kRotateSpeed = 1.0;
