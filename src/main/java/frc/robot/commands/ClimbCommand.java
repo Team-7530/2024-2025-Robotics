@@ -6,8 +6,6 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ClimbCommand extends Command {
   private final ClimberSubsystem m_climb;
 
-  private boolean m_isFinished = false;
-
   public ClimbCommand(ClimberSubsystem climb) {
     this.m_climb = climb;
 
@@ -16,18 +14,12 @@ public class ClimbCommand extends Command {
 
   @Override
   public void initialize() {
-    m_isFinished = false;
     m_climb.setClamp(true);
     m_climb.climb();
   }
 
   @Override
-  public void execute() {
-    m_isFinished = m_climb.isFullClimbPosition();
-  }
-
-  @Override
   public boolean isFinished() {
-    return m_isFinished;
+    return m_climb.isAtFullClimbPosition();
   }
 }

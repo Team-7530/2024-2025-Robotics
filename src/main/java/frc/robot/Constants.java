@@ -19,19 +19,14 @@ public final class Constants {
 
   public static final boolean COMPETITIONBOT = false;
 
-  public static final boolean DEBUGGING = true;
+  public static final boolean DEBUGGING = false;
   public static final boolean TESTING = false;
-  public static final boolean USE_POSITIONCONTROL = false;
+  public static final boolean USE_POSITIONCONTROL = true;
 
   public static final double TRIGGER_DEADBAND = 0.01;
   public static final double STICK_DEADBAND = 0.01;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
-
-  public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
-  // public static final Matter CHASSIS =
-  //     new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
-  public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
-  public static final double TURN_CONSTANT = 0.75;
+  public static final double POSITION_TOLERANCE = 0.05;
 
   public static final class Vision {
 
@@ -51,9 +46,8 @@ public final class Constants {
     // degrees.
     public static final Transform3d kRobotToCam1 =
         new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0));
-    public static final Transform3d kRobotToCam2 =
-        new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI));
-    // new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, -Math.PI * 0.25, Math.PI));
+    // public static final Transform3d kRobotToCam2 =
+    //     new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -99,7 +93,7 @@ public final class Constants {
     public static final NeutralModeValue kArmNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kArmEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kArmEncoderOffset = -0.37; //-0.015869;
+    public static final double kArmEncoderOffset = -0.37;
 
     public static final double kArmChainRatio = 74.0 / 50.0;
     public static final double kArmGearboxRatio = 80.0; // 1:80
@@ -195,8 +189,7 @@ public final class Constants {
     public static final double intakeMotorTorqueKS = 0.0; // Static feedforward gain
     public static final double intakeMotorTorqueKP = 8.0; // error of 1 rps results in 8 amps output
     public static final double intakeMotorTorqueKI = 0.2; // error of 1 rps incr by 0.2 amps per sec
-    public static final double intakeMotorTorqueKD =
-        0.001; // A change of 1000 rps^2 incr 1 amp output
+    public static final double intakeMotorTorqueKD = 0.001; // 1000 rps^2 incr 1 amp output
 
     public static final double MMagicCruiseVelocity = 40;
     public static final double MMagicAcceleration = 80;
@@ -230,7 +223,7 @@ public final class Constants {
 
     public static final double kClimberChainRatio = 18.0 / 14.0;
     public static final double kClimberGearboxRatio = 100.0; // 1:100
-    public static final double kClimberGearRatio = 111.11;
+    public static final double kClimberGearRatio = 111.11; // empirical observation 
 //        kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
     public static final double kClimberEncoderMin = 0.37;
     public static final double kClimberEncoderMax = 0.90;
@@ -273,8 +266,6 @@ public final class Constants {
 
     public static final double kTargetClimberUp = kClimberPositionMin;
     public static final double kTargetClimberDown = 24.75;
-
-    // 26.18 and 0.437
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 2.0;

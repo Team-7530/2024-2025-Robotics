@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem implements Subsystem {
   private final TalonFX m_ClimbMotor =
@@ -91,8 +92,8 @@ public class ClimberSubsystem implements Subsystem {
     this.setPosition(ClimberConstants.kTargetClimberUp);
   }
 
-  public boolean isRestoredPosition() {
-    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberUp) < 0.01;
+  public boolean isAtRestoredPosition() {
+    return MathUtil.isNear(ClimberConstants.kTargetClimberUp, this.getPosition(), POSITION_TOLERANCE);
   }
 
   public void climb() {
@@ -100,8 +101,8 @@ public class ClimberSubsystem implements Subsystem {
     this.setPosition(ClimberConstants.kTargetClimberDown);
   }
 
-  public boolean isFullClimbPosition() {
-    return Math.abs(this.getPosition() - ClimberConstants.kTargetClimberDown) < 0.01;
+  public boolean isAtFullClimbPosition() {
+    return MathUtil.isNear(ClimberConstants.kTargetClimberDown, this.getPosition(), POSITION_TOLERANCE);
   }
 
   public void setPosition(double pos) {
@@ -115,6 +116,14 @@ public class ClimberSubsystem implements Subsystem {
     }
   }
 
+  public double getPosition() {
+    return m_ClimbMotor.getPosition().getValueAsDouble();
+  }
+
+  public boolean isAtPosition() {
+    return MathUtil.isNear(m_targetPosition, this.getPosition(),  POSITION_TOLERANCE);
+  }
+
   public void setSpeed(double speed) {
     m_targetPosition = 0.0;
 
@@ -124,22 +133,6 @@ public class ClimberSubsystem implements Subsystem {
 
   public void stop() {
     m_ClimbMotor.setControl(m_brake);
-  }
-
-  public double getPosition() {
-    return m_ClimbMotor.getPosition().getValueAsDouble();
-  }
-
-  public void setClamp(boolean clampOn) {
-    m_isClamped = clampOn;
-    this.stop();
-
-    m_ClimberClampServo.set(
-        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
-  }
-
-  public boolean getClamp() {
-    return m_isClamped;
   }
 
   public void teleopClimb(double val) {
@@ -154,6 +147,18 @@ public class ClimberSubsystem implements Subsystem {
         this.setSpeed(val * ClimberConstants.kClimberSpeed);
       }
     }
+  }
+
+  public void setClamp(boolean clampOn) {
+    m_isClamped = clampOn;
+    this.stop();
+
+    m_ClimberClampServo.set(
+        m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
+  }
+
+  public boolean getClamp() {
+    return m_isClamped;
   }
 
   public void resetMotorPostion() {

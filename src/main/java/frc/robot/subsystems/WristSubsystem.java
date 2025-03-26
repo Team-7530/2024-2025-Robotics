@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -105,40 +106,36 @@ public class WristSubsystem extends SubsystemBase {
     updateSmartDashboard();
   }
 
-  public void setWristPosition(double pos) {
+  public void setPosition(double pos) {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-    wristSlot = ((this.getWristPosition() * wristTargetPosition) <= 0.0) ? 1 : 0;
+    wristSlot = ((this.getPosition() * wristTargetPosition) <= 0.0) ? 1 : 0;
 
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(wristSlot));
   }
 
-  public double getWristPosition() {
+  public double getPosition() {
     return m_wristEncoder.getPosition().getValueAsDouble();
   }
 
-  public void setWristSpeed(double wspeed) {
+  public boolean isAtPosition() {
+    return MathUtil.isNear(wristTargetPosition, this.getPosition(),  POSITION_TOLERANCE);
+  }
+
+  public void setSpeed(double wspeed) {
     wristTargetPosition = 0;
     m_isTeleop = true;
 
     m_wristMotor.set(wspeed);
   }
 
-  public void wristStop() {
+  public void stop() {
     m_wristMotor.setControl(m_brake);
   }
 
-  public void wristUp() {
-    this.setWristPosition(WristConstants.kTargetWristHigh);
-  }
-
-  public void wristDown() {
-    this.setWristPosition(WristConstants.kTargetWristLow);
-  }
-
-  public void wristHold() {
-    this.setWristPosition(this.getWristPosition());
+  public void hold() {
+    this.setPosition(this.getPosition());
   }
 
   public void teleop(double wspeed) {
@@ -146,18 +143,18 @@ public class WristSubsystem extends SubsystemBase {
 
     if (USE_POSITIONCONTROL) {
       if (wspeed != 0.0)
-        this.setWristPosition(
-            this.getWristPosition() + (wspeed * WristConstants.kWristTeleopFactor));
+        this.setPosition(
+            this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor));
     } else {
       if (m_isTeleop || (wspeed != 0.0)) {
-        this.setWristSpeed(wspeed * WristConstants.kWristTeleopSpeed);
+        this.setSpeed(wspeed * WristConstants.kWristTeleopSpeed);
       }
     }
   }
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
-    SmartDashboard.putNumber("Wrist Postion", this.getWristPosition());
+    SmartDashboard.putNumber("Wrist Postion", this.getPosition());
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);
     SmartDashboard.putNumber("Wrist Slot", wristSlot);
   }

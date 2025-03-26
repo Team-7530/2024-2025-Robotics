@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -94,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase {
     updateSmartDashboard();
   }
 
-  public void setArmPosition(double pos) {
+  public void setPosition(double pos) {
     m_isTeleop = false;
     armTargetPosition =
         MathUtil.clamp(pos, ArmConstants.kArmPositionMin, ArmConstants.kArmPositionMax);
@@ -102,30 +103,26 @@ public class ArmSubsystem extends SubsystemBase {
     m_armMotor.setControl(m_armRequest.withPosition(armTargetPosition));
   }
 
-  public double getArmPosition() {
+  public double getPosition() {
     return m_armEncoder.getPosition().getValueAsDouble();
   }
 
-  public void setArmSpeed(double aspeed) {
+  public boolean isAtPosition() {
+    return MathUtil.isNear(armTargetPosition, this.getPosition(), POSITION_TOLERANCE);
+  }
+
+  public void setSpeed(double aspeed) {
     armTargetPosition = 0;
     m_isTeleop = true;
     m_armMotor.set(aspeed);
   }
 
-  public void armStop() {
+  public void stop() {
     m_armMotor.setControl(m_brake);
   }
 
-  public void armUp() {
-    this.setArmPosition(ArmConstants.kTargetArmHigh);
-  }
-
-  public void armDown() {
-    this.setArmPosition(ArmConstants.kTargetArmLow);
-  }
-
-  public void armHold() {
-    this.setArmPosition(this.getArmPosition());
+  public void hold() {
+    this.setPosition(this.getPosition());
   }
 
   public void teleop(double aspeed) {
@@ -133,18 +130,18 @@ public class ArmSubsystem extends SubsystemBase {
 
     if (USE_POSITIONCONTROL) {
       if (aspeed != 0.0)
-        this.setArmPosition(this.getArmPosition() + (aspeed * ArmConstants.kArmTeleopFactor));
+        this.setPosition(this.getPosition() + (aspeed * ArmConstants.kArmTeleopFactor));
 
     } else {
       if (m_isTeleop || (aspeed != 0.0)) {
-        this.setArmSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
+        this.setSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
       }
     }
   }
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
-    SmartDashboard.putNumber("Arm Postion", this.getArmPosition());
+    SmartDashboard.putNumber("Arm Postion", this.getPosition());
     SmartDashboard.putNumber("Arm TargetPostion", armTargetPosition);
   }
 }
