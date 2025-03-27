@@ -96,7 +96,7 @@ public final class Constants {
     public static final double kArmEncoderOffset = -0.37;
 
     public static final double kArmChainRatio = 74.0 / 50.0;
-    public static final double kArmGearboxRatio = 80.0; // 1:80
+    public static final double kArmGearboxRatio = 64.0; // 1:64
     public static final double kArmGearRatio =
         kArmChainRatio * kArmGearboxRatio; // chain ratio * Gearbox ratio
 
