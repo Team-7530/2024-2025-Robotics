@@ -55,9 +55,9 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
-    configs.Slot1.kP = ClimberConstants.climbMotorKP_Tor;
-    configs.Slot1.kI = ClimberConstants.climbMotorKI_Tor;
-    configs.Slot1.kD = ClimberConstants.climbMotorKD_Tor;
+    configs.Slot1.kP = ClimberConstants.climbMotorTorqueKP;
+    configs.Slot1.kI = ClimberConstants.climbMotorTorqueKI;
+    configs.Slot1.kD = ClimberConstants.climbMotorTorqueKD;
     configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
@@ -68,9 +68,9 @@ public class ClimberSubsystem implements Subsystem {
     configs.MotionMagic.MotionMagicExpo_kA = ClimberConstants.MMagicExpo_kA;
 
     configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
-    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
-    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     StatusCode status = m_ClimbMotor.getConfigurator().apply(configs);
     if (!status.isOK()) {
@@ -87,20 +87,20 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public void restore() {
-    this.setPosition(ClimberConstants.kTargetClimberUp);
+    this.setPosition(ClimberConstants.kTargetClimberDown);
   }
 
   public boolean isAtRestoredPosition() {
-    return MathUtil.isNear(ClimberConstants.kTargetClimberUp, this.getPosition(), POSITION_TOLERANCE);
+    return MathUtil.isNear(ClimberConstants.kTargetClimberDown, this.getPosition(), POSITION_TOLERANCE);
   }
 
   public void climb() {
     this.setClamp(true);
-    this.setPosition(ClimberConstants.kTargetClimberDown);
+    this.setPosition(ClimberConstants.kTargetClimberFull);
   }
 
   public boolean isAtFullClimbPosition() {
-    return MathUtil.isNear(ClimberConstants.kTargetClimberDown, this.getPosition(), POSITION_TOLERANCE);
+    return MathUtil.isNear(ClimberConstants.kTargetClimberFull, this.getPosition(), POSITION_TOLERANCE);
   }
 
   public void setPosition(double pos) {
@@ -159,10 +159,15 @@ public class ClimberSubsystem implements Subsystem {
     return m_isClamped;
   }
 
+  public double encoderPosition() {
+    return m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin;
+  }
   public void resetMotorPostion() {
-    m_ClimbMotor.setPosition(
-        (m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin)
-            * ClimberConstants.kClimberGearRatio);
+    double val = this.encoderPosition();
+    if (val < 0.0)
+      val += 1.0;
+
+    m_ClimbMotor.setPosition(val * ClimberConstants.kClimberGearRatio);
   }
 
   // Update the smart dashboard

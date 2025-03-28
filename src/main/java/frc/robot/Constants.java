@@ -21,10 +21,10 @@ public final class Constants {
 
   public static final boolean DEBUGGING = false;
   public static final boolean TESTING = false;
-  public static final boolean USE_POSITIONCONTROL = true;
+  public static final boolean USE_POSITIONCONTROL = false;
 
   public static final double TRIGGER_DEADBAND = 0.01;
-  public static final double STICK_DEADBAND = 0.01;
+  public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
   public static final double POSITION_TOLERANCE = 0.05;
 
@@ -74,10 +74,10 @@ public final class Constants {
     public static final double LoadArmPosition = 0.25;
     public static final double LoadWristPosition = -0.125;
 
-    public static final double ClimbArmPosition = 0.418;
+    public static final double ClimbArmPosition = 0.398;
     public static final double ClimbWristPosition = 0.2;
 
-    public static final double CruiseArmPosition = 0.418;
+    public static final double CruiseArmPosition = 0.398;
     public static final double CruiseWristPosition = -0.3;
 
     public static final double L2BackupAmountX = -0.3;
@@ -115,11 +115,11 @@ public final class Constants {
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kArmPositionMax = 0.418;
-    public static final double kArmPositionMin = 0.14;
+    public static final double kArmPositionMax = 0.398;
+    public static final double kArmPositionMin = 0.138;
 
-    public static final double kTargetArmHigh = 0.418;
-    public static final double kTargetArmLow = 0.14;
+    public static final double kTargetArmHigh = 0.398;
+    public static final double kTargetArmLow = 0.138;
     public static final double kArmTeleopSpeed = 0.1;
     public static final double kArmTeleopFactor = 0.02;
   }
@@ -216,17 +216,18 @@ public final class Constants {
     public static final int CLIMBENCODER_ID = 0; // Thrubore plugged into DIO 0
     public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
 
-    public static final InvertedValue kClimberInverted = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
     public static final NeutralModeValue kClimberNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kClimberEncoderDirection =
-        SensorDirectionValue.Clockwise_Positive;
+        SensorDirectionValue.CounterClockwise_Positive;
 
     public static final double kClimberChainRatio = 18.0 / 14.0;
-    public static final double kClimberGearboxRatio = 100.0; // 1:100
-    public static final double kClimberGearRatio = 111.11; // empirical observation 
-//        kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
-    public static final double kClimberEncoderMin = 0.37;
-    public static final double kClimberEncoderMax = 0.90;
+    public static final double kClimberGearboxRatio = 400.0; // 1:100
+    public static final double kClimberGearRatio = 531.5; // empirical
+      //  kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
+    public static final double kClimberEncoderMin = 0.92; // -0.10
+    public static final double kClimberEncoderMax = 0.37;
+    public static final double kClimberEncoderRange = 1.0 + (kClimberEncoderMax - kClimberEncoderMin);
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
@@ -241,15 +242,9 @@ public final class Constants {
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
-    public static final double climbMotorKP_Tor = 60.0;
-    public static final double climbMotorKI_Tor = 0.0;
-    public static final double climbMotorKD_Tor = 6.0;
-
-    public static final double climbMotorTorqueKP =
-        60.0; // An error of 1 rot. results in 60 A output
+    public static final double climbMotorTorqueKP = 60.0; // 1 rot err == 60 A output
     public static final double climbMotorTorqueKI = 0.0; // No output for integrated error
-    public static final double climbMotorTorqueKD =
-        6.0; // A velocity of 1 rps results in 6 A output
+    public static final double climbMotorTorqueKD = 6.0; // vel of 1 rps == 6 A output
 
     public static final double MMagicCruiseVelocity = 1;
     public static final double MMagicAcceleration = 2;
@@ -261,13 +256,12 @@ public final class Constants {
     public static final double kClampedPosition = 0.5;
 
     public static final double kClimberPositionMin = 0.0;
-    public static final double kClimberPositionMax =
-        (kClimberEncoderMax - kClimberEncoderMin) * kClimberGearRatio;
+    public static final double kClimberPositionMax = kClimberEncoderRange * kClimberGearRatio;
 
-    public static final double kTargetClimberUp = kClimberPositionMin;
-    public static final double kTargetClimberDown = 24.75;
+    public static final double kTargetClimberDown = 0.042 * kClimberGearRatio;
+    public static final double kTargetClimberFull = 0.2 * kClimberGearRatio;
 
     public static final double kClimberSpeed = 0.8;
-    public static final double kClimbTeleopFactor = 2.0;
+    public static final double kClimbTeleopFactor = 10.0;
   }
 }
