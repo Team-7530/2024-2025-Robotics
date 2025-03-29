@@ -4,6 +4,7 @@ import static frc.robot.Constants.*;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -19,7 +20,9 @@ import frc.robot.Constants.ClimberConstants;
 public class ClimberSubsystem implements Subsystem {
   private final TalonFX m_ClimbMotor =
       new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
-  private final DutyCycleEncoder m_ClimbEncoder =
+  private final TalonFX m_ClimbMotorFollower =
+      new TalonFX(ClimberConstants.CLIMBMOTORFOLLOWER_ID, ClimberConstants.CANBUS);
+  private final DutyCycleEncoder m_ClimbEncoder = 
       new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
@@ -68,17 +71,25 @@ public class ClimberSubsystem implements Subsystem {
     configs.MotionMagic.MotionMagicExpo_kA = ClimberConstants.MMagicExpo_kA;
 
     configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
-    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
-    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
     StatusCode status = m_ClimbMotor.getConfigurator().apply(configs);
+    if (!status.isOK()) {
+      System.out.println("Could not apply configs, error code: " + status.toString());
+    }
+
+    status = m_ClimbMotorFollower.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
     /* Make sure we start at 0 */
     this.resetMotorPostion();
     m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
+    m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));
+    //Follower is opposite, so we need to invert
+    
   }
 
   @Override

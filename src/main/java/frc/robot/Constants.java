@@ -213,21 +213,23 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
+    public static final int CLIMBMOTORFOLLOWER_ID = 42;
     public static final int CLIMBENCODER_ID = 0; // Thrubore plugged into DIO 0
     public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue kClimberFollowerInverted = InvertedValue.Clockwise_Positive;
     public static final NeutralModeValue kClimberNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kClimberEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
 
-    public static final double kClimberChainRatio = 18.0 / 14.0;
-    public static final double kClimberGearboxRatio = 400.0; // 1:100
-    public static final double kClimberGearRatio = 531.5; // empirical
-      //  kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
+    public static final double kClimberChainRatio = 28.0 / 10.0;
+    public static final double kClimberGearboxRatio = 256.0; // 1:100
+    public static final double kClimberGearRatio = 
+        kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double kClimberEncoderOffset = 0.1; // 0.90 + offset > 0.0
-    public static final double kClimberEncoderMin = 0.02;
+    public static final double kClimberEncoderOffset = 0.0; // 0.90 + offset > 0.0
+    public static final double kClimberEncoderMin = 0.08;//.1 mi.29
     public static final double kClimberEncoderMax = 0.47;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
@@ -259,8 +261,8 @@ public final class Constants {
     public static final double kClimberPositionMin = kClimberEncoderMin * kClimberGearRatio;
     public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
 
-    public static final double kTargetClimberDown = 0.042 * kClimberGearRatio;
-    public static final double kTargetClimberFull = 0.2 * kClimberGearRatio;
+    public static final double kTargetClimberDown = 0.1 * kClimberGearRatio;
+    public static final double kTargetClimberFull = 0.29 * kClimberGearRatio;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;
