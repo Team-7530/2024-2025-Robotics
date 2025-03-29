@@ -142,9 +142,12 @@ public class WristSubsystem extends SubsystemBase {
     wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND);
 
     if (USE_POSITIONCONTROL) {
-      if (wspeed != 0.0)
-        this.setPosition(
-            this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor));
+      if (wspeed != 0.0) {
+        wristTargetPosition = MathUtil.clamp(this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor),
+                                  WristConstants.kWristPositionMin, 
+                                  WristConstants.kWristPositionMax);
+        m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
+      }
     } else {
       if (m_isTeleop || (wspeed != 0.0)) {
         this.setSpeed(wspeed * WristConstants.kWristTeleopSpeed);

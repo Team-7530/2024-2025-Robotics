@@ -126,7 +126,7 @@ public class ClimberSubsystem implements Subsystem {
     m_targetPosition = 0.0;
 
     if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
-    m_ClimbMotor.set(speed);
+      m_ClimbMotor.set(speed);
   }
 
   public void stop() {
@@ -137,8 +137,9 @@ public class ClimberSubsystem implements Subsystem {
     val = MathUtil.applyDeadband(val, STICK_DEADBAND);
 
     if (USE_POSITIONCONTROL) {
-      if (val != 0.0)
+      if (val != 0.0) {
         this.setPosition(this.getPosition() + (val * ClimberConstants.kClimbTeleopFactor));
+      }
     } else {
       if (m_isTeleop || (val != 0.0)) {
         m_isTeleop = true;
@@ -160,20 +161,18 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public double encoderPosition() {
-    return m_ClimbEncoder.get() - ClimberConstants.kClimberEncoderMin;
+    double pos = m_ClimbEncoder.get() + ClimberConstants.kClimberEncoderOffset;
+    return Math.abs(pos - (int)pos);
   }
-  public void resetMotorPostion() {
-    double val = this.encoderPosition();
-    if (val < 0.0)
-      val += 1.0;
 
-    m_ClimbMotor.setPosition(val * ClimberConstants.kClimberGearRatio);
+  public void resetMotorPostion() {
+    m_ClimbMotor.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
   }
 
   // Update the smart dashboard
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Climber Postion", this.getPosition());
-    SmartDashboard.putNumber("Climber Encoder Postion", m_ClimbEncoder.get());
+    SmartDashboard.putNumber("Climber Encoder Postion", this.encoderPosition());
     SmartDashboard.putNumber("Climber TargetPostion", m_targetPosition);
   }
 }

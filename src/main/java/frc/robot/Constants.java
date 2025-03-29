@@ -225,9 +225,10 @@ public final class Constants {
     public static final double kClimberGearboxRatio = 400.0; // 1:100
     public static final double kClimberGearRatio = 531.5; // empirical
       //  kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
-    public static final double kClimberEncoderMin = 0.92; // -0.10
-    public static final double kClimberEncoderMax = 0.37;
-    public static final double kClimberEncoderRange = 1.0 + (kClimberEncoderMax - kClimberEncoderMin);
+
+    public static final double kClimberEncoderOffset = 0.1; // 0.90 + offset > 0.0
+    public static final double kClimberEncoderMin = 0.02;
+    public static final double kClimberEncoderMax = 0.47;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
@@ -255,8 +256,8 @@ public final class Constants {
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double kClimberPositionMin = 0.0;
-    public static final double kClimberPositionMax = kClimberEncoderRange * kClimberGearRatio;
+    public static final double kClimberPositionMin = kClimberEncoderMin * kClimberGearRatio;
+    public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
 
     public static final double kTargetClimberDown = 0.042 * kClimberGearRatio;
     public static final double kTargetClimberFull = 0.2 * kClimberGearRatio;
