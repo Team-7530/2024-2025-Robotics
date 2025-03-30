@@ -45,7 +45,9 @@ public final class Constants {
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
     public static final Transform3d kRobotToCam1 =
-        new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0));
+        new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0));
+    // public static final Transform3d kRobotToCam1 =
+    //     new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0));
     // public static final Transform3d kRobotToCam2 =
     //     new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI));
 
@@ -229,8 +231,8 @@ public final class Constants {
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
 
     public static final double kClimberEncoderOffset = 0.0; // 0.90 + offset > 0.0
-    public static final double kClimberEncoderMin = 0.08;//.1 mi.29
-    public static final double kClimberEncoderMax = 0.47;
+    public static final double kClimberEncoderMin = 0.1;//.1 mi.29
+    public static final double kClimberEncoderMax = 0.55;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
@@ -245,12 +247,12 @@ public final class Constants {
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
-    public static final double climbMotorTorqueKP = 60.0; // 1 rot err == 60 A output
+    public static final double climbMotorTorqueKP = 80.0; // 1 rot err == 60 A output
     public static final double climbMotorTorqueKI = 0.0; // No output for integrated error
-    public static final double climbMotorTorqueKD = 6.0; // vel of 1 rps == 6 A output
+    public static final double climbMotorTorqueKD = 2.0; // vel of 1 rps == 6 A output
 
-    public static final double MMagicCruiseVelocity = 1;
-    public static final double MMagicAcceleration = 2;
+    public static final double MMagicCruiseVelocity = 15;
+    public static final double MMagicAcceleration = 30;
     public static final double MMagicJerk = 8000;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
@@ -262,7 +264,7 @@ public final class Constants {
     public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
 
     public static final double kTargetClimberDown = 0.1 * kClimberGearRatio;
-    public static final double kTargetClimberFull = 0.29 * kClimberGearRatio;
+    public static final double kTargetClimberFull = 0.39 * kClimberGearRatio;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;

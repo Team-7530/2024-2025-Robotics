@@ -48,6 +48,11 @@ public class ClimberSubsystem implements Subsystem {
     configs.TorqueCurrent.PeakForwardTorqueCurrent = ClimberConstants.peakForwardTorqueCurrent;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = ClimberConstants.peakReverseTorqueCurrent;
 
+    StatusCode status = m_ClimbMotorFollower.getConfigurator().apply(configs);
+    if (!status.isOK()) {
+      System.out.println("Could not apply configs, error code: " + status.toString());
+    }
+
     configs.Slot0.kG = ClimberConstants.climbMotorKG;
     configs.Slot0.kS = ClimberConstants.climbMotorKS;
     configs.Slot0.kV = ClimberConstants.climbMotorKV;
@@ -75,21 +80,17 @@ public class ClimberSubsystem implements Subsystem {
     configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.kClimberPositionMin;
     configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-    StatusCode status = m_ClimbMotor.getConfigurator().apply(configs);
+    status = m_ClimbMotor.getConfigurator().apply(configs);
     if (!status.isOK()) {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
-    status = m_ClimbMotorFollower.getConfigurator().apply(configs);
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
     /* Make sure we start at 0 */
     this.resetMotorPostion();
     m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
-    m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));
+
     //Follower is opposite, so we need to invert
-    
+    m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));    
   }
 
   @Override
@@ -178,6 +179,7 @@ public class ClimberSubsystem implements Subsystem {
 
   public void resetMotorPostion() {
     m_ClimbMotor.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
+    m_ClimbMotorFollower.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
   }
 
   // Update the smart dashboard
