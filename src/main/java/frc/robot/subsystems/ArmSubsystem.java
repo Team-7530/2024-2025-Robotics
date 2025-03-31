@@ -5,6 +5,7 @@ import static frc.robot.Constants.*;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -25,6 +26,8 @@ public class ArmSubsystem extends SubsystemBase {
       new CANcoder(ArmConstants.ARMENCODER_ID, ArmConstants.CANBUS);
 
   private final MotionMagicExpoVoltage m_armRequest = new MotionMagicExpoVoltage(0).withSlot(0);
+  private final DutyCycleOut m_manualRequest = new DutyCycleOut(0);
+
   private final NeutralOut m_brake = new NeutralOut();
 
   private double armTargetPosition = 0;
@@ -113,8 +116,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setSpeed(double aspeed) {
     armTargetPosition = 0;
-    m_isTeleop = true;
-    m_armMotor.set(aspeed);
+    m_armMotor.setControl(m_manualRequest.withOutput(aspeed));
   }
 
   public void stop() {
@@ -134,6 +136,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     } else {
       if (m_isTeleop || (aspeed != 0.0)) {
+        m_isTeleop = true;
         this.setSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
       }
     }

@@ -5,6 +5,7 @@ import static frc.robot.Constants.*;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -26,6 +27,7 @@ public class WristSubsystem extends SubsystemBase {
       new CANcoder(WristConstants.WRISTENCODER_ID, WristConstants.CANBUS);
 
   private final MotionMagicExpoVoltage m_wristRequest = new MotionMagicExpoVoltage(0).withSlot(0);
+  private final DutyCycleOut m_manualRequest = new DutyCycleOut(0);
   private final NeutralOut m_brake = new NeutralOut();
 
   private double wristTargetPosition = 0;
@@ -125,9 +127,7 @@ public class WristSubsystem extends SubsystemBase {
 
   public void setSpeed(double wspeed) {
     wristTargetPosition = 0;
-    m_isTeleop = true;
-
-    m_wristMotor.set(wspeed);
+    m_wristMotor.setControl(m_manualRequest.withOutput(wspeed));
   }
 
   public void stop() {
@@ -150,6 +150,7 @@ public class WristSubsystem extends SubsystemBase {
       }
     } else {
       if (m_isTeleop || (wspeed != 0.0)) {
+        m_isTeleop = true;
         this.setSpeed(wspeed * WristConstants.kWristTeleopSpeed);
       }
     }
