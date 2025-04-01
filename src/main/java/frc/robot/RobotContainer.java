@@ -51,6 +51,7 @@ public class RobotContainer {
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
+  private Command autonomousCommand;
 
   public static RobotContainer GetInstance() {
     return instance;
@@ -58,7 +59,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     instance = this;
 
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
@@ -231,11 +231,6 @@ public class RobotContainer {
     SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
     SmartDashboard.putData(
         "ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
-
-    // ShuffleboardTab tab = Shuffleboard.getTab("MAIN");
-    // tab.add("AutoChooser", autoChooser).withSize(2,
-    // 1).withWidget(BuiltInWidgets.kComboBoxChooser);
-    // tab.addNumber("DriveTrain/Drive Scaling", () -> oi.driveScalingValue());
   }
 
   public void simulationInit() {}
@@ -257,9 +252,39 @@ public class RobotContainer {
     RoboRioSim.setVInVoltage(Math.max(0.1, RobotController.getBatteryVoltage()));
   }
 
-  public void testInit() {}
+  public void autonomousInit() {
+    autonomousCommand = this.getAutonomousCommand();
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
+    }
+  }
+
+  public void autonomousPeriodic() {}
+
+  public void teleopInit() {
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
+    }
+  }
+
+  public void teleopPeriodic() {}
+
+  public void testInit() {
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
 
   public void testPeriodic() {}
 
   public void testExit() {}
+
+  public void disabledInit() {}
+
+  public void disabledPeriodic() {
+    this.updateOI();
+  }
 }

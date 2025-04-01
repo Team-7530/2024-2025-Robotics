@@ -28,15 +28,18 @@ import static frc.robot.Constants.Vision.*;
 
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.lib.limelightvision.LimelightHelpers;
 import frc.lib.util.FieldConstants;
 import frc.robot.Robot;
 import java.util.ArrayList;
@@ -54,31 +57,37 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem implements Subsystem {
-  private final List<PhotonCamera> cameras = new ArrayList<>();
-  private final List<PhotonPoseEstimator> photonEstimators = new ArrayList<>();
+  private final List<Pair<PhotonCamera, PhotonPoseEstimator>> photonCameras = new ArrayList<>();
+  // private final List<PhotonPoseEstimator> photonEstimators = new ArrayList<>();
+  private final List<String> limelightCameras = new ArrayList<>();
   private Matrix<N3, N1> curStdDevs;
 
   // Simulation
-  private final List<PhotonCameraSim> cameraSims = new ArrayList<>();
+  private final List<PhotonCameraSim> photonCameraSims = new ArrayList<>();
   private VisionSystemSim visionSim;
 
   /* Cameras */
   public UsbCamera cam0;
 
   public VisionSubsystem() {
-    cameras.add(new PhotonCamera(kCameraName1));
-    PhotonPoseEstimator photonEstimator =
-        new PhotonPoseEstimator(
-            FieldConstants.fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, kRobotToCam1);
-    photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    photonEstimators.add(photonEstimator);
 
-    // cameras.add(new PhotonCamera(kCameraName2));
-    // photonEstimator =
-    //     new PhotonPoseEstimator(
-    //         FieldConstants.fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, kRobotToCam2);
-    // photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    // photonEstimators.add(photonEstimator);
+    for (int cam = 0; cam < kCameraName.size(); cam++) {
+      String name = kCameraName.get(cam);
+      Transform3d pose = kRobotToCam.get(cam);
+
+      if (name.toLowerCase().startsWith("limelight")) {
+        limelightCameras.add(name);
+
+        Rotation3d rot = pose.getRotation();
+        LimelightHelpers.setCameraPose_RobotSpace(name, pose.getX(), pose.getY(), pose.getZ(), rot.getX(), rot.getY(), rot.getZ());
+      } else {
+        PhotonPoseEstimator photonEstimator =
+            new PhotonPoseEstimator(
+                FieldConstants.fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, pose);
+        photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        photonCameras.add(Pair.of(new PhotonCamera(name), photonEstimator));
+      }
+    }
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -94,18 +103,14 @@ public class VisionSubsystem implements Subsystem {
       cameraProp.setAvgLatencyMs(10);
       cameraProp.setLatencyStdDevMs(10);
 
-      for (int i = 0; i < cameras.size(); i++) {
-        PhotonCameraSim cameraSim = new PhotonCameraSim(cameras.get(i), cameraProp);
+      for (var camera : photonCameras) {
+        PhotonCameraSim cameraSim = new PhotonCameraSim(camera.getFirst(), cameraProp);
         // Add the simulated camera to view the targets on this simulated field.
-        visionSim.addCamera(cameraSim, photonEstimators.get(i).getRobotToCameraTransform());
+        visionSim.addCamera(cameraSim, camera.getSecond().getRobotToCameraTransform());
         cameraSim.enableDrawWireframe(true);
-
-        cameraSims.add(cameraSim);
+        photonCameraSims.add(cameraSim);
       }
     }
-
-    // cam0 = CameraServer.startAutomaticCapture(0);
-    // cam0.setConnectVerbose(0);
   }
 
   /**
@@ -123,26 +128,22 @@ public class VisionSubsystem implements Subsystem {
     List<EstimatedRobotPose> allVisionEstimates = new ArrayList<>();
 
     Optional<EstimatedRobotPose> visionEst = Optional.empty();
-    for (int i = 0; i < cameras.size(); i++) {
-      PhotonCamera camera = cameras.get(i);
-      PhotonPoseEstimator estimator = photonEstimators.get(i);
-
-      for (var change : camera.getAllUnreadResults()) {
+    for (var camera : photonCameras) {
+      for (var change : camera.getFirst().getAllUnreadResults()) {
         allCameraTargets.addAll(change.getTargets());
 
-        visionEst = estimator.update(change);
+        visionEst = camera.getSecond().update(change);
         if (visionEst.isPresent()) {
           allVisionEstimates.add(visionEst.get());
         }
 
         if (Robot.isSimulation()) {
-          final int index = i;
           visionEst.ifPresentOrElse(
               est ->
                   getSimDebugField()
-                      .getObject("VisionEstimation" + index)
+                      .getObject("VisionEstimation" + camera.getFirst().getName())
                       .setPose(est.estimatedPose.toPose2d()),
-              () -> getSimDebugField().getObject("VisionEstimation" + index).setPoses());
+              () -> getSimDebugField().getObject("VisionEstimation" + camera.getFirst().getName()).setPoses());
         }
       }
     }
@@ -151,7 +152,7 @@ public class VisionSubsystem implements Subsystem {
             ? Optional.empty()
             : Optional.of(allVisionEstimates.get(allVisionEstimates.size() - 1)),
         allCameraTargets,
-        photonEstimators.get(0));
+        photonCameras.get(0).getSecond());
 
     return averageVisionEstimates(allVisionEstimates);
   }
@@ -253,6 +254,21 @@ public class VisionSubsystem implements Subsystem {
    */
   public Matrix<N3, N1> getEstimationStdDevs() {
     return curStdDevs;
+  }
+
+  public Optional<LimelightHelpers.PoseEstimate> getVisionMeasurement_MT2(Pose2d currentPose) {
+    for (String name : limelightCameras) {
+      LimelightHelpers.SetRobotOrientation(name, currentPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      return Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name));
+    }
+    return Optional.empty();
+  }
+
+  public Optional<LimelightHelpers.PoseEstimate> getVisionMeasurement_MT1() {
+    for (String name : limelightCameras) {
+      return Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue(name));
+    }
+    return Optional.empty();
   }
 
   // ----- Simulation

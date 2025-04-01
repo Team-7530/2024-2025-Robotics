@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import java.util.List;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,24 +18,24 @@ import frc.robot.generated.TunerConstants;
 
 public final class Constants {
 
-  public static final boolean COMPETITIONBOT = false;
-
-  public static final boolean DEBUGGING = false;
-  public static final boolean TESTING = false;
   public static final boolean USE_POSITIONCONTROL = false;
 
-  public static final double TRIGGER_DEADBAND = 0.01;
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
   public static final double POSITION_TOLERANCE = 0.05;
 
   public static final class Vision {
 
+    public static final boolean USE_LIMELIGHT = false;
     public static final String LIMELIGHTNAME = "limelight";
     public static final String LIMELIGHTURL = "limelight.local";
     public static final String PHOTONVISIONURL = "photonvision.local";
-    public static final String kCameraName1 = "OV9281";
-    public static final String kCameraName2 = "OV9281-2";
+
+    public static final List<String> kCameraName = List.of(
+      "OV9281"
+      // "OV9281-2"
+      // LIMELIGHTNAME
+    );
 
     // Cam mounted - x = +toward front, 0 center, -toward rear in meters.
     //               y = +left of center, 0 center, -right of center in meters
@@ -44,12 +45,11 @@ public final class Constants {
     // tilt up 45
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
-    public static final Transform3d kRobotToCam1 =
-        new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0));
-    // public static final Transform3d kRobotToCam1 =
-    //     new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0));
-    // public static final Transform3d kRobotToCam2 =
-    //     new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI));
+    public static final List<Transform3d> kRobotToCam = List.of(
+        new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0))
+    //  new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0))
+    //  new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI))
+    );
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
