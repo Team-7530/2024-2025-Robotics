@@ -4,6 +4,7 @@ import static frc.robot.Constants.*;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -15,7 +16,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem implements Subsystem {
   private final TalonFX m_ClimbMotor =
@@ -27,8 +27,9 @@ public class ClimberSubsystem implements Subsystem {
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
   private final MotionMagicTorqueCurrentFOC m_positionRequest =
-      new MotionMagicTorqueCurrentFOC(0).withSlot(1);
-  // private final PositionVoltage m_positionRequest = new PositionVoltage(0).withSlot(0);
+      new MotionMagicTorqueCurrentFOC(0).withSlot(0);
+  private final DutyCycleOut m_manualRequest = new DutyCycleOut(0);
+
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
@@ -53,21 +54,11 @@ public class ClimberSubsystem implements Subsystem {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
-    configs.Slot0.kG = ClimberConstants.climbMotorKG;
-    configs.Slot0.kS = ClimberConstants.climbMotorKS;
-    configs.Slot0.kV = ClimberConstants.climbMotorKV;
-    configs.Slot0.kA = ClimberConstants.climbMotorKA;
-    configs.Slot0.kP = ClimberConstants.climbMotorKP;
-    configs.Slot0.kI = ClimberConstants.climbMotorKI;
-    configs.Slot0.kD = ClimberConstants.climbMotorKD;
+    configs.Slot0.kP = ClimberConstants.climbMotorTorqueKP;
+    configs.Slot0.kI = ClimberConstants.climbMotorTorqueKI;
+    configs.Slot0.kD = ClimberConstants.climbMotorTorqueKD;
     configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
-
-    configs.Slot1.kP = ClimberConstants.climbMotorTorqueKP;
-    configs.Slot1.kI = ClimberConstants.climbMotorTorqueKI;
-    configs.Slot1.kD = ClimberConstants.climbMotorTorqueKD;
-    configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
-    configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.MotionMagic.MotionMagicCruiseVelocity = ClimberConstants.MMagicCruiseVelocity;
     configs.MotionMagic.MotionMagicAcceleration = ClimberConstants.MMagicAcceleration;
@@ -87,10 +78,11 @@ public class ClimberSubsystem implements Subsystem {
 
     /* Make sure we start at 0 */
     this.resetMotorPostion();
-    m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
 
-    //Follower is opposite, so we need to invert
+    /* Follower is opposite, so we need to invert */
     m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));    
+
+    m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
   }
 
   @Override
@@ -138,7 +130,7 @@ public class ClimberSubsystem implements Subsystem {
     m_targetPosition = 0.0;
 
     if (!m_isClamped || (speed > 0.0)) // is climbing or no ratchet
-      m_ClimbMotor.set(speed);
+      m_ClimbMotor.setControl(m_manualRequest.withOutput(speed));
   }
 
   public void stop() {

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
@@ -27,12 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final VelocityTorqueCurrentFOC m_velocityRequest =
       new VelocityTorqueCurrentFOC(0).withSlot(0);
-  // private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest =
-  //    new MotionMagicVelocityTorqueCurrentFOC(0).withSlot(0);
+  private final DutyCycleOut m_manualRequest = new DutyCycleOut(0);
+
   private final NeutralOut m_brake = new NeutralOut();
 
-  private double LintakeTargetVelocity = 0;
-  private double RintakeTargetVelocity = 0;
   private boolean m_isTeleop = true;
 
   public IntakeSubsystem() {
@@ -106,25 +105,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
-    LintakeTargetVelocity = Lvelocity * IntakeConstants.kIntakeGearRatio;
-    RintakeTargetVelocity = Rvelocity * IntakeConstants.kIntakeGearRatio;
-
-    m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(LintakeTargetVelocity));
-    m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(RintakeTargetVelocity));
+    m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(Lvelocity * IntakeConstants.kIntakeGearRatio));
+    m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(Rvelocity * IntakeConstants.kIntakeGearRatio));
   }
 
   public void setIntakeSpeed(double speed) {
-    LintakeTargetVelocity = 0;
-    RintakeTargetVelocity = 0;
-
-    m_LIntakeMotor.set(speed);
-    m_RIntakeMotor.set(speed);
+    m_LIntakeMotor.setControl(m_manualRequest.withOutput(speed));
+    m_RIntakeMotor.setControl(m_manualRequest.withOutput(speed));
   }
 
   public void intakeStop() {
-    LintakeTargetVelocity = 0;
-    RintakeTargetVelocity = 0;
-
     m_LIntakeMotor.setControl(m_brake);
     m_RIntakeMotor.setControl(m_brake);
   }
@@ -149,6 +139,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intake = MathUtil.applyDeadband(intake, STICK_DEADBAND);
 
     if (m_isTeleop || (intake != 0.0)) {
+      m_isTeleop = true;
       this.setIntakeSpeed(intake * 0.1);
     }
   }
@@ -157,7 +148,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("LIntake Speed", m_LIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("RIntake Speed", m_RIntakeMotor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Intake TargetVelocity", LintakeTargetVelocity);
 
     SmartDashboard.putNumber("Distance", m_RangeSensor.getDistance().getValueAsDouble());
     SmartDashboard.putNumber("Strength", m_RangeSensor.getSignalStrength().getValueAsDouble());
