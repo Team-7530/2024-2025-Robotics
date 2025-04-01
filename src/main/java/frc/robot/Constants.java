@@ -264,7 +264,7 @@ public final class Constants {
     public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
 
     public static final double kTargetClimberDown = 0.1 * kClimberGearRatio;
-    public static final double kTargetClimberFull = 0.39 * kClimberGearRatio;
+    public static final double kTargetClimberFull = 0.40 * kClimberGearRatio;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;
