@@ -16,7 +16,7 @@ public class ClimbPositionCommand extends SequentialCommandGroup {
               .withName("ArmToLoadingPosition"),
           new WristToPositionCommand(wrist, ScoringConstants.ClimbWristPosition, true)
               .withName("WristToLoadingPosition")),
-        new WristSpeedCommand(wrist, 0.0),
-        new ArmSpeedCommand(arm, 0.0));
+        new WristStopCommand(wrist),
+        new ArmStopCommand(arm));
   }
 }
