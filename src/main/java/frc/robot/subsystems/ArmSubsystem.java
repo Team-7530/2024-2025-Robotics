@@ -33,12 +33,13 @@ public class ArmSubsystem extends SubsystemBase {
   private double armTargetPosition = 0;
   private boolean m_isTeleop = true;
 
+
   public ArmSubsystem() {
 
     initEncoderConfigs();
     initArmConfigs();
   }
-
+  
   private void initArmConfigs() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
@@ -79,6 +80,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
+
   private void initEncoderConfigs() {
     CANcoderConfiguration configs = new CANcoderConfiguration();
     configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
@@ -97,7 +99,12 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     updateSmartDashboard();
   }
-
+  
+  /**
+   * Moves the arm to a specific position
+   *
+   * @param pos position between 0 and 1
+   */
   public void setPosition(double pos) {
     m_isTeleop = false;
     armTargetPosition =
@@ -106,27 +113,50 @@ public class ArmSubsystem extends SubsystemBase {
     m_armMotor.setControl(m_armRequest.withPosition(armTargetPosition));
   }
 
+  /**
+   * Returns the arm encoder position as a double
+   */
   public double getPosition() {
     return m_armEncoder.getPosition().getValueAsDouble();
   }
 
+
+  /**
+   * Returns true if arm is at the target position or is within the error tolerance range
+   */
   public boolean isAtPosition() {
     return MathUtil.isNear(armTargetPosition, this.getPosition(), POSITION_TOLERANCE);
   }
 
+  /**
+   * Sets the arm rotation speed
+   * 
+   * @param aspeed requires a double
+   */
   public void setSpeed(double aspeed) {
     armTargetPosition = 0;
     m_armMotor.setControl(m_manualRequest.withOutput(aspeed));
   }
 
+  /**
+   * Stops moter movement and activates the motor brake
+   */
   public void stop() {
     m_armMotor.setControl(m_brake);
   }
 
+  /**
+   * Attempts to hold the motor at its current position (can cause jitter)
+   */
   public void hold() {
     this.setPosition(this.getPosition());
   }
 
+
+  /**
+   * Teleop controls
+   * @param aspeed a double that sets the arm speed during teleop
+   */
   public void teleop(double aspeed) {
     aspeed = MathUtil.applyDeadband(aspeed, STICK_DEADBAND);
 
@@ -142,7 +172,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
-  // Update the smart dashboard
+  /**
+   * Updates the Smart Dashboard
+   */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Arm Postion", this.getPosition());
     SmartDashboard.putNumber("Arm TargetPostion", armTargetPosition);

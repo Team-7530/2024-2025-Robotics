@@ -6,6 +6,10 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ClimberResetCommand extends Command {
   private final ClimberSubsystem m_climb;
 
+  /**
+   * Opens clamp and returns climber to lowered position
+   * @param climb Subsystem
+   */
   public ClimberResetCommand(ClimberSubsystem climb) {
     this.m_climb = climb;
 

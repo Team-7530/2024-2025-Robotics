@@ -108,6 +108,10 @@ public class WristSubsystem extends SubsystemBase {
     updateSmartDashboard();
   }
 
+  /**
+   * Sets the wrist position
+   * @param pos position between 0 and 1
+   */
   public void setPosition(double pos) {
     m_isTeleop = false;
     wristTargetPosition =
@@ -117,27 +121,47 @@ public class WristSubsystem extends SubsystemBase {
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(wristSlot));
   }
 
+  /**
+   * Returns the wrist position as a double
+   */
   public double getPosition() {
     return m_wristEncoder.getPosition().getValueAsDouble();
   }
 
+  /**
+   * Returns true if motor is at target position or within tolerance range
+   */
   public boolean isAtPosition() {
     return MathUtil.isNear(wristTargetPosition, this.getPosition(),  POSITION_TOLERANCE);
   }
 
+  /**
+   * Sets the wrist motor speed
+   * @param wspeed double, target speed
+   */
   public void setSpeed(double wspeed) {
     wristTargetPosition = 0;
     m_wristMotor.setControl(m_manualRequest.withOutput(wspeed));
   }
 
+  /**
+   * Stops motor and activates brakes
+   */
   public void stop() {
     m_wristMotor.setControl(m_brake);
   }
 
+  /**
+   * Tells motor to hold current position (can cause jitter)
+   */
   public void hold() {
     this.setPosition(this.getPosition());
   }
 
+  /**
+   * Teleop controls 
+   * @param wspeed wrist target speed during teleop
+   */
   public void teleop(double wspeed) {
     wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND);
 
@@ -156,7 +180,9 @@ public class WristSubsystem extends SubsystemBase {
     }
   }
 
-  // Update the smart dashboard
+  /**
+   * Upddates the Smart Dashboard
+   */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Wrist Postion", this.getPosition());
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);

@@ -8,6 +8,12 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class L1ScoringPositionCommand extends ParallelCommandGroup {
 
+
+  /**
+   * Sets arm and wrist to L1 position
+   * @param arm Subsystem
+   * @param wrist Subsystem
+   */
   public L1ScoringPositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
     addCommands(
         new ArmToPositionCommand(arm, ScoringConstants.L1ArmPosition).withName("ArmToL1Position"),

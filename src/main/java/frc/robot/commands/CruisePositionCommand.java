@@ -8,6 +8,11 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class CruisePositionCommand extends ParallelCommandGroup {
 
+  /**
+   * Sets arm to defense position
+   * @param arm Subsystem
+   * @param wrist Subsystem
+   */
   public CruisePositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
     addCommands(
         new ArmToPositionCommand(arm, ScoringConstants.CruiseArmPosition)

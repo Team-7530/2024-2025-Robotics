@@ -9,6 +9,10 @@ public class OuttakeCommand extends Command {
   private boolean m_isFinished = false;
   private int m_counter = 0;
 
+  /**
+   * Sets intake to deposit coral
+   * @param intake Subsystem
+   */
   public OuttakeCommand(IntakeSubsystem intake) {
 
     this.m_IntakeSubsystem = intake;
