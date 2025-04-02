@@ -120,6 +120,24 @@ public class ClimberSubsystem implements Subsystem {
     return MathUtil.isNear(ClimberConstants.kTargetClimberFull, this.getPosition(), POSITION_TOLERANCE);
   }
 
+  public void stow() {
+    this.setClamp(false);
+    this.setPosition(ClimberConstants.kClimberPositionMax);
+  }
+
+  public boolean isAtStowPosition() {
+    return MathUtil.isNear(ClimberConstants.kClimberPositionMax, this.getPosition(), POSITION_TOLERANCE);
+  }
+
+  public void stow() {
+    this.setClamp(false);
+    this.setPosition(ClimberConstants.kClimberPositionMax);
+  }
+
+  public boolean isAtStowPosition() {
+    return MathUtil.isNear(ClimberConstants.kClimberPositionMax, this.getPosition(), POSITION_TOLERANCE);
+  }
+
   /**
    * Sets the climber target position
    * @param pos double between 0 and 1

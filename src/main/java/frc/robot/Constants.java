@@ -22,7 +22,7 @@ public final class Constants {
 
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
-  public static final double POSITION_TOLERANCE = 0.05;
+  public static final double POSITION_TOLERANCE = 0.1;
 
   public static final class Vision {
 
