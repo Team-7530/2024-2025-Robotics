@@ -6,6 +6,7 @@ import frc.robot.subsystems.WristSubsystem;
 public class WristToPositionCommand extends Command {
   private final WristSubsystem m_wrist;
   private double m_targetPosition = 0.0;
+  private boolean m_isFinished = false;
 
   public WristToPositionCommand(WristSubsystem wrist, double position, boolean slow) {
     this.m_wrist = wrist;
@@ -16,11 +17,18 @@ public class WristToPositionCommand extends Command {
 
   @Override
   public void initialize() {
+    m_isFinished = false;
     m_wrist.setPosition(m_targetPosition);
   }
 
   @Override
+  public void execute() {
+    if (!m_isFinished)
+      m_isFinished = m_wrist.isAtPosition();
+  }
+
+  @Override
   public boolean isFinished() {
-    return m_wrist.isAtPosition();
+    return m_isFinished;
   }
 }

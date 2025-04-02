@@ -171,7 +171,7 @@ public class RobotContainer {
     oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
 
     oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
-    // oi.getBackButton().onTrue(Commands.runOnce(() -> climber.rotateOpen()));
+    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
   }
 
   /**
