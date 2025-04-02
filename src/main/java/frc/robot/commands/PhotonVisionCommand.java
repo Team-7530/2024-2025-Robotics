@@ -31,13 +31,10 @@ public class PhotonVisionCommand extends Command {
       var visionEst = vision.getEstimatedGlobalPose();
       visionEst.ifPresent(
           est -> {
-            // Change our trust in the measurement based on the tags we can see
-            var estStdDevs = vision.getEstimationStdDevs();
-
             drivetrain.addVisionMeasurement(
                 est.estimatedPose.toPose2d(),
                 Utils.fpgaToCurrentTime(est.timestampSeconds),
-                estStdDevs);
+                vision.getEstimationStdDevs());
           });
 
       if (USE_LIMELIGHT) {
@@ -47,7 +44,8 @@ public class PhotonVisionCommand extends Command {
               if (est.tagCount >= 1) {
                 drivetrain.addVisionMeasurement(
                     est.pose,
-                    est.timestampSeconds);
+                    est.timestampSeconds, 
+                    vision.getEstimationStdDevs());
               }
             });
       }
