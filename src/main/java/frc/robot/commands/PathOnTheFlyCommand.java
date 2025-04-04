@@ -13,6 +13,13 @@ public class PathOnTheFlyCommand extends Command {
   private Command pathCommand;
 
   /** Creates a new driveToPose. */
+
+
+  /**
+   * Makes a new path towards a set position
+   * @param drivetrain
+   * @param targetPose Pose2d
+   */
   public PathOnTheFlyCommand(CommandSwerveDrivetrain drivetrain, Pose2d targetPose) {
     this.pathConstraints =
         new PathConstraints(1.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(720));

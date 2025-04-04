@@ -4,7 +4,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 
 public class L2ScoringCommand extends SequentialCommandGroup {
-
+  /**
+   * Sets arm and wrist to L2 position
+   * @param arm Subsystem
+   * @param wrist Subsystem
+   */
   public L2ScoringCommand(RobotContainer rc) {
     addCommands(
         new L2ScoringPositionCommand(rc.arm, rc.wrist).withName("L2ScoringPositionCommand"),

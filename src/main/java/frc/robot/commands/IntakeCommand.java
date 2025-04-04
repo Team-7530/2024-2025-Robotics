@@ -9,6 +9,10 @@ public class IntakeCommand extends Command {
   private boolean m_isFinished = false;
   private int m_IntakeCounter = 0;
 
+  /**
+   * Sets Intake to collect coral
+   * @param intakeSubsystem Subsystem
+   */
   public IntakeCommand(IntakeSubsystem intakeSubsystem) {
 
     this.m_IntakeSubsystem = intakeSubsystem;
