@@ -5,7 +5,10 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmStopCommand extends Command {
   private final ArmSubsystem m_arm;
-
+  /**
+   * Stops arm motor and activates motor brake
+   * @param arm Subsystem
+   */
   public ArmStopCommand(ArmSubsystem arm) {
     this.m_arm = arm;
 

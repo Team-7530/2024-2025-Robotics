@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -104,37 +105,64 @@ public class IntakeSubsystem extends SubsystemBase {
     updateSmartDashboard();
   }
 
+  /**
+   * Sets the motors Target velocity
+   * @param Lvelocity left motors target velocity
+   * @param Rvelocity Right motors target velocity
+   */
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
     m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(Lvelocity * IntakeConstants.kIntakeGearRatio));
     m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(Rvelocity * IntakeConstants.kIntakeGearRatio));
   }
 
+  /**
+   * Sets intake motor speed
+   * @param speed double
+   */
   public void setIntakeSpeed(double speed) {
     m_LIntakeMotor.setControl(m_manualRequest.withOutput(speed));
     m_RIntakeMotor.setControl(m_manualRequest.withOutput(speed));
   }
 
+  /**
+   * Activates motor brakes
+   */
   public void intakeStop() {
     m_LIntakeMotor.setControl(m_brake);
     m_RIntakeMotor.setControl(m_brake);
   }
 
+  /**
+   * Sets motors to constants intake speed
+   */
   public void intakeIn() {
     this.setIntakeVelocity(IntakeConstants.intakeVelocity, IntakeConstants.intakeVelocity);
   }
 
+  /**
+   * Sets motors to constants out speed
+   */
   public void intakeOut() {
     this.setIntakeVelocity(IntakeConstants.outtakeL2Velocity, IntakeConstants.outtakeL2Velocity);
   }
 
+  /**
+   * Outputs coral but spins it for L1 scoring
+   */
   public void intakeOutSpin() {
     this.setIntakeVelocity(IntakeConstants.outtakeL1VelocityL, IntakeConstants.outtakeL1VelocityR);
   }
 
+  /**
+   * Returns true if range sensor detects coral
+   */
   public boolean hasCoralLoaded() {
     return m_RangeSensor.getIsDetected().getValue();
   }
 
+  /**
+   * Teleop controls for Intake
+   */
   public void teleop(double intake) {
     intake = MathUtil.applyDeadband(intake, STICK_DEADBAND);
 
@@ -144,7 +172,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-  // Update the smart dashboard
+  /**
+   * Updates the Smart Dashboard
+   */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("LIntake Speed", m_LIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("RIntake Speed", m_RIntakeMotor.getVelocity().getValueAsDouble());

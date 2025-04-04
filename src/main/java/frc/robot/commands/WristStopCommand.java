@@ -6,6 +6,10 @@ import frc.robot.subsystems.WristSubsystem;
 public class WristStopCommand extends Command {
   private final WristSubsystem m_wrist;
 
+  /**
+   * Stops the wrist motor and activates brake
+   * @param wrist Subsystem
+   */
   public WristStopCommand(WristSubsystem wrist) {
     this.m_wrist = wrist;
 

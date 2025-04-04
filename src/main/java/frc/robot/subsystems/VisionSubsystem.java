@@ -40,6 +40,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.lib.limelightvision.LimelightHelpers;
+import frc.lib.limelightvision.LimelightHelpers.PoseEstimate;
 import frc.lib.util.FieldConstants;
 import frc.robot.Robot;
 import java.util.ArrayList;
@@ -256,16 +257,28 @@ public class VisionSubsystem implements Subsystem {
     return curStdDevs;
   }
 
-  public Optional<LimelightHelpers.PoseEstimate> getVisionMeasurement_MT2(Pose2d currentPose) {
+  public Optional<PoseEstimate> getVisionMeasurement_MT2(Pose2d currentPose) {
+    // reject if robot angular velocity is high (> 720 rps)
     for (String name : limelightCameras) {
       LimelightHelpers.SetRobotOrientation(name, currentPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      return Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name));
+      PoseEstimate pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+      if (pose.tagCount >= 1) {
+        curStdDevs = pose.tagCount > 1 ? kMultiTagStdDevs : kSingleTagStdDevs;
+        return Optional.of(pose);
+      }
     }
     return Optional.empty();
   }
 
-  public Optional<LimelightHelpers.PoseEstimate> getVisionMeasurement_MT1() {
+  public Optional<PoseEstimate> getVisionMeasurement_MT1() {
     for (String name : limelightCameras) {
+      PoseEstimate pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+      if ((pose.tagCount > 1) ||
+          ((pose.tagCount == 1) && (pose.rawFiducials.length == 1) && 
+           (pose.rawFiducials[0].ambiguity < 0.7) && (pose.rawFiducials[0].distToCamera < 3))) {
+        curStdDevs = pose.tagCount > 1 ? kMultiTagStdDevs : kSingleTagStdDevs;
+        return Optional.of(pose);
+      }
       return Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue(name));
     }
     return Optional.empty();

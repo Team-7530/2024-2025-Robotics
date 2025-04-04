@@ -6,6 +6,10 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ClimbCommand extends Command {
   private final ClimberSubsystem m_climb;
 
+  /**
+   * Closes clamp and moves to raised position
+   * @param climb Subsystem
+   */
   public ClimbCommand(ClimberSubsystem climb) {
     this.m_climb = climb;
 

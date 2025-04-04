@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem implements Subsystem {
   private final TalonFX m_ClimbMotor =
@@ -35,7 +36,7 @@ public class ClimberSubsystem implements Subsystem {
   private double m_targetPosition = 0.0;
   private boolean m_isTeleop = false;
   private boolean m_isClamped = false;
-
+  
   public ClimberSubsystem() {
     initClimberConfigs();
   }
@@ -90,19 +91,31 @@ public class ClimberSubsystem implements Subsystem {
     updateSmartDashboard();
   }
 
+  /**
+   * Returns climber to lowered position
+   */
   public void restore() {
     this.setPosition(ClimberConstants.kTargetClimberDown);
   }
 
+  /**
+   * Returns true if climber is at lowered position
+   */
   public boolean isAtRestoredPosition() {
     return MathUtil.isNear(ClimberConstants.kTargetClimberDown, this.getPosition(), POSITION_TOLERANCE);
   }
 
+  /**
+   * Closes the clamp and moves to climb position
+   */
   public void climb() {
     this.setClamp(true);
     this.setPosition(ClimberConstants.kTargetClimberFull);
   }
 
+  /**
+   * Returns true if climber is at full raised position
+   */
   public boolean isAtFullClimbPosition() {
     return MathUtil.isNear(ClimberConstants.kTargetClimberFull, this.getPosition(), POSITION_TOLERANCE);
   }
@@ -116,6 +129,10 @@ public class ClimberSubsystem implements Subsystem {
     return MathUtil.isNear(ClimberConstants.kClimberPositionMax, this.getPosition(), POSITION_TOLERANCE);
   }
 
+  /**
+   * Sets the climber target position
+   * @param pos double between kClimberPositionMin and kClimberPositionMax
+   */
   public void setPosition(double pos) {
     m_isTeleop = false;
     m_targetPosition =
@@ -127,14 +144,24 @@ public class ClimberSubsystem implements Subsystem {
     }
   }
 
+  /**
+   * Returns the current climb motor position as a double
+   */
   public double getPosition() {
     return m_ClimbMotor.getPosition().getValueAsDouble();
   }
 
+  /**
+   * Returns true if climber is at the target position or within the tolerance range
+   */
   public boolean isAtPosition() {
     return MathUtil.isNear(m_targetPosition, this.getPosition(),  POSITION_TOLERANCE);
   }
 
+  /**
+   * sets the speed of the climber
+   * @param speed target speed
+   */
   public void setSpeed(double speed) {
     m_targetPosition = 0.0;
 
@@ -142,10 +169,17 @@ public class ClimberSubsystem implements Subsystem {
       m_ClimbMotor.setControl(m_manualRequest.withOutput(speed));
   }
 
+  /**
+   * Stops the motor and activates the brake
+   */
   public void stop() {
     m_ClimbMotor.setControl(m_brake);
   }
 
+  /**
+   * Handles climber controls during teleop
+   * @param val controller deadband
+   */
   public void teleopClimb(double val) {
     val = MathUtil.applyDeadband(val, STICK_DEADBAND);
 
@@ -161,6 +195,10 @@ public class ClimberSubsystem implements Subsystem {
     }
   }
 
+  /**
+   * Opens or closes the clamp
+   * @param clampOn bool
+   */
   public void setClamp(boolean clampOn) {
     m_isClamped = clampOn;
     this.stop();
@@ -169,21 +207,32 @@ public class ClimberSubsystem implements Subsystem {
         m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
   }
 
+  /**
+   * Returns true if clamp is closed, false if open
+   */
   public boolean getClamp() {
     return m_isClamped;
   }
 
+  /**
+   * Returns the climb encoder position
+   */
   public double encoderPosition() {
     double pos = m_ClimbEncoder.get() + ClimberConstants.kClimberEncoderOffset;
     return Math.abs(pos - (int)pos);
   }
 
+  /**
+   * Resets the motors internal position
+   */
   public void resetMotorPostion() {
     m_ClimbMotor.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
     m_ClimbMotorFollower.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
   }
 
-  // Update the smart dashboard
+  /**
+   * Updates the Smart Dashboard
+   */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Climber Postion", this.getPosition());
     SmartDashboard.putNumber("Climber Encoder Postion", this.encoderPosition());

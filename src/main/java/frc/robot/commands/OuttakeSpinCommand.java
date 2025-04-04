@@ -9,6 +9,10 @@ public class OuttakeSpinCommand extends Command {
   private boolean m_isFinished = false;
   private int m_counter = 0;
 
+  /**
+   * Sets intake to output and spin for L1 scoring
+   * @param intake
+   */
   public OuttakeSpinCommand(IntakeSubsystem intake) {
 
     this.m_IntakeSubsystem = intake;

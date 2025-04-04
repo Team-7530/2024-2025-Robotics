@@ -9,6 +9,11 @@ import frc.robot.subsystems.WristSubsystem;
 
 public class ClimbPositionCommand extends SequentialCommandGroup {
 
+  /**
+   * Sets the arm and the wrist to their location during climb
+   * @param arm Subsystem 
+   * @param wrist Subsystem 
+   */
   public ClimbPositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
     addCommands(
         new ParallelCommandGroup(

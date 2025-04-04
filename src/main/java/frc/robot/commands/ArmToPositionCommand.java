@@ -8,6 +8,11 @@ public class ArmToPositionCommand extends Command {
   private double m_targetPosition = 0.0;
   private boolean m_isFinished = false;
 
+  /**
+   * Moves the arm to a custom position
+   * @param arm Subsystem
+   * @param position arm position between 0 and 1
+   */
   public ArmToPositionCommand(ArmSubsystem arm, double position) {
     this.m_arm = arm;
     this.m_targetPosition = position;
