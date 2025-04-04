@@ -198,8 +198,8 @@ public final class Constants {
     public static final double MMagicJerk = 800;
 
     public static final double intakeVelocity = -3.0;
-    public static final double outtakeL1VelocityL = 3.0;
-    public static final double outtakeL1VelocityR = 6.0;
+    public static final double outtakeL1VelocityL = 2.0;
+    public static final double outtakeL1VelocityR = 5.0;
     public static final double outtakeL2Velocity = 8.0;
 
     public static final Distance rangeThreshold = Inches.of(5.0);
@@ -264,7 +264,7 @@ public final class Constants {
     public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
 
     public static final double kTargetClimberDown = 0.1 * kClimberGearRatio;
-    public static final double kTargetClimberFull = 0.40 * kClimberGearRatio;
+    public static final double kTargetClimberFull = 0.42 * kClimberGearRatio;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;
