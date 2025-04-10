@@ -14,10 +14,9 @@ public class CruisePositionCommand extends ParallelCommandGroup {
    * @param wrist Subsystem
    */
   public CruisePositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
+    setName("CruisePositionCommand");
     addCommands(
-        new ArmToPositionCommand(arm, ScoringConstants.CruiseArmPosition)
-            .withName("ArmToLoadingPosition"),
-        new WristToPositionCommand(wrist, ScoringConstants.CruiseWristPosition, true)
-            .withName("WristToLoadingPosition"));
+        arm.armToPositionCommand(ScoringConstants.CruiseArmPosition),
+        wrist.wristToPositionCommand(ScoringConstants.CruiseWristPosition));
   }
 }

@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
@@ -178,5 +179,12 @@ public class ArmSubsystem extends SubsystemBase {
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Arm Postion", this.getPosition());
     SmartDashboard.putNumber("Arm TargetPostion", armTargetPosition);
+  }
+
+  public Command armToPositionCommand(double position) {
+    return run(() -> this.setPosition(position))
+        .withName("ArmToPositionCommand")
+        .until(this::isAtPosition)
+        .withTimeout(5.0);
   }
 }

@@ -154,9 +154,9 @@ public class RobotContainer {
     //         new PathOnTheFlyCommand(
     //             drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
 
-    oi.getAButton().onTrue(new IntakeCommand(intake));
-    oi.getXButton().onTrue(new OuttakeCommand(intake));
-    oi.getBButton().onTrue(new OuttakeSpinCommand(intake));
+    oi.getAButton().onTrue(intake.intakeCommand());
+    oi.getXButton().onTrue(intake.outtakeL2Command());
+    oi.getBButton().onTrue(intake.outtakeL1Command());
     oi.getYButton().onTrue(new CruisePositionCommand(arm, wrist));
 
     oi.getPOVUp().onTrue(new GetCoralPositionCommand(arm, wrist));
@@ -202,9 +202,9 @@ public class RobotContainer {
   }
 
   private void configureAutoPaths() {
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
-    NamedCommands.registerCommand("Outtake", new OuttakeCommand(intake));
-    NamedCommands.registerCommand("OuttakeSpin", new OuttakeSpinCommand(intake));
+    NamedCommands.registerCommand("Intake", intake.intakeCommand());
+    NamedCommands.registerCommand("Outtake", intake.outtakeL2Command());
+    NamedCommands.registerCommand("OuttakeSpin", intake.outtakeL1Command());
     NamedCommands.registerCommand("SetClimbPos", new ClimbPositionCommand(arm, wrist));
     NamedCommands.registerCommand("SetCruisePos", new CruisePositionCommand(arm, wrist));
     NamedCommands.registerCommand("GetCoral", new GetCoralPositionCommand(arm, wrist));
@@ -217,9 +217,9 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     SmartDashboard.putData("AutoChooser", autoChooser);
-    SmartDashboard.putData("Intake", new IntakeCommand(intake));
-    SmartDashboard.putData("Outtake", new OuttakeCommand(intake));
-    SmartDashboard.putData("OuttakeSpin", new OuttakeSpinCommand(intake));
+    SmartDashboard.putData("Intake", intake.intakeCommand());
+    SmartDashboard.putData("Outtake", intake.outtakeL2Command());
+    SmartDashboard.putData("OuttakeSpin", intake.outtakeL1Command());
     SmartDashboard.putData("GetCoral", new GetCoralPositionCommand(arm, wrist));
     SmartDashboard.putData("SetClimbPos", new ClimbPositionCommand(arm, wrist));
     SmartDashboard.putData("SetCruisePos", new CruisePositionCommand(arm, wrist));
@@ -227,8 +227,7 @@ public class RobotContainer {
     SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
     SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
-    SmartDashboard.putData("ClimbToFull", new ClimbCommand(climber));
-    SmartDashboard.putData("ClimbReset", new ClimberResetCommand(climber));
+    SmartDashboard.putData("ClimbToFull", climber.climbToFullPositionCommand());
     SmartDashboard.putData(
         "ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
   }

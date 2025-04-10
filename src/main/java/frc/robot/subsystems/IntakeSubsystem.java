@@ -15,6 +15,7 @@ import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -183,4 +184,27 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Strength", m_RangeSensor.getSignalStrength().getValueAsDouble());
     SmartDashboard.putBoolean("Detected", m_RangeSensor.getIsDetected().getValue());
   }
+
+  public Command intakeCommand() {
+  return run(() -> this.intakeIn())
+    .withName("IntakeCommand")
+    .until(this::hasCoralLoaded)
+    .withTimeout(5.0)
+    .finallyDo(() -> this.intakeStop());
+  }
+
+  public Command outtakeL1Command() {
+    return run(() -> this.intakeOutSpin())
+      .withName("OuttakeL1Command")
+      .withTimeout(1.0)
+      .finallyDo(() -> this.intakeStop());
+    }
+
+  public Command outtakeL2Command() {
+    return run(() -> this.intakeOut())
+      .withName("OuttakeL2Command")
+      .withTimeout(1.0)
+      .finallyDo(() -> this.intakeStop());
+    }
+    
 }

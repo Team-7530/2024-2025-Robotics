@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.*;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
@@ -15,13 +16,13 @@ public class ClimbPositionCommand extends SequentialCommandGroup {
    * @param wrist Subsystem 
    */
   public ClimbPositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
+    setName("ClimbPositionCommand");
     addCommands(
         new ParallelCommandGroup(
-          new ArmToPositionCommand(arm, ScoringConstants.ClimbArmPosition)
-              .withName("ArmToLoadingPosition"),
-          new WristToPositionCommand(wrist, ScoringConstants.ClimbWristPosition, true)
-              .withName("WristToLoadingPosition")),
-        new WristStopCommand(wrist),
-        new ArmStopCommand(arm));
+          arm.armToPositionCommand(ScoringConstants.ClimbArmPosition),
+          wrist.wristToPositionCommand(ScoringConstants.ClimbWristPosition)),
+        Commands.runOnce(() -> wrist.stop()),
+        Commands.runOnce(() -> arm.stop())
+    );
   }
 }

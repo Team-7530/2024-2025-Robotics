@@ -8,10 +8,9 @@ import frc.robot.subsystems.WristSubsystem;
 public class DoAllResetCommand extends ParallelCommandGroup {
 
   public DoAllResetCommand(ArmSubsystem arm, WristSubsystem wrist, ClimberSubsystem climb) {
+    setName("DoAllResetCommand");
     addCommands(
-        new CruisePositionCommand(arm, wrist)
-            .withName("CruisePositionCommand"),
-        new ClimberStowCommand(climb)
-            .withName("ClimberStowCommand"));
+        new CruisePositionCommand(arm, wrist),
+        climb.climbToStowPositionCommand());
   }
 }

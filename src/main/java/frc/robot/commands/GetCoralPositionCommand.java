@@ -14,8 +14,7 @@ public class GetCoralPositionCommand extends SequentialCommandGroup {
    */
   public GetCoralPositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
     addCommands(
-        new ArmToPositionCommand(arm, 0.25).withName("ArmToLoadingPosition"),
-        new WristToPositionCommand(wrist, ScoringConstants.LoadWristPosition, false)
-            .withName("WristToLoadingPosition"));
+        arm.armToPositionCommand(0.25),
+        wrist.wristToPositionCommand(ScoringConstants.LoadWristPosition));
   }
 }

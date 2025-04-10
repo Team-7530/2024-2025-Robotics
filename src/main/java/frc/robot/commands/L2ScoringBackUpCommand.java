@@ -20,6 +20,7 @@ public class L2ScoringBackUpCommand extends Command {
   private Command pathCommand;
 
   public L2ScoringBackUpCommand(CommandSwerveDrivetrain drivetrain) {
+    setName("L2ScoringBackUpCommand");
     this.drivetrain = drivetrain;
     this.pathConstraints =
         new PathConstraints(1.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(720));

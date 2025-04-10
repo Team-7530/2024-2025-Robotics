@@ -14,9 +14,9 @@ public class L2ScoringPositionCommand extends ParallelCommandGroup {
    * @param wrist Subsystem
    */
   public L2ScoringPositionCommand(ArmSubsystem arm, WristSubsystem wrist) {
+    setName("L2ScoringPositionCommand");
     addCommands(
-        new ArmToPositionCommand(arm, ScoringConstants.L2ArmPosition).withName("ArmToL2Position"),
-        new WristToPositionCommand(wrist, ScoringConstants.L2WristPosition, false)
-            .withName("WristToL2Position"));
+        arm.armToPositionCommand(ScoringConstants.L2ArmPosition),
+        wrist.wristToPositionCommand(ScoringConstants.L2WristPosition));
   }
 }

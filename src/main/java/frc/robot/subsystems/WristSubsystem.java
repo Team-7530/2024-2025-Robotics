@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
 
@@ -188,4 +189,12 @@ public class WristSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);
     SmartDashboard.putNumber("Wrist Slot", wristSlot);
   }
+
+  public Command wristToPositionCommand(double position) {
+    return run(() -> this.setPosition(position))
+      .withName("WristToPositionCommand")
+      .until(this::isAtPosition)
+      .withTimeout(5.0);
+  }
+
 }

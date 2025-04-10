@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.ClimberConstants;
 
@@ -237,5 +238,31 @@ public class ClimberSubsystem implements Subsystem {
     SmartDashboard.putNumber("Climber Postion", this.getPosition());
     SmartDashboard.putNumber("Climber Encoder Postion", this.encoderPosition());
     SmartDashboard.putNumber("Climber TargetPostion", m_targetPosition);
+  }
+
+  public Command climbToStowPositionCommand() {
+    return startRun(() -> this.setClamp(false),
+                    () -> this.setPosition(ClimberConstants.kClimberPositionMax))
+      .withName("ClimbToStowPositionCommand")
+      .until(this::isAtPosition)
+      .withTimeout(5.0)
+      .finallyDo(() -> this.stop());
+  }
+
+  public Command climbToFullPositionCommand() {
+    return startRun(() -> this.setClamp(true),
+                    () -> this.setPosition(ClimberConstants.kTargetClimberFull))
+      .withName("ClimbToFullPositionCommand")
+      .until(this::isAtPosition)
+      .withTimeout(5.0);
+    }
+
+  public Command climbToRestoredPositionCommand() {
+    return startRun(() -> this.setClamp(false),
+                    () -> this.setPosition(ClimberConstants.kTargetClimberDown))
+      .withName("ClimbToRestoredPositionCommand")
+      .until(this::isAtPosition)
+      .withTimeout(5.0)      
+      .finallyDo(() -> this.stop());
   }
 }
