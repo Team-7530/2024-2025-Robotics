@@ -121,11 +121,17 @@ public class ClimberSubsystem implements Subsystem {
     return MathUtil.isNear(ClimberConstants.kTargetClimberFull, this.getPosition(), POSITION_TOLERANCE);
   }
 
+  /**
+   * Stows the climber
+   */
   public void stow() {
     this.setClamp(false);
     this.setPosition(ClimberConstants.kClimberPositionMax);
   }
 
+  /**
+   * Returns true if climber is stowed
+   */
   public boolean isAtStowPosition() {
     return MathUtil.isNear(ClimberConstants.kClimberPositionMax, this.getPosition(), POSITION_TOLERANCE);
   }
