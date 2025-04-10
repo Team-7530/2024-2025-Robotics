@@ -5,7 +5,7 @@ import static frc.robot.Constants.Vision.*;
 
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.VisionSubsystem;
@@ -27,7 +27,7 @@ public class PhotonVisionCommand extends Command {
   @Override
   public void execute() {
 
-    if (!DriverStation.isTeleop()) {
+    if (!RobotState.isEnabled()) {
       // Correct pose estimate with vision measurements
       var visionEst = vision.getEstimatedGlobalPose();
       visionEst.ifPresent(

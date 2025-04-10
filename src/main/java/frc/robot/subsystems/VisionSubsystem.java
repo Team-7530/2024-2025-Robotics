@@ -26,6 +26,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Vision.*;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Pair;
@@ -89,6 +90,10 @@ public class VisionSubsystem implements Subsystem {
         photonCameras.add(Pair.of(new PhotonCamera(name), photonEstimator));
       }
     }
+
+    cam0 = CameraServer.startAutomaticCapture();
+    cam0.setResolution(240, 160);
+    cam0.setFPS(15);
 
     // ----- Simulation
     if (Robot.isSimulation()) {

@@ -76,10 +76,10 @@ public final class Constants {
     public static final double LoadArmPosition = 0.25;
     public static final double LoadWristPosition = -0.125;
 
-    public static final double ClimbArmPosition = 0.398;
+    public static final double ClimbArmPosition = 0.405;
     public static final double ClimbWristPosition = 0.2;
 
-    public static final double CruiseArmPosition = 0.398;
+    public static final double CruiseArmPosition = 0.405;
     public static final double CruiseWristPosition = -0.3;
 
     public static final double L2BackupAmountX = -0.3;
@@ -106,7 +106,7 @@ public final class Constants {
     public static final double armMotorKS = 0.0;
     public static final double armMotorKV = 0.0;
     public static final double armMotorKA = 0.0;
-    public static final double armMotorKP = 20.0; // 45
+    public static final double armMotorKP = 30.0; // 45
     public static final double armMotorKI = 0.0;
     public static final double armMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 1;
@@ -117,10 +117,10 @@ public final class Constants {
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kArmPositionMax = 0.398;
+    public static final double kArmPositionMax = 0.405;
     public static final double kArmPositionMin = 0.138;
 
-    public static final double kTargetArmHigh = 0.398;
+    public static final double kTargetArmHigh = 0.405;
     public static final double kTargetArmLow = 0.138;
     public static final double kArmTeleopSpeed = 0.1;
     public static final double kArmTeleopFactor = 0.02;
@@ -264,7 +264,7 @@ public final class Constants {
     public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
 
     public static final double kTargetClimberDown = 0.1 * kClimberGearRatio;
-    public static final double kTargetClimberFull = 0.42 * kClimberGearRatio;
+    public static final double kTargetClimberFull = 0.46 * kClimberGearRatio;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;
