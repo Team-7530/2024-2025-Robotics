@@ -211,6 +211,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
     NamedCommands.registerCommand("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
     NamedCommands.registerCommand("DoL2Score", new L2ScoringCommand(this));
+    NamedCommands.registerCommand("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
   }
 
   private void configureTelemetry() {
@@ -225,11 +226,12 @@ public class RobotContainer {
     SmartDashboard.putData("SetCruisePos", new CruisePositionCommand(arm, wrist));
     SmartDashboard.putData("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
-    SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
-    SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
     SmartDashboard.putData("ClimbToFull", climber.climbToFullPositionCommand());
     SmartDashboard.putData(
         "ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
+    SmartDashboard.putData("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
+    SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
+    SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
   }
 
   public void simulationInit() {}
