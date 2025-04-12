@@ -256,6 +256,27 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     return AutoBuilder.followPath(path);
   }
+
+  /**
+   * Returns a Command that drives the swerve drive to a specific distance relative to the robot's starting position at a given speed.
+   *
+   * @param distanceInMeters       the distance to drive in meters
+   * @param speedInMetersPerSecond the speed at which to drive in meters per second
+   * @return a Command that drives the swerve drive to a specific distance at a given speed
+   */
+  public Command driveDistanceCommand(Translation2d distanceInMeters, double speedInMetersPerSecond)
+  {
+    final Translation2d start = this.getState().Pose.getTranslation();
+    final Translation2d speed = distanceInMeters.times(speedInMetersPerSecond / distanceInMeters.getNorm());
+    return run(() -> this.setControl(
+        this.driveRobotCentric
+          .withVelocityX(speed.getX())
+          .withVelocityY(speed.getY())
+          .withRotationalRate(0)
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage)))                       
+        .until(() -> this.getState().Pose.getTranslation().getDistance(start) > distanceInMeters.getNorm());
+  }
+
   /**
    * Returns a command that applies the specified control request to this swerve drivetrain.
    *

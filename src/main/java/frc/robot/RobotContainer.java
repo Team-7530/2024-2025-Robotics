@@ -230,6 +230,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
     SmartDashboard.putData("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
+    SmartDashboard.putData("UpdatePose2", Commands.runOnce(() -> vision.updateGlobalPose(drivetrain)));
     SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
     SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
   }

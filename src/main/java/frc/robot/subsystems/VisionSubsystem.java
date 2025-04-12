@@ -64,7 +64,6 @@ import com.ctre.phoenix6.Utils;
 
 public class VisionSubsystem implements Subsystem {
   private final List<Pair<PhotonCamera, PhotonPoseEstimator>> photonCameras = new ArrayList<>();
-  // private final List<PhotonPoseEstimator> photonEstimators = new ArrayList<>();
   private final List<String> limelightCameras = new ArrayList<>();
   private Matrix<N3, N1> curStdDevs;
 
@@ -95,9 +94,11 @@ public class VisionSubsystem implements Subsystem {
       }
     }
 
-    cam0 = CameraServer.startAutomaticCapture();
-    cam0.setResolution(240, 160);
-    cam0.setFPS(15);
+    if (Robot.isReal()) {
+      cam0 = CameraServer.startAutomaticCapture();
+      cam0.setResolution(240, 160);
+      cam0.setFPS(15);
+    }
 
     // ----- Simulation
     if (Robot.isSimulation()) {
