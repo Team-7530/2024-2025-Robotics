@@ -25,6 +25,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.Vision.*;
+import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -39,6 +40,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.lib.limelightvision.LimelightHelpers;
 import frc.lib.limelightvision.LimelightHelpers.PoseEstimate;
@@ -57,6 +59,8 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import com.ctre.phoenix6.Utils;
 
 public class VisionSubsystem implements Subsystem {
   private final List<Pair<PhotonCamera, PhotonPoseEstimator>> photonCameras = new ArrayList<>();
@@ -90,9 +94,11 @@ public class VisionSubsystem implements Subsystem {
       }
     }
 
-    cam0 = CameraServer.startAutomaticCapture();
-    cam0.setResolution(240, 160);
-    cam0.setFPS(15);
+    if (Robot.isReal()) {
+      cam0 = CameraServer.startAutomaticCapture();
+      cam0.setResolution(240, 160);
+      cam0.setFPS(15);
+    }
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -287,6 +293,38 @@ public class VisionSubsystem implements Subsystem {
     }
     return Optional.empty();
   }
+
+  public void updateGlobalPose(CommandSwerveDrivetrain drivetrain) {
+    // Correct pose estimate with vision measurements
+    var visionEst = this.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+        est -> {
+          drivetrain.addVisionMeasurement(
+              est.estimatedPose.toPose2d(),
+              Utils.fpgaToCurrentTime(est.timestampSeconds),
+              this.getEstimationStdDevs());
+        });
+
+    if (USE_LIMELIGHT) {
+      var limelightEst = this.getVisionMeasurement_MT2(drivetrain.getState().Pose);
+      limelightEst.ifPresent(
+          est -> {
+            if (est.tagCount >= 1) {
+              if (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond)) {
+                drivetrain.addVisionMeasurement(
+                  est.pose,
+                  est.timestampSeconds, 
+                  this.getEstimationStdDevs());
+              }
+            }
+        });
+    }
+  }
+
+  public Command updateGlobalPoseCommand(CommandSwerveDrivetrain drivetrain) {
+    return runOnce(() -> this.updateGlobalPose(drivetrain))
+    .withName("UpdateGlobalPoseCommand");
+  }    
 
   // ----- Simulation
   public void simulationPeriodic(Pose2d robotSimPose) {
