@@ -60,7 +60,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem implements Subsystem {
   private final List<Pair<PhotonCamera, PhotonPoseEstimator>> photonCameras = new ArrayList<>();
-  // private final List<PhotonPoseEstimator> photonEstimators = new ArrayList<>();
   private final List<String> limelightCameras = new ArrayList<>();
   private Matrix<N3, N1> curStdDevs;
 

@@ -135,7 +135,7 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = 0.169;
+    public static final double kWristEncoderOffset = -0.03115;
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
@@ -143,16 +143,16 @@ public final class Constants {
         kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
 
     public static final double wristMotorKG = 0.0;
-    public static final double wristMotorKS = 0.0;
-    public static final double wristMotorKS_slow = -0.0;
+    public static final double wristMotorKS = 1.0;
+    public static final double wristMotorKS_slow = 1.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 35.0; // 70 2/27/25
+    public static final double wristMotorKP = 45.0; // 70 2/27/25
     public static final double wristMotorKP_slow = 8.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 1;
-    public static final double MMagicAcceleration = 1;
+    public static final double MMagicAcceleration = 2;
     public static final double MMagicJerk = 8000;
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
