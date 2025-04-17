@@ -55,7 +55,7 @@ public class WristSubsystem extends SubsystemBase {
     configs.Slot0.kP = WristConstants.wristMotorKP;
     configs.Slot0.kI = WristConstants.wristMotorKI;
     configs.Slot0.kD = WristConstants.wristMotorKD;
-    configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+    configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Slot1.kG = WristConstants.wristMotorKG;
@@ -65,7 +65,7 @@ public class WristSubsystem extends SubsystemBase {
     configs.Slot1.kP = WristConstants.wristMotorKP_slow;
     configs.Slot1.kI = WristConstants.wristMotorKI;
     configs.Slot1.kD = WristConstants.wristMotorKD;
-    configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+    configs.Slot1.GravityType = GravityTypeValue.Arm_Cosine;
     configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Feedback.FeedbackRemoteSensorID = m_wristEncoder.getDeviceID();

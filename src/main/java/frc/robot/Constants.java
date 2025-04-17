@@ -68,19 +68,19 @@ public final class Constants {
 
   public static final class ScoringConstants {
     public static final double L1ArmPosition = 0.28;
-    public static final double L1WristPosition = -0.3;
+    public static final double L1WristPosition = -0.05; //-0.3;
 
     public static final double L2ArmPosition = 0.25;
-    public static final double L2WristPosition = -0.22;
+    public static final double L2WristPosition = 0.03; //-0.22;
 
     public static final double LoadArmPosition = 0.25;
-    public static final double LoadWristPosition = -0.125;
+    public static final double LoadWristPosition = 0.125; //-0.125;
 
     public static final double ClimbArmPosition = 0.405;
-    public static final double ClimbWristPosition = 0.2;
+    public static final double ClimbWristPosition = 0.45; //0.2;
 
     public static final double CruiseArmPosition = 0.405;
-    public static final double CruiseWristPosition = -0.3;
+    public static final double CruiseWristPosition = -0.05; //-0.3;
 
     public static final double L2BackupAmountX = -0.3;
     public static final double L2BackupAmountY = 0.0;
@@ -135,7 +135,7 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = -0.03115;
+    public static final double kWristEncoderOffset = 0.21885; //-0.03115;
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
@@ -157,11 +157,11 @@ public final class Constants {
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
-    public static final double kWristPositionMax = 0.25;
-    public static final double kWristPositionMin = -0.3;
+    public static final double kWristPositionMax = 0.5; //0.25;
+    public static final double kWristPositionMin = -0.05; //-0.3;
 
-    public static final double kTargetWristHigh = 0.25;
-    public static final double kTargetWristLow = -0.3;
+    public static final double kTargetWristHigh = 0.5; //0.25;
+    public static final double kTargetWristLow = -0.05; //-0.3;
 
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
