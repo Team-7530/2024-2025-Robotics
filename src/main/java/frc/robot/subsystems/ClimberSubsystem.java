@@ -3,29 +3,32 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.*;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem implements Subsystem {
+
   private final TalonFX m_ClimbMotor =
       new TalonFX(ClimberConstants.CLIMBMOTOR_ID, ClimberConstants.CANBUS);
   private final TalonFX m_ClimbMotorFollower =
       new TalonFX(ClimberConstants.CLIMBMOTORFOLLOWER_ID, ClimberConstants.CANBUS);
-  private final DutyCycleEncoder m_ClimbEncoder = 
-      new DutyCycleEncoder(ClimberConstants.CLIMBENCODER_ID);
+  private final CANcoder m_ClimbEncoder =
+      new CANcoder(ClimberConstants.CLIMBENCODER_ID, ClimberConstants.CANBUS);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
   private final MotionMagicTorqueCurrentFOC m_positionRequest =
@@ -39,6 +42,7 @@ public class ClimberSubsystem implements Subsystem {
   private boolean m_isClamped = false;
   
   public ClimberSubsystem() {
+    initEncoderConfigs();
     initClimberConfigs();
   }
 
@@ -62,6 +66,11 @@ public class ClimberSubsystem implements Subsystem {
     configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
+    configs.Feedback.FeedbackRemoteSensorID = m_ClimbEncoder.getDeviceID();
+    configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    configs.Feedback.SensorToMechanismRatio = 1.0;
+    configs.Feedback.RotorToSensorRatio = ClimberConstants.kClimberGearRatio;
+
     configs.MotionMagic.MotionMagicCruiseVelocity = ClimberConstants.MMagicCruiseVelocity;
     configs.MotionMagic.MotionMagicAcceleration = ClimberConstants.MMagicAcceleration;
     configs.MotionMagic.MotionMagicJerk = ClimberConstants.MMagicJerk;
@@ -78,14 +87,26 @@ public class ClimberSubsystem implements Subsystem {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
-    /* Make sure we start at 0 */
-    this.resetMotorPostion();
-
     /* Follower is opposite, so we need to invert */
     m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));    
 
     m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
   }
+
+  private void initEncoderConfigs() {
+    CANcoderConfiguration configs = new CANcoderConfiguration();
+    configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
+    configs.MagnetSensor.SensorDirection = ClimberConstants.kClimberEncoderDirection;
+    configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(ClimberConstants.kClimberEncoderOffset));
+
+    StatusCode status = m_ClimbEncoder.getConfigurator().apply(configs);
+    if (!status.isOK()) {
+      System.out.println("Could not apply top configs, error code: " + status.toString());
+    }
+    // set starting position to current absolute position
+    m_ClimbEncoder.setPosition(m_ClimbEncoder.getAbsolutePosition().getValueAsDouble());
+  }
+
 
   @Override
   public void periodic() {
@@ -155,7 +176,7 @@ public class ClimberSubsystem implements Subsystem {
    * Returns the current climb motor position as a double
    */
   public double getPosition() {
-    return m_ClimbMotor.getPosition().getValueAsDouble();
+    return m_ClimbEncoder.getPosition().getValueAsDouble();
   }
 
   /**
@@ -222,27 +243,10 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   /**
-   * Returns the climb encoder position
-   */
-  public double encoderPosition() {
-    double pos = m_ClimbEncoder.get() + ClimberConstants.kClimberEncoderOffset;
-    return Math.abs(pos - (int)pos);
-  }
-
-  /**
-   * Resets the motors internal position
-   */
-  public void resetMotorPostion() {
-    m_ClimbMotor.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
-    m_ClimbMotorFollower.setPosition(this.encoderPosition() * ClimberConstants.kClimberGearRatio);
-  }
-
-  /**
    * Updates the Smart Dashboard
    */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Climber Postion", this.getPosition());
-    SmartDashboard.putNumber("Climber Encoder Postion", this.encoderPosition());
     SmartDashboard.putNumber("Climber TargetPostion", m_targetPosition);
   }
 

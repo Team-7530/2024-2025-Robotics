@@ -135,27 +135,27 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = 0.21885; //-0.03115;
+    public static final double kWristEncoderOffset = -0.161; //-0.03115;
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
     public static final double kWristGearRatio =
         kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double wristMotorKG = 0.0;
-    public static final double wristMotorKS = 1.0;
-    public static final double wristMotorKS_slow = 1.0;
+    public static final double wristMotorKG = 0.5;
+    public static final double wristMotorKS = 0.0;
+    public static final double wristMotorKS_slow = 0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 45.0; // 70 2/27/25
-    public static final double wristMotorKP_slow = 8.0;
+    public static final double wristMotorKP = 35.0; // 70 2/27/25
+    public static final double wristMotorKP_slow = 35.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
-    public static final double MMagicCruiseVelocity = 1;
-    public static final double MMagicAcceleration = 2;
-    public static final double MMagicJerk = 8000;
-    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
-    public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+    public static final double MMagicCruiseVelocity = 0;
+    public static final double MMagicAcceleration = 0;
+    public static final double MMagicJerk = 0;
+    public static final double MMagicExpo_kV = 4.8; // kV is around 0.12 V/rps
+    public static final double MMagicExpo_kA = 2.4; // Use a slower kA of 0.1 V/(rps/s)
 
     public static final double kWristPositionMax = 0.5; //0.25;
     public static final double kWristPositionMin = -0.05; //-0.3;
@@ -216,7 +216,7 @@ public final class Constants {
     public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
     public static final int CLIMBMOTORFOLLOWER_ID = 42;
-    public static final int CLIMBENCODER_ID = 0; // Thrubore plugged into DIO 0
+    public static final int CLIMBENCODER_ID = 43; // Thrubore plugged into DIO 0
     public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
@@ -230,14 +230,14 @@ public final class Constants {
     public static final double kClimberGearRatio = 
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double kClimberEncoderOffset = 0.0; // 0.90 + offset > 0.0
-    public static final double kClimberEncoderMin = 0.1;//.1 mi.29
-    public static final double kClimberEncoderMax = 0.55;
+    public static final double kClimberEncoderOffset = 0.06275; // 0.90 + offset > 0.0
+    public static final double kClimberEncoderMin = 0.0;//.1 mi.29
+    public static final double kClimberEncoderMax = 0.45;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
-    public static final double peakReverseVoltage = -10.0; // Peak output of 10 volts
+    public static final double peakReverseVoltage = -8.0; // Peak output of 10 volts
     public static final double peakForwardTorqueCurrent = 120.0; // Peak output of 80 amps
-    public static final double peakReverseTorqueCurrent = -120.0; // Peak output of 80 amps
+    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 80 amps
 
     public static final double climbMotorKG = 0.0;
     public static final double climbMotorKS = 0.0;
@@ -260,11 +260,11 @@ public final class Constants {
     public static final double kUnclampedPosition = 0.23;
     public static final double kClampedPosition = 0.5;
 
-    public static final double kClimberPositionMin = kClimberEncoderMin * kClimberGearRatio;
-    public static final double kClimberPositionMax = kClimberEncoderMax * kClimberGearRatio;
+    public static final double kClimberPositionMin = kClimberEncoderMin;
+    public static final double kClimberPositionMax = kClimberEncoderMax;
 
-    public static final double kTargetClimberDown = 0.1 * kClimberGearRatio;
-    public static final double kTargetClimberFull = 0.46 * kClimberGearRatio;
+    public static final double kTargetClimberDown = 0.04;
+    public static final double kTargetClimberFull = 0.35;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;

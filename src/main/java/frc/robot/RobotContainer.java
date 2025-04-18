@@ -170,7 +170,7 @@ public class RobotContainer {
     oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.restore()));
     oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
 
-    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
+//    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
     oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
   }
 
@@ -227,8 +227,6 @@ public class RobotContainer {
     SmartDashboard.putData("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("ClimbToFull", climber.climbToFullPositionCommand());
-    SmartDashboard.putData(
-        "ResyncClimberPos", Commands.runOnce(() -> climber.resetMotorPostion(), climber));
     SmartDashboard.putData("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
     SmartDashboard.putData("UpdatePose2", Commands.runOnce(() -> vision.updateGlobalPose(drivetrain)));
     SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
