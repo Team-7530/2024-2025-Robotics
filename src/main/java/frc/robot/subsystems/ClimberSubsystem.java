@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -31,10 +32,11 @@ public class ClimberSubsystem implements Subsystem {
       new CANcoder(ClimberConstants.CLIMBENCODER_ID, ClimberConstants.CANBUS);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
 
-  private final MotionMagicTorqueCurrentFOC m_positionRequest =
-      new MotionMagicTorqueCurrentFOC(0).withSlot(0);
+  private final PositionVoltage m_positionRequest =
+      new PositionVoltage(0).withSlot(0);
+  private final MotionMagicTorqueCurrentFOC m_climbRequest =
+      new MotionMagicTorqueCurrentFOC(0).withSlot(1);
   private final DutyCycleOut m_manualRequest = new DutyCycleOut(0);
-
   private final NeutralOut m_brake = new NeutralOut();
 
   private double m_targetPosition = 0.0;
@@ -60,11 +62,17 @@ public class ClimberSubsystem implements Subsystem {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
-    configs.Slot0.kP = ClimberConstants.climbMotorTorqueKP;
-    configs.Slot0.kI = ClimberConstants.climbMotorTorqueKI;
-    configs.Slot0.kD = ClimberConstants.climbMotorTorqueKD;
+    configs.Slot0.kP = ClimberConstants.climbMotorKP;
+    configs.Slot0.kI = ClimberConstants.climbMotorKI;
+    configs.Slot0.kD = ClimberConstants.climbMotorKD;
     configs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     configs.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+
+    configs.Slot1.kP = ClimberConstants.climbMotorTorqueKP;
+    configs.Slot1.kI = ClimberConstants.climbMotorTorqueKI;
+    configs.Slot1.kD = ClimberConstants.climbMotorTorqueKD;
+    configs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+    configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Feedback.FeedbackRemoteSensorID = m_ClimbEncoder.getDeviceID();
     configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
@@ -89,7 +97,6 @@ public class ClimberSubsystem implements Subsystem {
 
     /* Follower is opposite, so we need to invert */
     m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));    
-
     m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
   }
 
@@ -107,24 +114,17 @@ public class ClimberSubsystem implements Subsystem {
     m_ClimbEncoder.setPosition(m_ClimbEncoder.getAbsolutePosition().getValueAsDouble());
   }
 
-
   @Override
   public void periodic() {
     updateSmartDashboard();
   }
 
   /**
-   * Returns climber to lowered position
+   * Returns climber to start position
    */
-  public void restore() {
-    this.setPosition(ClimberConstants.kTargetClimberDown);
-  }
-
-  /**
-   * Returns true if climber is at lowered position
-   */
-  public boolean isAtRestoredPosition() {
-    return MathUtil.isNear(ClimberConstants.kTargetClimberDown, this.getPosition(), POSITION_TOLERANCE);
+  public void start() {
+    this.setClamp(false);
+    this.setPosition(ClimberConstants.kTargetClimberStart);
   }
 
   /**
@@ -132,14 +132,10 @@ public class ClimberSubsystem implements Subsystem {
    */
   public void climb() {
     this.setClamp(true);
-    this.setPosition(ClimberConstants.kTargetClimberFull);
-  }
 
-  /**
-   * Returns true if climber is at full raised position
-   */
-  public boolean isAtFullClimbPosition() {
-    return MathUtil.isNear(ClimberConstants.kTargetClimberFull, this.getPosition(), POSITION_TOLERANCE);
+    m_isTeleop = false;
+    m_targetPosition = ClimberConstants.kTargetClimberFull;
+    m_ClimbMotor.setControl(m_climbRequest.withPosition(m_targetPosition));
   }
 
   /**
@@ -148,13 +144,6 @@ public class ClimberSubsystem implements Subsystem {
   public void stow() {
     this.setClamp(false);
     this.setPosition(ClimberConstants.kClimberPositionMax);
-  }
-
-  /**
-   * Returns true if climber is stowed
-   */
-  public boolean isAtStowPosition() {
-    return MathUtil.isNear(ClimberConstants.kClimberPositionMax, this.getPosition(), POSITION_TOLERANCE);
   }
 
   /**
@@ -180,10 +169,17 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   /**
+   * Returns true if climber is at the position or within the tolerance range
+   */
+  public boolean isAtPosition(double position) {
+    return MathUtil.isNear(position, this.getPosition(),  POSITION_TOLERANCE);
+  }
+
+  /**
    * Returns true if climber is at the target position or within the tolerance range
    */
   public boolean isAtPosition() {
-    return MathUtil.isNear(m_targetPosition, this.getPosition(),  POSITION_TOLERANCE);
+    return this.isAtPosition(m_targetPosition);
   }
 
   /**
@@ -251,8 +247,7 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public Command climbToStowPositionCommand() {
-    return startRun(() -> this.setClamp(false),
-                    () -> this.setPosition(ClimberConstants.kClimberPositionMax))
+    return run(() -> this.stow())
       .withName("ClimbToStowPositionCommand")
       .until(this::isAtPosition)
       .withTimeout(5.0)
@@ -260,19 +255,23 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public Command climbToFullPositionCommand() {
-    return startRun(() -> this.setClamp(true),
-                    () -> this.setPosition(ClimberConstants.kTargetClimberFull))
+    return run(() -> this.climb())
       .withName("ClimbToFullPositionCommand")
       .until(this::isAtPosition)
       .withTimeout(5.0);
     }
 
-  public Command climbToRestoredPositionCommand() {
-    return startRun(() -> this.setClamp(false),
-                    () -> this.setPosition(ClimberConstants.kTargetClimberDown))
-      .withName("ClimbToRestoredPositionCommand")
+  public Command climbToStartPositionCommand() {
+    return run(() -> this.start())
+      .withName("ClimbToStartPositionCommand")
       .until(this::isAtPosition)
       .withTimeout(5.0)      
       .finallyDo(() -> this.stop());
+  }
+
+  public Command clampCommand(boolean clamp) {
+    return run(() -> this.setClamp(clamp))
+      .withName("ClimbClampCommand")
+      .withTimeout(5.0);
   }
 }

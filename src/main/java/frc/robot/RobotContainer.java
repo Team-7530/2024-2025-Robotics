@@ -6,6 +6,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
@@ -164,14 +167,14 @@ public class RobotContainer {
     oi.getPOVLeft().onTrue(new L1ScoringPositionCommand(arm, wrist));
     oi.getPOVRight().onTrue(new L2ScoringPositionCommand(arm, wrist));
 
-    oi.getLeftBumper().onTrue(Commands.runOnce(() -> climber.setClamp(false)));
-    oi.getRightBumper().onTrue(Commands.runOnce(() -> climber.setClamp(true)));
+    oi.getLeftBumper().onTrue(climber.clampCommand(false));
+    oi.getRightBumper().onTrue(climber.clampCommand(true));
 
-    oi.getLeftTrigger().onTrue(Commands.runOnce(() -> climber.restore()));
-    oi.getRightTrigger().onTrue(Commands.runOnce(() -> climber.climb()));
+    oi.getLeftTrigger().onTrue(climber.climbToStartPositionCommand());
+    oi.getRightTrigger().onTrue(climber.climbToFullPositionCommand());
 
 //    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
-    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
+//    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
   }
 
   /**
@@ -228,8 +231,9 @@ public class RobotContainer {
     SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
     SmartDashboard.putData("ClimbToFull", climber.climbToFullPositionCommand());
     SmartDashboard.putData("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
-    SmartDashboard.putData("UpdatePose2", Commands.runOnce(() -> vision.updateGlobalPose(drivetrain)));
-    SmartDashboard.putData("L2Backup", new L2ScoringBackUpCommand(drivetrain));
+    SmartDashboard.putData("L2Backup", drivetrain.driveDistanceCommand(new Translation2d(ScoringConstants.L2BackupAmountX,
+                                                                                          ScoringConstants.L2BackupAmountY), 
+                                                                                          0.5));
     SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
   }
 

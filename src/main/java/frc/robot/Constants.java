@@ -263,7 +263,7 @@ public final class Constants {
     public static final double kClimberPositionMin = kClimberEncoderMin;
     public static final double kClimberPositionMax = kClimberEncoderMax;
 
-    public static final double kTargetClimberDown = 0.04;
+    public static final double kTargetClimberStart = 0.04;
     public static final double kTargetClimberFull = 0.35;
 
     public static final double kClimberSpeed = 0.8;
