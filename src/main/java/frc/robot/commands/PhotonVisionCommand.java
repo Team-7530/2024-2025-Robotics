@@ -27,31 +27,32 @@ public class PhotonVisionCommand extends Command {
   @Override
   public void execute() {
 
-    if (!RobotState.isEnabled()) {
-      // Correct pose estimate with vision measurements
-      var visionEst = vision.getEstimatedGlobalPose();
-      visionEst.ifPresent(
-          est -> {
-            drivetrain.addVisionMeasurement(
-                est.estimatedPose.toPose2d(),
-                Utils.fpgaToCurrentTime(est.timestampSeconds),
-                vision.getEstimationStdDevs());
-          });
-
-      if (USE_LIMELIGHT) {
-        var limelightEst = vision.getVisionMeasurement_MT2(drivetrain.getState().Pose);
-        limelightEst.ifPresent(
+    // if (!RobotState.isEnabled()) {
+      if (!USE_LIMELIGHT) {
+        // Correct pose estimate with vision measurements
+        var visionEst = vision.getEstimatedGlobalPose();
+        visionEst.ifPresent(
+            est -> {
+              drivetrain.addVisionMeasurement(
+                  est.estimatedPose.toPose2d(),
+                  Utils.fpgaToCurrentTime(est.timestampSeconds),
+                  vision.getEstimationStdDevs());
+            });
+        } else {
+          var limelightEst = vision.getVisionMeasurement_MT2(drivetrain.getState().Pose);
+          limelightEst.ifPresent(
             est -> {
               if (est.tagCount >= 1) {
                 if (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond)) {
                   drivetrain.addVisionMeasurement(
                     est.pose,
-                    est.timestampSeconds, 
-                    vision.getEstimationStdDevs());
+                    Utils.fpgaToCurrentTime(est.timestampSeconds), 
+                    kSingleTagStdDevs);
+                    // vision.getEstimationStdDevs());
                 }
               }
           });
       }
-    }
+    // }
   }
 }
