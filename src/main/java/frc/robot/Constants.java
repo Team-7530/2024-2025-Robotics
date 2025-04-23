@@ -26,15 +26,15 @@ public final class Constants {
 
   public static final class Vision {
 
-    public static final boolean USE_LIMELIGHT = false;
+    public static final boolean USE_LIMELIGHT = true;
     public static final String LIMELIGHTNAME = "limelight";
     public static final String LIMELIGHTURL = "limelight.local";
     public static final String PHOTONVISIONURL = "photonvision.local";
 
     public static final List<String> kCameraName = List.of(
-      "OV9281"
+      // "OV9281",
       // "OV9281-2"
-      // LIMELIGHTNAME
+     LIMELIGHTNAME
     );
 
     // Cam mounted - x = +toward front, 0 center, -toward rear in meters.
