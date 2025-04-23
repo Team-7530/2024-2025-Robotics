@@ -15,10 +15,11 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WristConstants;
+import frc.robot.sim.PhysicsSim;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -36,9 +37,11 @@ public class WristSubsystem extends SubsystemBase {
   private boolean m_isTeleop = true;
 
   public WristSubsystem() {
-
     initEncoderConfigs();
     initWristConfigs();
+
+    if (RobotBase.isSimulation()) 
+      initSimulation();
   }
 
   private void initWristConfigs() {
@@ -104,6 +107,11 @@ public class WristSubsystem extends SubsystemBase {
     m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble());
   }
 
+  private void initSimulation() {
+    PhysicsSim.getInstance().addTalonFX(m_wristMotor, m_wristEncoder, WristConstants.kWristGearRatio, 0.001);
+    m_wristEncoder.setPosition(0);
+  }
+
   @Override
   public void periodic() {
     updateSmartDashboard();
@@ -133,7 +141,7 @@ public class WristSubsystem extends SubsystemBase {
    * Returns true if motor is at target position or within tolerance range
    */
   public boolean isAtPosition() {
-    return MathUtil.isNear(wristTargetPosition, this.getPosition(),  POSITION_TOLERANCE);
+    return MathUtil.isNear(wristTargetPosition, this.getPosition(), POSITION_TOLERANCE);
   }
 
   /**
@@ -168,9 +176,9 @@ public class WristSubsystem extends SubsystemBase {
 
     if (USE_POSITIONCONTROL) {
       if (wspeed != 0.0) {
-        wristTargetPosition = MathUtil.clamp(this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor),
-                                  WristConstants.kWristPositionMin, 
-                                  WristConstants.kWristPositionMax);
+        wristTargetPosition = MathUtil.clamp(this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor), 
+                                             WristConstants.kWristPositionMin, 
+                                             WristConstants.kWristPositionMax);
         m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
       }
     } else {

@@ -56,10 +56,6 @@ public class IntakeSubsystem extends SubsystemBase {
     configs.Slot0.kI = IntakeConstants.intakeMotorTorqueKI;
     configs.Slot0.kD = IntakeConstants.intakeMotorTorqueKD;
 
-    configs.MotionMagic.MotionMagicCruiseVelocity = IntakeConstants.MMagicCruiseVelocity;
-    configs.MotionMagic.MotionMagicAcceleration = IntakeConstants.MMagicAcceleration;
-    configs.MotionMagic.MotionMagicJerk = IntakeConstants.MMagicJerk;
-
     configs.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.RemoteCANrange;
     configs.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
     configs.HardwareLimitSwitch.ReverseLimitRemoteSensorID = m_RangeSensor.getDeviceID();

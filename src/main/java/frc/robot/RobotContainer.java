@@ -17,11 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.*;
 
 /**
@@ -47,9 +47,7 @@ public class RobotContainer {
   public final PowerDistribution power = new PowerDistribution();
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final VisionSubsystem vision = new VisionSubsystem();
-  public final ArmSubsystem arm = new ArmSubsystem();
-  public final WristSubsystem wrist = new WristSubsystem();
-  public final IntakeSubsystem intake = new IntakeSubsystem();
+  public final ArmWristSubsystem armwrist = new ArmWristSubsystem();
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   /* Path follower */
@@ -157,15 +155,15 @@ public class RobotContainer {
     //         new PathOnTheFlyCommand(
     //             drivetrain, new Pose2d(13.85, 2.67, Rotation2d.fromDegrees(124))));
 
-    oi.getAButton().onTrue(intake.intakeCommand());
-    oi.getXButton().onTrue(intake.outtakeL2Command());
-    oi.getBButton().onTrue(intake.outtakeL1Command());
-    oi.getYButton().onTrue(new CruisePositionCommand(arm, wrist));
+    oi.getAButton().onTrue(armwrist.intake.intakeCommand());
+    oi.getXButton().onTrue(armwrist.intake.outtakeL2Command());
+    oi.getBButton().onTrue(armwrist.intake.outtakeL1Command());
+    oi.getYButton().onTrue(armwrist.cruisePositionCommand());
 
-    oi.getPOVUp().onTrue(new GetCoralPositionCommand(arm, wrist));
-    oi.getPOVDown().onTrue(new ClimbPositionCommand(arm, wrist));
-    oi.getPOVLeft().onTrue(new L1ScoringPositionCommand(arm, wrist));
-    oi.getPOVRight().onTrue(new L2ScoringPositionCommand(arm, wrist));
+    oi.getPOVUp().onTrue(armwrist.getCoralPositionCommand());
+    oi.getPOVDown().onTrue(armwrist.climbPositionCommand());
+    oi.getPOVLeft().onTrue(armwrist.l1ScoringPositionCommand());
+    oi.getPOVRight().onTrue(armwrist.l2ScoringPositionCommand());
 
     oi.getLeftBumper().onTrue(climber.clampCommand(false));
     oi.getRightBumper().onTrue(climber.clampCommand(true));
@@ -197,22 +195,21 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, oi));
 
-    arm.setDefaultCommand(Commands.run(() -> arm.teleop(-oi.getLeftThumbstickY()), arm));
-    wrist.setDefaultCommand(Commands.run(() -> wrist.teleop(oi.getLeftThumbstickX()), wrist));
+    armwrist.setDefaultCommand(Commands.run(() -> armwrist.teleop(-oi.getLeftThumbstickY(), oi.getLeftThumbstickX()), armwrist));
     climber.setDefaultCommand(
         Commands.run(() -> climber.teleopClimb(-oi.getRightThumbstickY()), climber));
     vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
   }
 
   private void configureAutoPaths() {
-    NamedCommands.registerCommand("Intake", intake.intakeCommand());
-    NamedCommands.registerCommand("Outtake", intake.outtakeL2Command());
-    NamedCommands.registerCommand("OuttakeSpin", intake.outtakeL1Command());
-    NamedCommands.registerCommand("SetClimbPos", new ClimbPositionCommand(arm, wrist));
-    NamedCommands.registerCommand("SetCruisePos", new CruisePositionCommand(arm, wrist));
-    NamedCommands.registerCommand("GetCoral", new GetCoralPositionCommand(arm, wrist));
-    NamedCommands.registerCommand("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
-    NamedCommands.registerCommand("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
+    NamedCommands.registerCommand("Intake", armwrist.intake.intakeCommand());
+    NamedCommands.registerCommand("Outtake", armwrist.intake.outtakeL2Command());
+    NamedCommands.registerCommand("OuttakeSpin", armwrist.intake.outtakeL1Command());
+    NamedCommands.registerCommand("SetClimbPos", armwrist.climbPositionCommand());
+    NamedCommands.registerCommand("SetCruisePos", armwrist.cruisePositionCommand());
+    NamedCommands.registerCommand("GetCoral", armwrist.getCoralPositionCommand());
+    NamedCommands.registerCommand("SetL1Score", armwrist.l1ScoringPositionCommand());
+    NamedCommands.registerCommand("SetL2Score", armwrist.l2ScoringPositionCommand());
     NamedCommands.registerCommand("DoL2Score", new L2ScoringCommand(this));
     NamedCommands.registerCommand("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
   }
@@ -221,14 +218,14 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     SmartDashboard.putData("AutoChooser", autoChooser);
-    SmartDashboard.putData("Intake", intake.intakeCommand());
-    SmartDashboard.putData("Outtake", intake.outtakeL2Command());
-    SmartDashboard.putData("OuttakeSpin", intake.outtakeL1Command());
-    SmartDashboard.putData("GetCoral", new GetCoralPositionCommand(arm, wrist));
-    SmartDashboard.putData("SetClimbPos", new ClimbPositionCommand(arm, wrist));
-    SmartDashboard.putData("SetCruisePos", new CruisePositionCommand(arm, wrist));
-    SmartDashboard.putData("SetL1Score", new L1ScoringPositionCommand(arm, wrist));
-    SmartDashboard.putData("SetL2Score", new L2ScoringPositionCommand(arm, wrist));
+    SmartDashboard.putData("Intake", armwrist.intake.intakeCommand());
+    SmartDashboard.putData("Outtake", armwrist.intake.outtakeL2Command());
+    SmartDashboard.putData("OuttakeSpin", armwrist.intake.outtakeL1Command());
+    SmartDashboard.putData("GetCoral", armwrist.getCoralPositionCommand());
+    SmartDashboard.putData("SetClimbPos", armwrist.climbPositionCommand());
+    SmartDashboard.putData("SetCruisePos", armwrist.cruisePositionCommand());
+    SmartDashboard.putData("SetL1Score", armwrist.l1ScoringPositionCommand());
+    SmartDashboard.putData("SetL2Score", armwrist.l2ScoringPositionCommand());
     SmartDashboard.putData("ClimbToFull", climber.climbToFullPositionCommand());
     SmartDashboard.putData("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
     SmartDashboard.putData("L2Backup", drivetrain.driveDistanceCommand(new Translation2d(ScoringConstants.L2BackupAmountX,
@@ -254,6 +251,8 @@ public class RobotContainer {
     // Using max(0.1, voltage) here isn't a *physically correct* solution,
     // but it avoids problems with battery voltage measuring 0.
     RoboRioSim.setVInVoltage(Math.max(0.1, RobotController.getBatteryVoltage()));
+
+    PhysicsSim.getInstance().run();
   }
 
   public void autonomousInit() {

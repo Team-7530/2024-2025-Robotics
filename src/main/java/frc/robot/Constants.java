@@ -193,10 +193,6 @@ public final class Constants {
     public static final double intakeMotorTorqueKI = 0.2; // error of 1 rps incr by 0.2 amps per sec
     public static final double intakeMotorTorqueKD = 0.001; // 1000 rps^2 incr 1 amp output
 
-    public static final double MMagicCruiseVelocity = 40;
-    public static final double MMagicAcceleration = 80;
-    public static final double MMagicJerk = 800;
-
     public static final double intakeVelocity = -3.0;
     public static final double outtakeL1VelocityL = 2.0;
     public static final double outtakeL1VelocityR = 5.0;

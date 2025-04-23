@@ -15,10 +15,11 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
+import frc.robot.sim.PhysicsSim;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -36,9 +37,11 @@ public class ArmSubsystem extends SubsystemBase {
 
 
   public ArmSubsystem() {
-
     initEncoderConfigs();
     initArmConfigs();
+
+    if (RobotBase.isSimulation()) 
+      initSimulation();
   }
   
   private void initArmConfigs() {
@@ -81,7 +84,6 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
-
   private void initEncoderConfigs() {
     CANcoderConfiguration configs = new CANcoderConfiguration();
     configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
@@ -94,6 +96,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
     // set starting position to current absolute position
     m_armEncoder.setPosition(m_armEncoder.getAbsolutePosition().getValueAsDouble());
+  }
+
+  private void initSimulation() {
+    PhysicsSim.getInstance().addTalonFX(m_armMotor, m_armEncoder, ArmConstants.kArmGearRatio, 0.001);
+    m_armEncoder.setPosition(0.25);
   }
 
   @Override
@@ -121,6 +128,12 @@ public class ArmSubsystem extends SubsystemBase {
     return m_armEncoder.getPosition().getValueAsDouble();
   }
 
+  /**
+   * Returns the arm rotor position as a double
+   */
+  public double getRotorPosition() {
+    return m_armMotor.getRotorPosition().getValueAsDouble();
+  }
 
   /**
    * Returns true if arm is at the target position or is within the error tolerance range
