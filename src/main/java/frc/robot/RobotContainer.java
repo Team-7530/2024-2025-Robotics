@@ -198,7 +198,7 @@ public class RobotContainer {
     armwrist.setDefaultCommand(Commands.run(() -> armwrist.teleop(-oi.getLeftThumbstickY(), oi.getLeftThumbstickX()), armwrist));
     climber.setDefaultCommand(
         Commands.run(() -> climber.teleopClimb(-oi.getRightThumbstickY()), climber));
-    vision.setDefaultCommand(new PhotonVisionCommand(vision, drivetrain));
+    vision.setDefaultCommand(vision.updateGlobalPoseCommand(drivetrain));
   }
 
   private void configureAutoPaths() {

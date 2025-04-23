@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import java.util.List;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -31,12 +32,6 @@ public final class Constants {
     public static final String LIMELIGHTURL = "limelight.local";
     public static final String PHOTONVISIONURL = "photonvision.local";
 
-    public static final List<String> kCameraName = List.of(
-      // "OV9281",
-      // "OV9281-2"
-     LIMELIGHTNAME
-    );
-
     // Cam mounted - x = +toward front, 0 center, -toward rear in meters.
     //               y = +left of center, 0 center, -right of center in meters
     //               z = +up from base of robot in meters
@@ -45,10 +40,10 @@ public final class Constants {
     // tilt up 45
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
-    public static final List<Transform3d> kRobotToCam = List.of(
-        new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0))
-    //  new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0))
-    //  new Transform3d(new Translation3d(-0.23, 0.3, 0), new Rotation3d(0, 0, Math.PI))
+    public static final List<Pair<String, Transform3d>> kCamerasList = List.of(
+      // Pair.of("OV9281", new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0))),
+      // Pair.of("OV9281-2", new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0))),
+      Pair.of(LIMELIGHTNAME, new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0)))
     );
 
     // The standard deviations of our vision estimated poses, which affect correction rate

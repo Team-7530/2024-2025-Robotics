@@ -39,6 +39,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -76,9 +77,9 @@ public class VisionSubsystem implements Subsystem {
 
   public VisionSubsystem() {
 
-    for (int cam = 0; cam < kCameraName.size(); cam++) {
-      String name = kCameraName.get(cam);
-      Transform3d pose = kRobotToCam.get(cam);
+    for (var cam : kCamerasList) {
+      String name = cam.getFirst();
+      Transform3d pose = cam.getSecond();
 
       if (name.toLowerCase().startsWith("limelight")) {
         limelightCameras.add(name);
@@ -295,34 +296,36 @@ public class VisionSubsystem implements Subsystem {
   }
 
   public void updateGlobalPose(CommandSwerveDrivetrain drivetrain) {
-    // Correct pose estimate with vision measurements
-    var visionEst = this.getEstimatedGlobalPose();
-    visionEst.ifPresent(
-        est -> {
-          drivetrain.addVisionMeasurement(
-              est.estimatedPose.toPose2d(),
-              Utils.fpgaToCurrentTime(est.timestampSeconds),
-              this.getEstimationStdDevs());
-        });
-
-    if (USE_LIMELIGHT) {
-      var limelightEst = this.getVisionMeasurement_MT2(drivetrain.getState().Pose);
-      limelightEst.ifPresent(
-          est -> {
-            if (est.tagCount >= 1) {
-              if (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond)) {
-                drivetrain.addVisionMeasurement(
-                  est.pose,
-                  est.timestampSeconds, 
+    if (!RobotState.isEnabled()) {
+      if (!USE_LIMELIGHT) {
+        // Correct pose estimate with vision measurements
+        var visionEst = this.getEstimatedGlobalPose();
+        visionEst.ifPresent(
+            est -> {
+              drivetrain.addVisionMeasurement(
+                  est.estimatedPose.toPose2d(),
+                  Utils.fpgaToCurrentTime(est.timestampSeconds),
                   this.getEstimationStdDevs());
+            });
+        } else {
+          var limelightEst = this.getVisionMeasurement_MT2(drivetrain.getState().Pose);
+          limelightEst.ifPresent(
+            est -> {
+              if (est.tagCount >= 1) {
+                if (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond)) {
+                  drivetrain.addVisionMeasurement(
+                    est.pose,
+                    Utils.fpgaToCurrentTime(est.timestampSeconds), 
+                    this.getEstimationStdDevs());
+                }
               }
-            }
-        });
+          });
+      }
     }
   }
 
   public Command updateGlobalPoseCommand(CommandSwerveDrivetrain drivetrain) {
-    return runOnce(() -> this.updateGlobalPose(drivetrain))
+    return run(() -> this.updateGlobalPose(drivetrain))
     .withName("UpdateGlobalPoseCommand");
   }    
 
