@@ -151,15 +151,12 @@ public final class Constants {
     public static final double MMagicJerk = 0;
     public static final double MMagicExpo_kV = 4.8; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 2.4; // Use a slower kA of 0.1 V/(rps/s)
+    public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
+    public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
     public static final double kWristPositionMax = 0.5; //0.25;
     public static final double kWristPositionMin = -0.05; //-0.3;
 
-    public static final double kTargetWristHigh = 0.5; //0.25;
-    public static final double kTargetWristLow = -0.05; //-0.3;
-
-    public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
-    public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
     public static final double kWristTeleopSpeed = 0.1;
     public static final double kWristTeleopFactor = 0.05;
   }
@@ -207,7 +204,7 @@ public final class Constants {
     public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
     public static final int CLIMBMOTORFOLLOWER_ID = 42;
-    public static final int CLIMBENCODER_ID = 43; // Thrubore plugged into DIO 0
+    public static final int CLIMBENCODER_ID = 43; 
     public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
@@ -234,7 +231,7 @@ public final class Constants {
     public static final double climbMotorKS = 0.0;
     public static final double climbMotorKV = 0.0;
     public static final double climbMotorKA = 0.0;
-    public static final double climbMotorKP = 4.0;
+    public static final double climbMotorKP = 10.0;
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 

@@ -78,7 +78,7 @@ public class Mechanisms {
     ccArm.setAngle(armEncoderPos * 360);
     ccWrist.setAngle(wristEncoderPos * 360);
     rotorClimb.setAngle(climbRotorPos * 360);
-    ccClimb.setAngle(90 + climbEncoderPos * 360);
+    ccClimb.setAngle(100 + climbEncoderPos * 360);
     SmartDashboard.putData("mech2d", mech); // Creates mech2d in SmartDashboard
   }
 }

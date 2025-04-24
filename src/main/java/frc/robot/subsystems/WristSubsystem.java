@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
@@ -109,6 +110,11 @@ public class WristSubsystem extends SubsystemBase {
 
   private void initSimulation() {
     PhysicsSim.getInstance().addTalonFX(m_wristMotor, m_wristEncoder, WristConstants.kWristGearRatio, 0.001);
+
+    CANcoderConfiguration configs = new CANcoderConfiguration();
+    configs.MagnetSensor.SensorDirection = SensorDirectionValue.valueOf(WristConstants.kWristInverted.value);
+    m_wristEncoder.getConfigurator().apply(configs);
+
     m_wristEncoder.setPosition(0);
   }
 
