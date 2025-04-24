@@ -17,10 +17,12 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.sim.PhysicsSim;
 
 public class ClimberSubsystem implements Subsystem {
 
@@ -46,6 +48,9 @@ public class ClimberSubsystem implements Subsystem {
   public ClimberSubsystem() {
     initEncoderConfigs();
     initClimberConfigs();
+
+    if (RobotBase.isSimulation()) 
+      initSimulation();
   }
 
   private void initClimberConfigs() {
@@ -114,6 +119,11 @@ public class ClimberSubsystem implements Subsystem {
     m_ClimbEncoder.setPosition(m_ClimbEncoder.getAbsolutePosition().getValueAsDouble());
   }
 
+  private void initSimulation() {
+    PhysicsSim.getInstance().addTalonFX(m_ClimbMotor, m_ClimbEncoder, ClimberConstants.kClimberGearRatio, 0.001);
+    m_ClimbEncoder.setPosition(0);
+  }
+
   @Override
   public void periodic() {
     updateSmartDashboard();
@@ -166,6 +176,13 @@ public class ClimberSubsystem implements Subsystem {
    */
   public double getPosition() {
     return m_ClimbEncoder.getPosition().getValueAsDouble();
+  }
+
+  /**
+   * Returns the current climb rotor position as a double
+   */
+  public double getRotorPosition() {
+    return m_ClimbMotor.getRotorPosition().getValueAsDouble();
   }
 
   /**

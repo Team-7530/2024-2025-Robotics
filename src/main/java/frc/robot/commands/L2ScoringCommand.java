@@ -12,7 +12,7 @@ public class L2ScoringCommand extends SequentialCommandGroup {
   public L2ScoringCommand(RobotContainer rc) {
     setName("L2ScoringCommand");
     addCommands(
-        rc.armwrist.l2ScoringPositionCommand(),
-        rc.armwrist.intake.outtakeL2Command());
+        rc.l2ScoringPositionCommand(),
+        rc.intake.outtakeL2Command());
   }
 }
