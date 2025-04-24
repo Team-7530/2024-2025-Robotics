@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class ClimberSubsystem implements Subsystem {
@@ -33,6 +34,7 @@ public class ClimberSubsystem implements Subsystem {
   private final CANcoder m_ClimbEncoder =
       new CANcoder(ClimberConstants.CLIMBENCODER_ID, ClimberConstants.CANBUS);
   private final Servo m_ClimberClampServo = new Servo(ClimberConstants.CLAMPSERVO_ID);
+  private final Servo m_ClimberClampServoFollower = new Servo(ClimberConstants.CLAMPSERVOFOLLOWER_ID);
 
   private final PositionVoltage m_positionRequest =
       new PositionVoltage(0).withSlot(0);
@@ -103,6 +105,7 @@ public class ClimberSubsystem implements Subsystem {
     /* Follower is opposite, so we need to invert */
     m_ClimbMotorFollower.setControl(new Follower(m_ClimbMotor.getDeviceID(), true));    
     m_ClimberClampServo.set(ClimberConstants.kUnclampedPosition);
+    m_ClimberClampServoFollower.set(ClimberConstants.kUnclampedPositionFollower);
   }
 
   private void initEncoderConfigs() {
@@ -246,7 +249,9 @@ public class ClimberSubsystem implements Subsystem {
 
     m_ClimberClampServo.set(
         m_isClamped ? ClimberConstants.kClampedPosition : ClimberConstants.kUnclampedPosition);
-  }
+    m_ClimberClampServoFollower.set(
+          m_isClamped ? ClimberConstants.kClampedPositionFollower : ClimberConstants.kUnclampedPositionFollower);
+    }
 
   /**
    * Returns true if clamp is closed, false if open

@@ -206,6 +206,7 @@ public final class Constants {
     public static final int CLIMBMOTORFOLLOWER_ID = 42;
     public static final int CLIMBENCODER_ID = 43; 
     public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
+    public static final int CLAMPSERVOFOLLOWER_ID = 1; // Rachet servo plugged into PWM 1
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue kClimberFollowerInverted = InvertedValue.Clockwise_Positive;
@@ -245,8 +246,11 @@ public final class Constants {
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
-    public static final double kUnclampedPosition = 0.23;
-    public static final double kClampedPosition = 0.5;
+    public static final double kUnclampedPosition = 0.6;
+    public static final double kClampedPosition = 0.35;
+
+    public static final double kUnclampedPositionFollower = 0.6;
+    public static final double kClampedPositionFollower = 0.35;
 
     public static final double kClimberPositionMin = kClimberEncoderMin;
     public static final double kClimberPositionMax = kClimberEncoderMax;
