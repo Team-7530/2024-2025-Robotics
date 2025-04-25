@@ -246,10 +246,10 @@ public final class Constants {
     public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
     public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
 
-    public static final double kUnclampedPosition = 0.6;
-    public static final double kClampedPosition = 0.35;
+    public static final double kUnclampedPosition = 0.35;
+    public static final double kClampedPosition = 0.6;
 
-    public static final double kUnclampedPositionFollower = 0.6;
+    public static final double kUnclampedPositionFollower = 0.6; //Min and Max opposite of Original
     public static final double kClampedPositionFollower = 0.35;
 
     public static final double kClimberPositionMin = kClimberEncoderMin;
