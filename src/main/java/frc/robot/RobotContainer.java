@@ -6,8 +6,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
-
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -40,7 +38,7 @@ public class RobotContainer {
   // private final SwerveRequest.RobotCentric forwardStraight =
   //     new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  private final Telemetry logger = new Telemetry(DriveTrainConstants.maxSpeed);
+  private final Telemetry logger = new Telemetry(DriveTrainConstants.maxSpeed.vxMetersPerSecond);
 
   /* Operator Interface */
   public OperatorInterface oi = new OperatorInterface() {};
@@ -71,7 +69,7 @@ public class RobotContainer {
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
     LiveWindow.disableAllTelemetry();
 
-    drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate);
+    drivetrain.setMaxSpeeds(DriveTrainConstants.cruiseSpeed);
     configureAutoPaths();
     configureAutoCommands();
     configureTelemetry();
@@ -102,31 +100,12 @@ public class RobotContainer {
     oi.getXStanceButton().whileTrue(drivetrain.applyRequest(() -> brake));
 
     oi.driveScalingUp()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    drivetrain.setMaxSpeeds(
-                        DriveTrainConstants.maxSpeed, DriveTrainConstants.maxAngularRate)));
+        .onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.maxSpeed)));
     oi.driveScalingDown()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    drivetrain.setMaxSpeeds(
-                        DriveTrainConstants.maxSpeed * 0.6,
-                        DriveTrainConstants.maxAngularRate * 0.6)));
+        .onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.cruiseSpeed)));
     oi.driveScalingSlow()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    drivetrain.setMaxSpeeds(
-                        DriveTrainConstants.maxSpeed * 0.1,
-                        DriveTrainConstants.maxAngularRate * 0.2)))
-        .onFalse(
-            Commands.runOnce(
-                () ->
-                    drivetrain.setMaxSpeeds(
-                        DriveTrainConstants.maxSpeed * 0.6,
-                        DriveTrainConstants.maxAngularRate * 0.6)));
+        .onTrue(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.slowSpeed)))
+        .onFalse(Commands.runOnce(() -> drivetrain.setMaxSpeeds(DriveTrainConstants.cruiseSpeed)));
 
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
@@ -177,8 +156,8 @@ public class RobotContainer {
     oi.getLeftTrigger().onTrue(climber.climbToStartPositionCommand());
     oi.getRightTrigger().onTrue(climber.climbToFullPositionCommand());
 
-//    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
-//    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
+    //    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
+    //    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
   }
 
   /**
@@ -217,7 +196,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("GetCoral", this.getCoralPositionCommand());
     NamedCommands.registerCommand("SetL1Score", this.l1ScoringPositionCommand());
     NamedCommands.registerCommand("SetL2Score", this.l2ScoringPositionCommand());
-    NamedCommands.registerCommand("DoL2Score", new L2ScoringCommand(this));
     NamedCommands.registerCommand("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
   }
 
@@ -235,14 +213,17 @@ public class RobotContainer {
     SmartDashboard.putData("SetL2Score", this.l2ScoringPositionCommand());
     SmartDashboard.putData("ClimbToFull", climber.climbToFullPositionCommand());
     SmartDashboard.putData("UpdatePose", vision.updateGlobalPoseCommand(drivetrain));
-    SmartDashboard.putData("L2Backup", drivetrain.driveDistanceCommand(new Translation2d(ScoringConstants.L2BackupAmountX,
-                                                                                          ScoringConstants.L2BackupAmountY), 
-                                                                                          0.5));
-    SmartDashboard.putData("DoL2Score", new L2ScoringCommand(this));
+    SmartDashboard.putData(
+        "L2Backup", drivetrain.driveDistanceCommand(ScoringConstants.L2BackupAmount, 0.5));
   }
 
   public void robotPeriodic() {
-    mechanism.update(arm.getRotorPosition(), arm.getPosition(), wrist.getPosition(), climber.getRotorPosition(), climber.getPosition());
+    mechanism.update(
+        arm.getRotorPosition(),
+        arm.getPosition(),
+        wrist.getPosition(),
+        climber.getRotorPosition(),
+        climber.getPosition());
   }
 
   public void simulationInit() {}
@@ -303,39 +284,49 @@ public class RobotContainer {
   }
 
   public Command armWristToPositionCommand(double armPos, double wristPos) {
-    return new SequentialCommandGroup(arm.armToPositionCommand(armPos), wrist.wristToPositionCommand(wristPos))
+    return new SequentialCommandGroup(
+            arm.armToPositionCommand(armPos), wrist.wristToPositionCommand(wristPos))
         .withName("ArmWristToPositionCommand")
         .withTimeout(5.0);
   }
 
   public Command cruisePositionCommand() {
-    return armWristToPositionCommand(ScoringConstants.CruiseArmPosition, ScoringConstants.CruiseWristPosition)
+    return armWristToPositionCommand(
+            ScoringConstants.CruiseArmPosition, ScoringConstants.CruiseWristPosition)
         .withName("cruisePositionCommand")
         .withTimeout(5.0);
   }
+
   public Command getCoralPositionCommand() {
-    return armWristToPositionCommand(ScoringConstants.LoadArmPosition, ScoringConstants.LoadWristPosition)
+    return armWristToPositionCommand(
+            ScoringConstants.LoadArmPosition, ScoringConstants.LoadWristPosition)
         .withName("getCoralPositionCommand")
         .withTimeout(5.0);
   }
+
   public Command l1ScoringPositionCommand() {
-    return armWristToPositionCommand(ScoringConstants.L1ArmPosition, ScoringConstants.L1WristPosition)
+    return armWristToPositionCommand(
+            ScoringConstants.L1ArmPosition, ScoringConstants.L1WristPosition)
         .withName("l1ScoringPositionCommand")
         .withTimeout(5.0);
   }
+
   public Command l2ScoringPositionCommand() {
-    return armWristToPositionCommand(ScoringConstants.L2ArmPosition, ScoringConstants.L2WristPosition)
+    return armWristToPositionCommand(
+            ScoringConstants.L2ArmPosition, ScoringConstants.L2WristPosition)
         .withName("l2ScoringPositionCommand")
         .withTimeout(5.0);
   }
+
   public Command climbPositionCommand() {
-    return armWristToPositionCommand(ScoringConstants.ClimbArmPosition, ScoringConstants.ClimbWristPosition)
+    return armWristToPositionCommand(
+            ScoringConstants.ClimbArmPosition, ScoringConstants.ClimbWristPosition)
         .withName("climbPositionCommand")
         .withTimeout(5.0)
-        .finallyDo(() -> {
-          arm.stop();
-          wrist.stop();
-        });
+        .finallyDo(
+            () -> {
+              arm.stop();
+              wrist.stop();
+            });
   }
-
 }

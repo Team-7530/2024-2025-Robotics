@@ -104,16 +104,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Sets the motors Target velocity
+   *
    * @param Lvelocity left motors target velocity
    * @param Rvelocity Right motors target velocity
    */
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
-    m_LIntakeMotor.setControl(m_velocityRequest.withVelocity(Lvelocity * IntakeConstants.kIntakeGearRatio));
-    m_RIntakeMotor.setControl(m_velocityRequest.withVelocity(Rvelocity * IntakeConstants.kIntakeGearRatio));
+    m_LIntakeMotor.setControl(
+        m_velocityRequest.withVelocity(Lvelocity * IntakeConstants.kIntakeGearRatio));
+    m_RIntakeMotor.setControl(
+        m_velocityRequest.withVelocity(Rvelocity * IntakeConstants.kIntakeGearRatio));
   }
 
   /**
    * Sets intake motor speed
+   *
    * @param speed double
    */
   public void setIntakeSpeed(double speed) {
@@ -121,45 +125,33 @@ public class IntakeSubsystem extends SubsystemBase {
     m_RIntakeMotor.setControl(m_manualRequest.withOutput(speed));
   }
 
-  /**
-   * Activates motor brakes
-   */
+  /** Activates motor brakes */
   public void intakeStop() {
     m_LIntakeMotor.setControl(m_brake);
     m_RIntakeMotor.setControl(m_brake);
   }
 
-  /**
-   * Sets motors to constants intake speed
-   */
+  /** Sets motors to constants intake speed */
   public void intakeIn() {
     this.setIntakeVelocity(IntakeConstants.intakeVelocity, IntakeConstants.intakeVelocity);
   }
 
-  /**
-   * Sets motors to constants out speed
-   */
+  /** Sets motors to constants out speed */
   public void intakeOut() {
     this.setIntakeVelocity(IntakeConstants.outtakeL2Velocity, IntakeConstants.outtakeL2Velocity);
   }
 
-  /**
-   * Outputs coral but spins it for L1 scoring
-   */
+  /** Outputs coral but spins it for L1 scoring */
   public void intakeOutSpin() {
     this.setIntakeVelocity(IntakeConstants.outtakeL1VelocityL, IntakeConstants.outtakeL1VelocityR);
   }
 
-  /**
-   * Returns true if range sensor detects coral
-   */
+  /** Returns true if range sensor detects coral */
   public boolean hasCoralLoaded() {
     return m_RangeSensor.getIsDetected().getValue();
   }
 
-  /**
-   * Teleop controls for Intake
-   */
+  /** Teleop controls for Intake */
   public void teleop(double intake) {
     intake = MathUtil.applyDeadband(intake, STICK_DEADBAND);
 
@@ -169,9 +161,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Updates the Smart Dashboard
-   */
+  /** Updates the Smart Dashboard */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("LIntake Speed", m_LIntakeMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("RIntake Speed", m_RIntakeMotor.getVelocity().getValueAsDouble());
@@ -182,25 +172,24 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command intakeCommand() {
-  return run(() -> this.intakeIn())
-    .withName("IntakeCommand")
-    .until(this::hasCoralLoaded)
-    .withTimeout(5.0)
-    .finallyDo(() -> this.intakeStop());
+    return run(() -> this.intakeIn())
+        .withName("IntakeCommand")
+        .until(this::hasCoralLoaded)
+        .withTimeout(5.0)
+        .finallyDo(() -> this.intakeStop());
   }
 
   public Command outtakeL1Command() {
     return run(() -> this.intakeOutSpin())
-      .withName("OuttakeL1Command")
-      .withTimeout(1.0)
-      .finallyDo(() -> this.intakeStop());
-    }
+        .withName("OuttakeL1Command")
+        .withTimeout(1.0)
+        .finallyDo(() -> this.intakeStop());
+  }
 
   public Command outtakeL2Command() {
     return run(() -> this.intakeOut())
-      .withName("OuttakeL2Command")
-      .withTimeout(1.0)
-      .finallyDo(() -> this.intakeStop());
-    }
-    
+        .withName("OuttakeL2Command")
+        .withTimeout(1.0)
+        .finallyDo(() -> this.intakeStop());
+  }
 }

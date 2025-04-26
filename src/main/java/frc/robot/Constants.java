@@ -5,17 +5,19 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import java.util.List;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.generated.TunerConstants;
+import java.util.List;
 
 public final class Constants {
 
@@ -40,11 +42,15 @@ public final class Constants {
     // tilt up 45
     //              yaw = rotate left/right around z axis. PI/4 = rotate camera to the left 45
     // degrees.
-    public static final List<Pair<String, Transform3d>> kCamerasList = List.of(
-      // Pair.of("OV9281", new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0))),
-      // Pair.of("OV9281-2", new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new Rotation3d(0, 0, 0))),
-      Pair.of(LIMELIGHTNAME, new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0)))
-    );
+    public static final List<Pair<String, Transform3d>> kCamerasList =
+        List.of(
+            // Pair.of("OV9281", new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0,
+            // 0, 0))),
+            // Pair.of("OV9281-2", new Transform3d(new Translation3d(0.228, -0.3048, 0.16), new
+            // Rotation3d(0, 0, 0))),
+            Pair.of(
+                LIMELIGHTNAME,
+                new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0))));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -54,31 +60,38 @@ public final class Constants {
 
   public static final class DriveTrainConstants {
     // Maximum Speed - Meters per Second
-    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-
     // max angular velocity - Rotations per Second
     // 3/4 of a rotation per second
-    public static final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static final ChassisSpeeds maxSpeed =
+        new ChassisSpeeds(
+            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+            RotationsPerSecond.of(0.75).in(RadiansPerSecond));
+    public static final ChassisSpeeds cruiseSpeed = maxSpeed.times(0.6);
+    public static final ChassisSpeeds slowSpeed =
+        new ChassisSpeeds(
+            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1,
+            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1,
+            RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.2);
   }
 
   public static final class ScoringConstants {
     public static final double L1ArmPosition = 0.28;
-    public static final double L1WristPosition = -0.05; //-0.3;
+    public static final double L1WristPosition = -0.05;
 
     public static final double L2ArmPosition = 0.25;
-    public static final double L2WristPosition = 0.03; //-0.22;
+    public static final double L2WristPosition = 0.03;
 
     public static final double LoadArmPosition = 0.25;
-    public static final double LoadWristPosition = 0.125; //-0.125;
+    public static final double LoadWristPosition = 0.125;
 
     public static final double ClimbArmPosition = 0.405;
-    public static final double ClimbWristPosition = 0.45; //0.2;
+    public static final double ClimbWristPosition = 0.45;
 
     public static final double CruiseArmPosition = 0.405;
-    public static final double CruiseWristPosition = -0.05; //-0.3;
+    public static final double CruiseWristPosition = -0.05;
 
-    public static final double L2BackupAmountX = -0.3;
-    public static final double L2BackupAmountY = 0.0;
+    public static final Translation2d L2BackupAmount = new Translation2d(-0.3, 0.0);
   }
 
   public static final class ArmConstants {
@@ -130,7 +143,7 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = -0.161; //-0.03115;
+    public static final double kWristEncoderOffset = -0.161;
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
@@ -142,7 +155,7 @@ public final class Constants {
     public static final double wristMotorKS_slow = 0.0;
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
-    public static final double wristMotorKP = 35.0; // 70 2/27/25
+    public static final double wristMotorKP = 35.0; // 70
     public static final double wristMotorKP_slow = 35.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
@@ -154,8 +167,8 @@ public final class Constants {
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kWristPositionMax = 0.5; //0.25;
-    public static final double kWristPositionMin = -0.05; //-0.3;
+    public static final double kWristPositionMax = 0.5;
+    public static final double kWristPositionMin = -0.05;
 
     public static final double kWristTeleopSpeed = 0.1;
     public static final double kWristTeleopFactor = 0.05;
@@ -204,9 +217,9 @@ public final class Constants {
     public static final String CANBUS = "CANFD";
     public static final int CLIMBMOTOR_ID = 41;
     public static final int CLIMBMOTORFOLLOWER_ID = 42;
-    public static final int CLIMBENCODER_ID = 43; 
-    public static final int CLAMPSERVO_ID = 0; // Rachet servo plugged into PWM 0
-    public static final int CLAMPSERVOFOLLOWER_ID = 1; // Rachet servo plugged into PWM 1
+    public static final int CLIMBENCODER_ID = 43;
+    public static final int CLAMPSERVO_ID = 0; // Rachet servo 1 plugged into PWM 0
+    public static final int CLAMPSERVOFOLLOWER_ID = 1; // Rachet servo 2 plugged into PWM 1
 
     public static final InvertedValue kClimberInverted = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue kClimberFollowerInverted = InvertedValue.Clockwise_Positive;
@@ -215,12 +228,12 @@ public final class Constants {
         SensorDirectionValue.CounterClockwise_Positive;
 
     public static final double kClimberChainRatio = 28.0 / 10.0;
-    public static final double kClimberGearboxRatio = 48.0; // 1:100
-    public static final double kClimberGearRatio = 
+    public static final double kClimberGearboxRatio = 48.0; // 1:48
+    public static final double kClimberGearRatio =
         kClimberChainRatio * kClimberGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double kClimberEncoderOffset = 0.06275; // 0.90 + offset > 0.0
-    public static final double kClimberEncoderMin = 0.0;//.1 mi.29
+    public static final double kClimberEncoderOffset = 0.06275;
+    public static final double kClimberEncoderMin = 0.0;
     public static final double kClimberEncoderMax = 0.45;
 
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
@@ -249,7 +262,7 @@ public final class Constants {
     public static final double kUnclampedPosition = 0.35;
     public static final double kClampedPosition = 0.6;
 
-    public static final double kUnclampedPositionFollower = 0.6; //Min and Max opposite of Original
+    public static final double kUnclampedPositionFollower = 0.6; // Min and Max opposite of Original
     public static final double kClampedPositionFollower = 0.35;
 
     public static final double kClimberPositionMin = kClimberEncoderMin;

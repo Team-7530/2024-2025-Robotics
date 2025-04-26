@@ -144,5 +144,4 @@ public class DualHandheldOI extends SingleHandheldOI {
     }
     return result;
   }
-
 }

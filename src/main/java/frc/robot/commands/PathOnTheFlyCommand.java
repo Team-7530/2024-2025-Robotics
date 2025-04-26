@@ -14,9 +14,9 @@ public class PathOnTheFlyCommand extends Command {
 
   /** Creates a new driveToPose. */
 
-
   /**
    * Makes a new path towards a set position
+   *
    * @param drivetrain
    * @param targetPose Pose2d
    */

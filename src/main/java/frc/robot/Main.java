@@ -24,5 +24,5 @@ public final class Main {
   }
 }
 
-//link to the possible auto align program, uses limelite but could use photon
-//https://www.chiefdelphi.com/t/from-zero-to-auto-align-to-reef-tutorial-how-to-simply-auto-align-to-the-reef/494478
+// link to the possible auto align program, uses limelite but could use photon
+// https://www.chiefdelphi.com/t/from-zero-to-auto-align-to-reef-tutorial-how-to-simply-auto-align-to-the-reef/494478

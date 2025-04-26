@@ -15,7 +15,6 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -247,34 +246,41 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             Units.degreesToRadians(720));
 
     // Create the path using the waypoints created above
-    PathPlannerPath path = new PathPlannerPath(
-        PathPlannerPath.waypointsFromPoses(targetPose),
-        pathConstraints,
-        null, 
-        new GoalEndState(0.0, Rotation2d.fromDegrees(0)));
+    PathPlannerPath path =
+        new PathPlannerPath(
+            PathPlannerPath.waypointsFromPoses(targetPose),
+            pathConstraints,
+            null,
+            new GoalEndState(0.0, Rotation2d.fromDegrees(0)));
     path.preventFlipping = true;
 
     return AutoBuilder.followPath(path);
   }
 
   /**
-   * Returns a Command that drives the swerve drive to a specific distance relative to the robot's starting position at a given speed.
+   * Returns a Command that drives the swerve drive to a specific distance relative to the robot's
+   * starting position at a given speed.
    *
-   * @param distanceInMeters       the distance to drive in meters
+   * @param distanceInMeters the distance to drive in meters
    * @param speedInMetersPerSecond the speed at which to drive in meters per second
    * @return a Command that drives the swerve drive to a specific distance at a given speed
    */
-  public Command driveDistanceCommand(Translation2d distanceInMeters, double speedInMetersPerSecond)
-  {
+  public Command driveDistanceCommand(
+      Translation2d distanceInMeters, double speedInMetersPerSecond) {
     final Translation2d start = this.getState().Pose.getTranslation();
-    final Translation2d speed = distanceInMeters.times(speedInMetersPerSecond / distanceInMeters.getNorm());
-    return run(() -> this.setControl(
-        this.driveRobotCentric
-          .withVelocityX(speed.getX())
-          .withVelocityY(speed.getY())
-          .withRotationalRate(0)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage)))                       
-        .until(() -> this.getState().Pose.getTranslation().getDistance(start) > distanceInMeters.getNorm());
+    final Translation2d speed =
+        distanceInMeters.times(speedInMetersPerSecond / distanceInMeters.getNorm());
+    return run(() ->
+            this.setControl(
+                this.driveRobotCentric
+                    .withVelocityX(speed.getX())
+                    .withVelocityY(speed.getY())
+                    .withRotationalRate(0)
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)))
+        .until(
+            () ->
+                this.getState().Pose.getTranslation().getDistance(start)
+                    > distanceInMeters.getNorm());
   }
 
   /**
@@ -351,6 +357,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Translation2d rotatedOffset = offset.rotateBy(robotPose.getRotation());
     // Return the new pose for the module.
     return new Pose2d(robotPose.getTranslation().plus(rotatedOffset), robotPose.getRotation());
+  }
+
+  public void setMaxSpeeds(ChassisSpeeds speed) {
+    maxSpeed.vxMetersPerSecond = speed.vxMetersPerSecond;
+    maxSpeed.vyMetersPerSecond = speed.vyMetersPerSecond;
+    maxSpeed.omegaRadiansPerSecond = speed.omegaRadiansPerSecond;
   }
 
   public void setMaxSpeeds(double xySpeed, double rotRate) {

@@ -35,15 +35,13 @@ public class ArmSubsystem extends SubsystemBase {
   private double armTargetPosition = 0;
   private boolean m_isTeleop = true;
 
-
   public ArmSubsystem() {
     initEncoderConfigs();
     initArmConfigs();
 
-    if (RobotBase.isSimulation()) 
-      initSimulation();
+    if (RobotBase.isSimulation()) initSimulation();
   }
-  
+
   private void initArmConfigs() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
@@ -99,7 +97,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void initSimulation() {
-    PhysicsSim.getInstance().addTalonFX(m_armMotor, m_armEncoder, ArmConstants.kArmGearRatio, 0.001);
+    PhysicsSim.getInstance()
+        .addTalonFX(m_armMotor, m_armEncoder, ArmConstants.kArmGearRatio, 0.001);
     m_armEncoder.setPosition(0.25);
   }
 
@@ -107,7 +106,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     updateSmartDashboard();
   }
-  
+
   /**
    * Moves the arm to a specific position
    *
@@ -121,30 +120,24 @@ public class ArmSubsystem extends SubsystemBase {
     m_armMotor.setControl(m_armRequest.withPosition(armTargetPosition));
   }
 
-  /**
-   * Returns the arm encoder position as a double
-   */
+  /** Returns the arm encoder position as a double */
   public double getPosition() {
     return m_armEncoder.getPosition().getValueAsDouble();
   }
 
-  /**
-   * Returns the arm rotor position as a double
-   */
+  /** Returns the arm rotor position as a double */
   public double getRotorPosition() {
     return m_armMotor.getRotorPosition().getValueAsDouble();
   }
 
-  /**
-   * Returns true if arm is at the target position or is within the error tolerance range
-   */
+  /** Returns true if arm is at the target position or is within the error tolerance range */
   public boolean isAtPosition() {
     return MathUtil.isNear(armTargetPosition, this.getPosition(), POSITION_TOLERANCE);
   }
 
   /**
    * Sets the arm rotation speed
-   * 
+   *
    * @param aspeed requires a double
    */
   public void setSpeed(double aspeed) {
@@ -152,23 +145,19 @@ public class ArmSubsystem extends SubsystemBase {
     m_armMotor.setControl(m_manualRequest.withOutput(aspeed));
   }
 
-  /**
-   * Stops moter movement and activates the motor brake
-   */
+  /** Stops moter movement and activates the motor brake */
   public void stop() {
     m_armMotor.setControl(m_brake);
   }
 
-  /**
-   * Attempts to hold the motor at its current position (can cause jitter)
-   */
+  /** Attempts to hold the motor at its current position (can cause jitter) */
   public void hold() {
     this.setPosition(this.getPosition());
   }
 
-
   /**
    * Teleop controls
+   *
    * @param aspeed a double that sets the arm speed during teleop
    */
   public void teleop(double aspeed) {
@@ -186,9 +175,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Updates the Smart Dashboard
-   */
+  /** Updates the Smart Dashboard */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Arm Postion", this.getPosition());
     SmartDashboard.putNumber("Arm TargetPostion", armTargetPosition);

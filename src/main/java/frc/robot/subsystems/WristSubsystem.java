@@ -40,8 +40,7 @@ public class WristSubsystem extends SubsystemBase {
     initEncoderConfigs();
     initWristConfigs();
 
-    if (RobotBase.isSimulation()) 
-      initSimulation();
+    if (RobotBase.isSimulation()) initSimulation();
   }
 
   private void initWristConfigs() {
@@ -108,7 +107,8 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   private void initSimulation() {
-    PhysicsSim.getInstance().addTalonFX(m_wristMotor, m_wristEncoder, WristConstants.kWristGearRatio, 0.001);
+    PhysicsSim.getInstance()
+        .addTalonFX(m_wristMotor, m_wristEncoder, WristConstants.kWristGearRatio, 0.001);
     m_wristEncoder.setPosition(0);
   }
 
@@ -119,6 +119,7 @@ public class WristSubsystem extends SubsystemBase {
 
   /**
    * Sets the wrist position
+   *
    * @param pos position between 0 and 1
    */
   public void setPosition(double pos) {
@@ -130,22 +131,19 @@ public class WristSubsystem extends SubsystemBase {
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(wristSlot));
   }
 
-  /**
-   * Returns the wrist position as a double
-   */
+  /** Returns the wrist position as a double */
   public double getPosition() {
     return m_wristEncoder.getPosition().getValueAsDouble();
   }
 
-  /**
-   * Returns true if motor is at target position or within tolerance range
-   */
+  /** Returns true if motor is at target position or within tolerance range */
   public boolean isAtPosition() {
     return MathUtil.isNear(wristTargetPosition, this.getPosition(), POSITION_TOLERANCE);
   }
 
   /**
    * Sets the wrist motor speed
+   *
    * @param wspeed double, target speed
    */
   public void setSpeed(double wspeed) {
@@ -153,22 +151,19 @@ public class WristSubsystem extends SubsystemBase {
     m_wristMotor.setControl(m_manualRequest.withOutput(wspeed));
   }
 
-  /**
-   * Stops motor and activates brakes
-   */
+  /** Stops motor and activates brakes */
   public void stop() {
     m_wristMotor.setControl(m_brake);
   }
 
-  /**
-   * Tells motor to hold current position (can cause jitter)
-   */
+  /** Tells motor to hold current position (can cause jitter) */
   public void hold() {
     this.setPosition(this.getPosition());
   }
 
   /**
-   * Teleop controls 
+   * Teleop controls
+   *
    * @param wspeed wrist target speed during teleop
    */
   public void teleop(double wspeed) {
@@ -176,9 +171,11 @@ public class WristSubsystem extends SubsystemBase {
 
     if (USE_POSITIONCONTROL) {
       if (wspeed != 0.0) {
-        wristTargetPosition = MathUtil.clamp(this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor), 
-                                             WristConstants.kWristPositionMin, 
-                                             WristConstants.kWristPositionMax);
+        wristTargetPosition =
+            MathUtil.clamp(
+                this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor),
+                WristConstants.kWristPositionMin,
+                WristConstants.kWristPositionMax);
         m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
       }
     } else {
@@ -189,9 +186,7 @@ public class WristSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Upddates the Smart Dashboard
-   */
+  /** Upddates the Smart Dashboard */
   private void updateSmartDashboard() {
     SmartDashboard.putNumber("Wrist Postion", this.getPosition());
     SmartDashboard.putNumber("Wrist TargetPostion", wristTargetPosition);
@@ -200,9 +195,8 @@ public class WristSubsystem extends SubsystemBase {
 
   public Command wristToPositionCommand(double position) {
     return run(() -> this.setPosition(position))
-      .withName("WristToPositionCommand")
-      .until(this::isAtPosition)
-      .withTimeout(5.0);
+        .withName("WristToPositionCommand")
+        .until(this::isAtPosition)
+        .withTimeout(5.0);
   }
-
 }
