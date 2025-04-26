@@ -279,6 +279,6 @@ public class ClimberSubsystem implements Subsystem {
   }
 
   public Command clampCommand(boolean clamp) {
-    return run(() -> this.setClamp(clamp)).withName("ClimbClampCommand").withTimeout(5.0);
+    return runOnce(() -> this.setClamp(clamp)).withName("ClimbClampCommand");
   }
 }

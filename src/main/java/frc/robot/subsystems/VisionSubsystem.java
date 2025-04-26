@@ -302,7 +302,7 @@ public class VisionSubsystem implements Subsystem {
   }
 
   public void updateGlobalPose(CommandSwerveDrivetrain drivetrain) {
-    if (!RobotState.isEnabled()) {
+   if (RobotState.isAutonomous()) {
       if (!USE_LIMELIGHT) {
         // Correct pose estimate with vision measurements
         var visionEst = this.getEstimatedGlobalPose();
@@ -314,21 +314,24 @@ public class VisionSubsystem implements Subsystem {
                   this.getEstimationStdDevs());
             });
       } else {
-        var limelightEst = this.getVisionMeasurement_MT2(drivetrain.getState().Pose);
+        // var limelightEst = this.getVisionMeasurement_MT2(drivetrain.getState().Pose);
+        var limelightEst = this.getVisionMeasurement_MT1();
         limelightEst.ifPresent(
             est -> {
               if (est.tagCount >= 1) {
-                if (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond)
-                    < RotationsPerSecond.of(2).in(RadiansPerSecond)) {
+                if ((Math.abs(drivetrain.getState().Speeds.vxMetersPerSecond) < 0.2) &&
+                    (Math.abs(drivetrain.getState().Speeds.vyMetersPerSecond) < 0.2) &&
+                    (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond)))
+                {
                   drivetrain.addVisionMeasurement(
                       est.pose,
                       Utils.fpgaToCurrentTime(est.timestampSeconds),
-                      this.getEstimationStdDevs());
+                      kSingleTagStdDevs);
                 }
               }
             });
       }
-    }
+   }
   }
 
   public Command updateGlobalPoseCommand(CommandSwerveDrivetrain drivetrain) {

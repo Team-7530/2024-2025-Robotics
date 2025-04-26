@@ -25,7 +25,7 @@ public final class Constants {
 
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
-  public static final double POSITION_TOLERANCE = 0.1;
+  public static final double POSITION_TOLERANCE = 0.01;
 
   public static final class Vision {
 
@@ -143,7 +143,7 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = -0.161;
+    public static final double kWristEncoderOffset = -0.398; //-0.161;
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
@@ -156,14 +156,14 @@ public final class Constants {
     public static final double wristMotorKV = 0.0;
     public static final double wristMotorKA = 0.0;
     public static final double wristMotorKP = 35.0; // 70
-    public static final double wristMotorKP_slow = 35.0;
+    public static final double wristMotorKP_slow = 25.0;
     public static final double wristMotorKI = 0.0;
     public static final double wristMotorKD = 0.0;
     public static final double MMagicCruiseVelocity = 0;
     public static final double MMagicAcceleration = 0;
     public static final double MMagicJerk = 0;
     public static final double MMagicExpo_kV = 4.8; // kV is around 0.12 V/rps
-    public static final double MMagicExpo_kA = 2.4; // Use a slower kA of 0.1 V/(rps/s)
+    public static final double MMagicExpo_kA = 4.8; // Use a slower kA of 0.1 V/(rps/s)
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
@@ -245,7 +245,7 @@ public final class Constants {
     public static final double climbMotorKS = 0.0;
     public static final double climbMotorKV = 0.0;
     public static final double climbMotorKA = 0.0;
-    public static final double climbMotorKP = 10.0;
+    public static final double climbMotorKP = 60.0;
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
