@@ -10,9 +10,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class Mechanisms {
   double HEIGHT = 1; // Controls the height of the mech2d SmartDashboard
   double WIDTH = 1; // Controls the height of the mech2d SmartDashboard
-  double FX = 0;
-  double TALON = 0;
-  double CAN = 0;
 
   Mechanism2d mech = new Mechanism2d(WIDTH, HEIGHT);
   /* arm rotor rotor Ligaments */

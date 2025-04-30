@@ -271,11 +271,11 @@ public class VisionSubsystem implements Subsystem {
     return curStdDevs;
   }
 
-  public Optional<PoseEstimate> getVisionMeasurement_MT2(Pose2d currentPose) {
-    // reject if robot angular velocity is high (> 720 rps)
+  public Optional<PoseEstimate> getVisionMeasurement_MT2(double yawdegrees) {
     for (String name : limelightCameras) {
       LimelightHelpers.SetRobotOrientation(
-          name, currentPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+          name, yawdegrees, 0, 0, 0, 0, 0);
+
       PoseEstimate pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
       if (pose.tagCount >= 1) {
         curStdDevs = pose.tagCount > 1 ? kMultiTagStdDevs : kSingleTagStdDevs;
@@ -288,21 +288,26 @@ public class VisionSubsystem implements Subsystem {
   public Optional<PoseEstimate> getVisionMeasurement_MT1() {
     for (String name : limelightCameras) {
       PoseEstimate pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-      if ((pose.tagCount > 1)
-          || ((pose.tagCount == 1)
+      if (pose.tagCount > 1) {
+        curStdDevs = kMultiTagStdDevs;
+        return Optional.of(pose);
+      } else if ((pose.tagCount == 1)
               && (pose.rawFiducials.length == 1)
-              && (pose.rawFiducials[0].ambiguity < 0.7)
-              && (pose.rawFiducials[0].distToCamera < 3))) {
-        curStdDevs = pose.tagCount > 1 ? kMultiTagStdDevs : kSingleTagStdDevs;
+              && (pose.rawFiducials[0].ambiguity <= 0.7)
+              && (pose.rawFiducials[0].distToCamera <= 3.0)) {
+        curStdDevs = kSingleTagStdDevs;
         return Optional.of(pose);
       }
-      return Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue(name));
     }
     return Optional.empty();
   }
 
   public void updateGlobalPose(CommandSwerveDrivetrain drivetrain) {
-   if (RobotState.isAutonomous()) {
+    if (RobotState.isAutonomous() &&
+        (Math.abs(drivetrain.getState().Speeds.vxMetersPerSecond) < 0.2) &&
+        (Math.abs(drivetrain.getState().Speeds.vyMetersPerSecond) < 0.2) &&
+        (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond))) {
+
       if (!USE_LIMELIGHT) {
         // Correct pose estimate with vision measurements
         var visionEst = this.getEstimatedGlobalPose();
@@ -314,24 +319,21 @@ public class VisionSubsystem implements Subsystem {
                   this.getEstimationStdDevs());
             });
       } else {
-        // var limelightEst = this.getVisionMeasurement_MT2(drivetrain.getState().Pose);
+        // var limelightEst1 = this.getVisionMeasurement_MT2(drivetrain.getPigeon2().getYaw().getValue().in(Degrees));
         var limelightEst = this.getVisionMeasurement_MT1();
         limelightEst.ifPresent(
             est -> {
               if (est.tagCount >= 1) {
-                if ((Math.abs(drivetrain.getState().Speeds.vxMetersPerSecond) < 0.2) &&
-                    (Math.abs(drivetrain.getState().Speeds.vyMetersPerSecond) < 0.2) &&
-                    (Math.abs(drivetrain.getState().Speeds.omegaRadiansPerSecond) < RotationsPerSecond.of(2).in(RadiansPerSecond)))
                 {
                   drivetrain.addVisionMeasurement(
                       est.pose,
                       Utils.fpgaToCurrentTime(est.timestampSeconds),
-                      kSingleTagStdDevs);
+                      this.getEstimationStdDevs());
                 }
               }
             });
       }
-   }
+    }
   }
 
   public Command updateGlobalPoseCommand(CommandSwerveDrivetrain drivetrain) {
