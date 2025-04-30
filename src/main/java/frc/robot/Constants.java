@@ -239,7 +239,7 @@ public final class Constants {
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 10 volts
     public static final double peakForwardTorqueCurrent = 120.0; // Peak output of 80 amps
-    public static final double peakReverseTorqueCurrent = -120.0; // Peak output of 80 amps
+    public static final double peakReverseTorqueCurrent = -80.0; // Peak output of 80 amps
 
     public static final double climbMotorKG = 0.0;
     public static final double climbMotorKS = 0.0;
@@ -249,15 +249,13 @@ public final class Constants {
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
-    public static final double climbMotorTorqueKP = 100.0; // 1 rot err == 60 A output
+    public static final double climbMotorTorqueKP = 240.0; // 0.25 rot err == 60 A output
     public static final double climbMotorTorqueKI = 0.0; // No output for integrated error
-    public static final double climbMotorTorqueKD = 2.0; // vel of 1 rps == 6 A output
+    public static final double climbMotorTorqueKD = 6.0; // vel of 1 rps == 6 A output
 
-    public static final double MMagicCruiseVelocity = 15;
-    public static final double MMagicAcceleration = 30;
-    public static final double MMagicJerk = 8000;
-    public static final double MMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
-    public static final double MMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+    public static final double MMagicCruiseVelocity = 2;
+    public static final double MMagicAcceleration = 1;
+    public static final double MMagicJerk = 0;
 
     public static final double kUnclampedPositionFollower = 0.48;
     public static final double kClampedPositionFollower = 0.78;

@@ -88,8 +88,6 @@ public class ClimberSubsystem implements Subsystem {
     configs.MotionMagic.MotionMagicCruiseVelocity = ClimberConstants.MMagicCruiseVelocity;
     configs.MotionMagic.MotionMagicAcceleration = ClimberConstants.MMagicAcceleration;
     configs.MotionMagic.MotionMagicJerk = ClimberConstants.MMagicJerk;
-    configs.MotionMagic.MotionMagicExpo_kV = ClimberConstants.MMagicExpo_kV;
-    configs.MotionMagic.MotionMagicExpo_kA = ClimberConstants.MMagicExpo_kA;
 
     configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClimberConstants.kClimberPositionMax;
     configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
