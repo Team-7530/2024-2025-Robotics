@@ -293,36 +293,31 @@ public class RobotContainer {
   public Command cruisePositionCommand() {
     return armWristToPositionCommand(
             ScoringConstants.CruiseArmPosition, ScoringConstants.CruiseWristPosition)
-        .withName("cruisePositionCommand")
-        .withTimeout(5.0);
+        .withName("cruisePositionCommand");
   }
 
   public Command getCoralPositionCommand() {
     return armWristToPositionCommand(
             ScoringConstants.LoadArmPosition, ScoringConstants.LoadWristPosition)
-        .withName("getCoralPositionCommand")
-        .withTimeout(5.0);
+        .withName("getCoralPositionCommand");
   }
 
   public Command l1ScoringPositionCommand() {
     return armWristToPositionCommand(
             ScoringConstants.L1ArmPosition, ScoringConstants.L1WristPosition)
-        .withName("l1ScoringPositionCommand")
-        .withTimeout(5.0);
+        .withName("l1ScoringPositionCommand");
   }
 
   public Command l2ScoringPositionCommand() {
     return armWristToPositionCommand(
             ScoringConstants.L2ArmPosition, ScoringConstants.L2WristPosition)
-        .withName("l2ScoringPositionCommand")
-        .withTimeout(5.0);
+        .withName("l2ScoringPositionCommand");
   }
 
   public Command climbPositionCommand() {
     return armWristToPositionCommand(
             ScoringConstants.ClimbArmPosition, ScoringConstants.ClimbWristPosition)
         .withName("climbPositionCommand")
-        .withTimeout(5.0)
         .finallyDo(
             () -> {
               arm.stop();
