@@ -296,7 +296,6 @@ public class VisionSubsystem implements Subsystem {
         curStdDevs = pose.tagCount > 1 ? kMultiTagStdDevs : kSingleTagStdDevs;
         return Optional.of(pose);
       }
-      return Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue(name));
     }
     return Optional.empty();
   }
@@ -326,7 +325,7 @@ public class VisionSubsystem implements Subsystem {
                   drivetrain.addVisionMeasurement(
                       est.pose,
                       Utils.fpgaToCurrentTime(est.timestampSeconds),
-                      kSingleTagStdDevs);
+                      this.getEstimationStdDevs());
                 }
               }
             });

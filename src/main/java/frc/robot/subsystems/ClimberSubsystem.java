@@ -182,7 +182,7 @@ public class ClimberSubsystem implements Subsystem {
 
   /** Returns true if climber is at the position or within the tolerance range */
   public boolean isAtPosition(double position) {
-    return MathUtil.isNear(position, this.getPosition(), POSITION_TOLERANCE);
+    return MathUtil.isNear(position, this.getPosition(), 0.01);
   }
 
   /** Returns true if climber is at the target position or within the tolerance range */

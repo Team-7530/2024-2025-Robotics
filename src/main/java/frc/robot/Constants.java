@@ -25,7 +25,7 @@ public final class Constants {
 
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
-  public static final double POSITION_TOLERANCE = 0.01;
+  public static final double POSITION_TOLERANCE = 0.05;
 
   public static final class Vision {
 
@@ -239,7 +239,7 @@ public final class Constants {
     public static final double peakForwardVoltage = 10.0; // Peak output of 10 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 10 volts
     public static final double peakForwardTorqueCurrent = 120.0; // Peak output of 80 amps
-    public static final double peakReverseTorqueCurrent = -40.0; // Peak output of 80 amps
+    public static final double peakReverseTorqueCurrent = -120.0; // Peak output of 80 amps
 
     public static final double climbMotorKG = 0.0;
     public static final double climbMotorKS = 0.0;
@@ -249,7 +249,7 @@ public final class Constants {
     public static final double climbMotorKI = 0.0;
     public static final double climbMotorKD = 0.0;
 
-    public static final double climbMotorTorqueKP = 80.0; // 1 rot err == 60 A output
+    public static final double climbMotorTorqueKP = 100.0; // 1 rot err == 60 A output
     public static final double climbMotorTorqueKI = 0.0; // No output for integrated error
     public static final double climbMotorTorqueKD = 2.0; // vel of 1 rps == 6 A output
 
@@ -269,7 +269,7 @@ public final class Constants {
     public static final double kClimberPositionMax = kClimberEncoderMax;
 
     public static final double kTargetClimberStart = 0.04;
-    public static final double kTargetClimberFull = 0.35;
+    public static final double kTargetClimberFull = 0.26;
 
     public static final double kClimberSpeed = 0.8;
     public static final double kClimbTeleopFactor = 10.0;
