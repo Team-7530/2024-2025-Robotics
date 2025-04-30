@@ -96,6 +96,7 @@ public class WristSubsystem extends SubsystemBase {
     CANcoderConfiguration configs = new CANcoderConfiguration();
     configs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Units.Rotations.of(0.5));
     configs.MagnetSensor.SensorDirection = WristConstants.kWristEncoderDirection;
+    // add offset of 0.25 to abs value so total range keeps sign. sub it below
     configs.MagnetSensor.withMagnetOffset(Units.Rotations.of(WristConstants.kWristEncoderOffset));
 
     StatusCode status = m_wristEncoder.getConfigurator().apply(configs);
@@ -103,7 +104,7 @@ public class WristSubsystem extends SubsystemBase {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
     // set starting position to current absolute position
-    m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble());
+    m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble() + 0.25);
   }
 
   private void initSimulation() {

@@ -143,7 +143,7 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = -0.398; //-0.161;
+    public static final double kWristEncoderOffset = -0.141; //-0.398; add 0.25 offset, sub it later
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
