@@ -21,7 +21,7 @@ import java.util.List;
 
 public final class Constants {
 
-  public static final boolean USE_POSITIONCONTROL = false;
+  public static final boolean USE_POSITIONCONTROL = true;
 
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;

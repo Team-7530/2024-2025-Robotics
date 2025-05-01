@@ -147,6 +147,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** Stops moter movement and activates the motor brake */
   public void stop() {
+    armTargetPosition = 0;
     m_armMotor.setControl(m_brake);
   }
 
@@ -163,14 +164,15 @@ public class ArmSubsystem extends SubsystemBase {
   public void teleop(double aspeed) {
     aspeed = MathUtil.applyDeadband(aspeed, STICK_DEADBAND);
 
-    if (USE_POSITIONCONTROL) {
-      if (aspeed != 0.0)
-        this.setPosition(this.getPosition() + (aspeed * ArmConstants.kArmTeleopFactor));
-
-    } else {
-      if (m_isTeleop || (aspeed != 0.0)) {
-        m_isTeleop = true;
-        this.setSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
+    if (aspeed != 0.0) {
+      m_isTeleop = true;
+      this.setSpeed(aspeed * ArmConstants.kArmTeleopSpeed);
+    } else if (m_isTeleop) {
+      m_isTeleop = false;
+      if (USE_POSITIONCONTROL) {
+        this.hold();
+      } else {
+        this.setSpeed(0.0);
       }
     }
   }

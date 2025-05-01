@@ -127,7 +127,7 @@ public class WristSubsystem extends SubsystemBase {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-    wristSlot = ((this.getPosition() * wristTargetPosition) <= 0.0) ? 1 : 0;
+    wristSlot = (((this.getPosition() - 0.25) * (wristTargetPosition - 0.25)) <= 0.0) ? 1 : 0;
 
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(wristSlot));
   }
@@ -154,6 +154,7 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Stops motor and activates brakes */
   public void stop() {
+    wristTargetPosition = 0;
     m_wristMotor.setControl(m_brake);
   }
 
@@ -170,19 +171,15 @@ public class WristSubsystem extends SubsystemBase {
   public void teleop(double wspeed) {
     wspeed = MathUtil.applyDeadband(wspeed, STICK_DEADBAND);
 
-    if (USE_POSITIONCONTROL) {
-      if (wspeed != 0.0) {
-        wristTargetPosition =
-            MathUtil.clamp(
-                this.getPosition() + (wspeed * WristConstants.kWristTeleopFactor),
-                WristConstants.kWristPositionMin,
-                WristConstants.kWristPositionMax);
-        m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(0));
-      }
-    } else {
-      if (m_isTeleop || (wspeed != 0.0)) {
-        m_isTeleop = true;
-        this.setSpeed(wspeed * WristConstants.kWristTeleopSpeed);
+    if (wspeed != 0.0) {
+      m_isTeleop = true;
+      this.setSpeed(wspeed * WristConstants.kWristTeleopSpeed);
+    } else if (m_isTeleop) {
+      m_isTeleop = false;
+      if (USE_POSITIONCONTROL) {
+        this.hold();
+      } else {
+        this.setSpeed(0.0);
       }
     }
   }

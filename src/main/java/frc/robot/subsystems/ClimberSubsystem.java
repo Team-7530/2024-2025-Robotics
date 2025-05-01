@@ -202,6 +202,7 @@ public class ClimberSubsystem implements Subsystem {
 
   /** Stops the motor and activates the brake */
   public void stop() {
+    m_targetPosition = 0.0;
     m_ClimbMotor.setControl(m_brake);
   }
 
@@ -213,15 +214,12 @@ public class ClimberSubsystem implements Subsystem {
   public void teleopClimb(double val) {
     val = MathUtil.applyDeadband(val, STICK_DEADBAND);
 
-    if (USE_POSITIONCONTROL) {
-      if (val != 0.0) {
-        this.setPosition(this.getPosition() + (val * ClimberConstants.kClimbTeleopFactor));
-      }
-    } else {
-      if (m_isTeleop || (val != 0.0)) {
-        m_isTeleop = true;
-        this.setSpeed(val * ClimberConstants.kClimberSpeed);
-      }
+    if (val != 0.0) {
+      m_isTeleop = true;
+      this.setSpeed(val * ClimberConstants.kClimberSpeed);
+    } else if (m_isTeleop) {
+      m_isTeleop = false;
+      this.stop();
     }
   }
 
