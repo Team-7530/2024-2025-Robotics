@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class ClimberSubsystem implements Subsystem {
@@ -238,6 +237,11 @@ public class ClimberSubsystem implements Subsystem {
         m_isClamped
             ? ClimberConstants.kClampedPositionFollower
             : ClimberConstants.kUnclampedPositionFollower);
+
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    StatusCode status = m_ClimbMotor.getConfigurator().refresh(configs);
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = m_isClamped ? ClimberConstants.kTargetClimberFull : ClimberConstants.kClimberPositionMax;     
+    status = m_ClimbMotor.getConfigurator().apply(configs);
   }
 
   /** Returns true if clamp is closed, false if open */

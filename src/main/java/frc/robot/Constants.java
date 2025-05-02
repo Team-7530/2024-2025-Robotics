@@ -21,7 +21,7 @@ import java.util.List;
 
 public final class Constants {
 
-  public static final boolean USE_POSITIONCONTROL = true;
+  public static final boolean USE_POSITIONCONTROL = false;
 
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
@@ -257,10 +257,10 @@ public final class Constants {
     public static final double MMagicAcceleration = 1;
     public static final double MMagicJerk = 0;
 
-    public static final double kUnclampedPositionFollower = 0.48;
+    public static final double kUnclampedPositionFollower = 0.46;
     public static final double kClampedPositionFollower = 0.78;
 
-    public static final double kUnclampedPosition = 0.6; // Min and Max opposite of Original
+    public static final double kUnclampedPosition = 0.65; // Min and Max opposite of Original
     public static final double kClampedPosition = 0.35;
 
     public static final double kClimberPositionMin = kClimberEncoderMin;

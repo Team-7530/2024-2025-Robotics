@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
@@ -154,7 +155,7 @@ public class RobotContainer {
     oi.getRightBumper().onTrue(climber.clampCommand(true));
 
     oi.getLeftTrigger().onTrue(climber.climbToStartPositionCommand());
-    oi.getRightTrigger().onTrue(climber.climbToFullPositionCommand());
+    // oi.getRightTrigger().onTrue(climber.climbToFullPositionCommand());
 
     //    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
     //    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
@@ -284,7 +285,7 @@ public class RobotContainer {
   }
 
   public Command armWristToPositionCommand(double armPos, double wristPos) {
-    return new SequentialCommandGroup(
+    return new ParallelCommandGroup(
             arm.armToPositionCommand(armPos), wrist.wristToPositionCommand(wristPos))
         .withName("ArmWristToPositionCommand")
         .withTimeout(5.0);
@@ -315,9 +316,11 @@ public class RobotContainer {
   }
 
   public Command climbPositionCommand() {
-    return armWristToPositionCommand(
-            ScoringConstants.ClimbArmPosition, ScoringConstants.ClimbWristPosition)
+    return new SequentialCommandGroup(
+            arm.armToPositionCommand(ScoringConstants.ClimbArmPosition), 
+            wrist.wristToPositionCommand(ScoringConstants.ClimbWristPosition))
         .withName("climbPositionCommand")
+        .withTimeout(5)
         .finallyDo(
             () -> {
               arm.stop();
