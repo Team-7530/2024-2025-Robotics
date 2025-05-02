@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final NeutralOut m_brake = new NeutralOut();
 
-  private boolean m_isTeleop = true;
+  private boolean m_isTeleop = false;
 
   public IntakeSubsystem() {
     initIntakeConfigs();
@@ -109,6 +109,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param Rvelocity Right motors target velocity
    */
   public void setIntakeVelocity(double Lvelocity, double Rvelocity) {
+    m_isTeleop = false;
     m_LIntakeMotor.setControl(
         m_velocityRequest.withVelocity(Lvelocity * IntakeConstants.kIntakeGearRatio));
     m_RIntakeMotor.setControl(
@@ -155,9 +156,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public void teleop(double intake) {
     intake = MathUtil.applyDeadband(intake, STICK_DEADBAND);
 
-    if (m_isTeleop || (intake != 0.0)) {
+    if (intake != 0.0) {
       m_isTeleop = true;
       this.setIntakeSpeed(intake * 0.1);
+    } else if (m_isTeleop) {
+      m_isTeleop = false;
+      this.intakeStop();
     }
   }
 

@@ -33,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final NeutralOut m_brake = new NeutralOut();
 
   private double armTargetPosition = 0;
-  private boolean m_isTeleop = true;
+  private boolean m_isTeleop = false;
 
   public ArmSubsystem() {
     initEncoderConfigs();

@@ -34,7 +34,7 @@ public class WristSubsystem extends SubsystemBase {
 
   private double wristTargetPosition = 0;
   private int wristSlot = 0;
-  private boolean m_isTeleop = true;
+  private boolean m_isTeleop = false;
 
   public WristSubsystem() {
     initEncoderConfigs();
@@ -179,7 +179,7 @@ public class WristSubsystem extends SubsystemBase {
       if (USE_POSITIONCONTROL) {
         this.hold();
       } else {
-        this.setSpeed(0.0);
+        this.stop();
       }
     }
   }

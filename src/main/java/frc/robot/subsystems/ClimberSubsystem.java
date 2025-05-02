@@ -240,8 +240,14 @@ public class ClimberSubsystem implements Subsystem {
 
     TalonFXConfiguration configs = new TalonFXConfiguration();
     StatusCode status = m_ClimbMotor.getConfigurator().refresh(configs);
-    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = m_isClamped ? ClimberConstants.kTargetClimberFull : ClimberConstants.kClimberPositionMax;     
-    status = m_ClimbMotor.getConfigurator().apply(configs);
+    if (status == StatusCode.OK) {
+      configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = m_isClamped ? ClimberConstants.kTargetClimberFull : ClimberConstants.kClimberPositionMax;     
+
+      status = m_ClimbMotor.getConfigurator().apply(configs);
+      if (!status.isOK()) {
+        System.out.println("Could not apply configs, error code: " + status.toString());
+      }
+    }
   }
 
   /** Returns true if clamp is closed, false if open */
