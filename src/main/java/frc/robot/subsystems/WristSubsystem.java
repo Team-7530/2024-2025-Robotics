@@ -71,7 +71,7 @@ public class WristSubsystem extends SubsystemBase {
     configs.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
     configs.Feedback.FeedbackRemoteSensorID = m_wristEncoder.getDeviceID();
-    configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;//
     configs.Feedback.SensorToMechanismRatio = 1.0;
     configs.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
 
@@ -104,7 +104,7 @@ public class WristSubsystem extends SubsystemBase {
       System.out.println("Could not apply top configs, error code: " + status.toString());
     }
     // set starting position to current absolute position
-    m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble() + 0.25);
+    status = m_wristEncoder.setPosition(m_wristEncoder.getAbsolutePosition().getValueAsDouble());
   }
 
   private void initSimulation() {
@@ -127,7 +127,7 @@ public class WristSubsystem extends SubsystemBase {
     m_isTeleop = false;
     wristTargetPosition =
         MathUtil.clamp(pos, WristConstants.kWristPositionMin, WristConstants.kWristPositionMax);
-    wristSlot = (((this.getPosition() - 0.25) * (wristTargetPosition - 0.25)) <= 0.0) ? 1 : 0;
+    wristSlot = (((this.getPosition()) * (wristTargetPosition)) <= 0.0) ? 1 : 0;
 
     m_wristMotor.setControl(m_wristRequest.withPosition(wristTargetPosition).withSlot(wristSlot));
   }

@@ -21,7 +21,7 @@ import java.util.List;
 
 public final class Constants {
 
-  public static final boolean USE_POSITIONCONTROL = true;
+  public static final boolean USE_POSITIONCONTROL = false;
 
   public static final double STICK_DEADBAND = 0.02;
   public static final double TRIGGER_SPEEDFACTOR = 0.5;
@@ -50,7 +50,7 @@ public final class Constants {
             // Rotation3d(0, 0, 0))),
             Pair.of(
                 LIMELIGHTNAME,
-                new Transform3d(new Translation3d(0.28, 0, 0.15), new Rotation3d(0, 0, 0))));
+                new Transform3d(new Translation3d(0.28, 0, 0.16), new Rotation3d(0, 0, 0))));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -77,19 +77,19 @@ public final class Constants {
 
   public static final class ScoringConstants {
     public static final double L1ArmPosition = 0.28;
-    public static final double L1WristPosition = -0.05;
+    public static final double L1WristPosition = -0.3;
 
     public static final double L2ArmPosition = 0.25;
-    public static final double L2WristPosition = 0.03;
+    public static final double L2WristPosition = -0.22;
 
     public static final double LoadArmPosition = 0.25;
-    public static final double LoadWristPosition = 0.125;
+    public static final double LoadWristPosition = -0.125;
 
     public static final double ClimbArmPosition = 0.405;
-    public static final double ClimbWristPosition = 0.45;
+    public static final double ClimbWristPosition = 0.20;
 
     public static final double CruiseArmPosition = 0.405;
-    public static final double CruiseWristPosition = -0.05;
+    public static final double CruiseWristPosition = -0.35; //
 
     public static final Translation2d L2BackupAmount = new Translation2d(-0.3, 0.0);
   }
@@ -143,14 +143,14 @@ public final class Constants {
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
         SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = -0.141; //-0.398; add 0.25 offset, sub it later
+    public static final double kWristEncoderOffset = 0.337;//-0.141; //-0.398; add 0.25 offset, sub it later
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
     public static final double kWristGearRatio =
         kWristChainRatio * kWristGearboxRatio; // chain ratio * Gearbox ratio
 
-    public static final double wristMotorKG = 0.5;
+    public static final double wristMotorKG = 0.0;
     public static final double wristMotorKS = 0.0;
     public static final double wristMotorKS_slow = 0.0;
     public static final double wristMotorKV = 0.0;
@@ -167,8 +167,8 @@ public final class Constants {
     public static final double peakForwardVoltage = 8.0; // Peak output of 8 volts
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
-    public static final double kWristPositionMax = 0.5;
-    public static final double kWristPositionMin = -0.05;
+    public static final double kWristPositionMax = 0.25;
+    public static final double kWristPositionMin = -0.35;
 
     public static final double kWristTeleopSpeed = 0.1;
     public static final double kWristTeleopFactor = 0.05;
