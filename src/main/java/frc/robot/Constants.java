@@ -89,7 +89,7 @@ public final class Constants {
     public static final double ClimbWristPosition = 0.20;
 
     public static final double CruiseArmPosition = 0.405;
-    public static final double CruiseWristPosition = -0.35; //
+    public static final double CruiseWristPosition = -0.33; //
 
     public static final Translation2d L2BackupAmount = new Translation2d(-0.3, 0.0);
   }
@@ -142,8 +142,8 @@ public final class Constants {
     public static final InvertedValue kWristInverted = InvertedValue.Clockwise_Positive;
     public static final NeutralModeValue kWristNeutralMode = NeutralModeValue.Brake;
     public static final SensorDirectionValue kWristEncoderDirection =
-        SensorDirectionValue.CounterClockwise_Positive;
-    public static final double kWristEncoderOffset = 0.337;//-0.141; //-0.398; add 0.25 offset, sub it later
+        SensorDirectionValue.Clockwise_Positive;
+    public static final double kWristEncoderOffset = -0.171;// add 0.25 offset, sub it later
 
     public static final double kWristChainRatio = 1.0; // 1:1
     public static final double kWristGearboxRatio = 45.0; // 1:45
@@ -168,7 +168,7 @@ public final class Constants {
     public static final double peakReverseVoltage = -8.0; // Peak output of 8 volts
 
     public static final double kWristPositionMax = 0.25;
-    public static final double kWristPositionMin = -0.35;
+    public static final double kWristPositionMin = -0.334;
 
     public static final double kWristTeleopSpeed = 0.1;
     public static final double kWristTeleopFactor = 0.05;
