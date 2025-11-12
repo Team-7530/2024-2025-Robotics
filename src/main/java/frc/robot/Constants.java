@@ -70,8 +70,8 @@ public final class Constants {
     public static final ChassisSpeeds cruiseSpeed = maxSpeed.times(0.6);
     public static final ChassisSpeeds slowSpeed =
         new ChassisSpeeds(
-            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1,
-            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1,
+            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.15,
+            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.15,
             RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.2);
   }
 

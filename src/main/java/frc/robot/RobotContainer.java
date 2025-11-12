@@ -154,8 +154,11 @@ public class RobotContainer {
     oi.getLeftBumper().onTrue(climber.clampCommand(false));
     oi.getRightBumper().onTrue(climber.clampCommand(true));
 
-    oi.getLeftTrigger().onTrue(climber.climbToStartPositionCommand());
-    // oi.getRightTrigger().onTrue(climber.climbToFullPositionCommand());
+    oi.getLeftTrigger().onTrue(this.cruisePositionCommand());
+    oi.getRightTrigger().onTrue(new SequentialCommandGroup(this.getCoralPositionCommand(), intake.intakeCommand()));
+
+    //oi.getLeftTrigger().onTrue(climber.climbToStartPositionCommand());
+    //oi.getRightTrigger().onTrue(climber.climbToFullPositionCommand());
 
     //    oi.getStartButton().onTrue(Commands.runOnce(() -> climber.resetMotorPostion()));
     //    oi.getBackButton().onTrue(new DoAllResetCommand(arm, wrist, climber));
